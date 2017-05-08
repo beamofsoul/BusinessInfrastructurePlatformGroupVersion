@@ -16,7 +16,6 @@ var queryFormItemName = ['ID','昵称','用户名','密码','邮箱地址','电�
 var queryFormItems = ['id','nickname','username','password','email','phone','status','createDate'];
 var queryFormItemType = ['input','input','input','input','input','input','select:statusList','date'];
 $('#queryFormDiv').html(createTableQueryFrom('queryForm',queryFormItemName,queryFormItems,queryFormItemType));
-
 //解析每行数据
 function parseValuesOnEachRow(obj) {
 	return {id :obj.id,
@@ -38,26 +37,36 @@ var tableColumnDatas = createTable(columnNames,attributeNames,buttonsOnEachRow);
 
 vueContentBeforeCreate = function() {this.statusList = [{value: '1',label: '启用'},{value: '0',label: '禁用'}]}
 vueContentMounted = function () {this.loadPage()}
+
+//加载页数据	
+function loadPageFn () {
+	var _self = this;
+	const msg = _self.$Message.loading('正在加载中...',0);
+	clearTableCheckedData();
+	$.iposty(loadPageableDataUrl, {page: (_self.pageCurrent-1) , size: _self.pageSize,condition:formatQueryFormData(_self)}, 
+			function(data){
+				_self.tableData = formatTableData(data);// 分页数据
+				_self.pageTotal = data.pageableData.totalElements;// 总记录数
+				setTimeout(msg, 100);//销毁加载提示
+			},
+			function(errorMessage){
+				_self.$Message.error(errorMessage);	
+				setTimeout(msg, 100);//销毁加载提示
+			}
+	);
+}
+//翻页
+function changePageFn (pageClick) {
+	if (this.pageCurrent != pageClick) {
+		this.pageCurrent = pageClick;
+	}
+	this.loadPage();
+}
+
 vueContentMethods = {
-	// 加载页数据	
-	loadPage () {
-		var _self = this;
-		const msg = this.$Message.loading('正在加载中...',0);
-		clearTableCheckedData();
 		
-    	$.iposty(loadPageableDataUrl, {page: (_self.pageCurrent-1) , size: _self.pageSize,condition:formatQueryFormData(_self)}, function(data){
-    		_self.tableData = formatTableData(data);// 分页数据
-	    	_self.pageTotal = data.pageableData.totalElements;// 总记录数
-	    	setTimeout(msg, 100);//销毁加载提示
-		});
-    },
-    // 翻页
- 	changePage (pageClick) {
-		if (this.pageCurrent != pageClick) {
-			this.pageCurrent = pageClick;
-		}
- 		this.loadPage();
-    },
+	loadPage:loadPageFn,
+	changePage:changePageFn,
 	/********** table头部按钮 ************/
 	// 添加
 	addButton (){
