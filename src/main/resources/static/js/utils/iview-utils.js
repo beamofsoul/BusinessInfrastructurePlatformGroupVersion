@@ -71,7 +71,7 @@ function createTableQueryFrom(iformName,queryFormItemName,queryFormItems,queryFo
 				queryForm+='</Form-item>';
 			}else if(queryFormItemType[itemIndex]=='date'){
 				queryForm+='<Form-item label="'+queryFormItemName[itemIndex]+'：" prop="'+queryFormItems[itemIndex]+'">';
-				queryForm+='<Date-picker v-model="'+iformName+'.'+queryFormItems[itemIndex]+'" type="date"  ></Date-picker>';
+				queryForm+='<Date-picker placement="bottom" v-model="'+iformName+'.'+queryFormItems[itemIndex]+'" type="date"  ></Date-picker>';
 				queryForm+='</Form-item>';
 			}
 			queryForm+='</i-col>';
