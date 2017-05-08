@@ -54,8 +54,6 @@ public class UserController extends BaseAbstractController {
 		return newInstance(userService.findAll(pageable, 
 				condition == null ? null : 
 					userService.onSearch(formatAndParseObject(condition.toString()))));
-		
-//		return newInstance(userService.findAll(PageUtils.parsePageable(map)));
 	}
 	
 	@RequestMapping(value = "single", method = RequestMethod.POST)
