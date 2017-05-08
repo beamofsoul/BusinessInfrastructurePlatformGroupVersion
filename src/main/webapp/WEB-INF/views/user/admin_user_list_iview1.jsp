@@ -16,6 +16,7 @@
 			<!-- 综合查询 form -->
 			<div id="queryFormDiv" ></div>
 	    	<br>
+	    	<br>
 		    <hr>
 			
 			<!-- 按钮 -->
