@@ -7,16 +7,21 @@
 		<title></title>
 		<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath }/static/iview/iview.css">
 		<style lang="less">
-		    my-ivu-form-item{margin-bottom: 10px;}
+			/* form 间距 */
+		    /* .ivu-form-item{margin-bottom: 10px;} */
+		    /* 折叠面板内 超出部分显示 */
+			.ivu-collapse-content{overflow:visible;}
 		</style>
 	</head>
 	<body>
 		<div id="contentContainer" width="100%" height="100%" style="margin: 15px;">
-		
 			<!-- 综合查询 form -->
-			<div id="queryFormDiv" ></div>
-	    	<br>
-		    <hr>
+			<Collapse>
+		        <Panel>
+		            综合查询
+		            <p slot="content"  id="queryFormDiv"></p>
+		        </Panel>
+		    </Collapse>
 			
 			<!-- 按钮 -->
 		 	<div style="margin-bottom: 10px;margin-top: 20px;">
