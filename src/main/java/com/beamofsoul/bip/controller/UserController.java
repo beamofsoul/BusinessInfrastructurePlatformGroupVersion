@@ -4,10 +4,8 @@ import static com.beamofsoul.bip.management.util.JSONUtils.formatAndParseObject;
 import static com.beamofsoul.bip.management.util.JSONUtils.newInstance;
 
 import java.util.Map;
-
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
-
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
