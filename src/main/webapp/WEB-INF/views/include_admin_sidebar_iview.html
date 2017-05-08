@@ -1,0 +1,90 @@
+<%@ page language="java" pageEncoding="UTF-8"%>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<i-menu active-name="1" theme="dark" width="auto" @on-select="contentClick">
+	<div class="layout-logo-left"></div>
+	
+	<div style="vertical-align: middle;">
+		<table style="margin-left: auto;margin-right: auto;">
+			<tr>
+				<td rowspan="2"><img src="${pageContext.request.contextPath }/static/image/default_avatar.png" style="border-radius: 100px;height: 50px;width: 50px;"></td>
+				<td class="layout-text">&nbsp;&nbsp;<span style="color: white;">Alexander Pierce</span></td>
+			</tr>
+			<tr>
+				<td class="layout-text">&nbsp;&nbsp;<i class="ivu-icon ivu-icon-record" style="color: #3C763D;font-size: x-small;"><span style="color: white;"> Online</span></i></td>
+			</tr>
+		</table>
+	</div>
+	
+	<Menu-item name="${pageContext.request.contextPath}/admin/adminIndexContent">
+		<Icon type="home" :size="iconSize"></Icon>
+		<span class="layout-text">首页</span>
+	</Menu-item>
+	
+	<sec:authorize access="hasPermission('user','user:list')">
+		<Menu-item name="${pageContext.request.contextPath}/admin/user/adminList">
+			<Icon type="person-stalker" :size="iconSize"></Icon>
+			<span class="layout-text">用户管理</span>
+		</Menu-item>
+	</sec:authorize>
+	
+	<sec:authorize access="hasPermission('role','role:list') or hasPermission('role','role:roleuser')">
+		<Submenu name="1">
+			<template slot="title">
+				<Icon type="tshirt" :size="iconSize"></Icon>
+				<span class="layout-text">角色管理</span>
+			</template>
+			<sec:authorize access="hasPermission('role','role:list')">
+				<Menu-item name="${pageContext.request.contextPath}/admin/role/adminList">
+					<Icon type="ios-list"></Icon>
+					<span class="layout-text">角色列表</span>
+				</Menu-item>
+			</sec:authorize>
+			<sec:authorize access="hasPermission('role','role:roleuser')">
+				<Menu-item name="${pageContext.request.contextPath}/admin/role/adminListWithUsers">
+					<Icon type="ios-body"></Icon>
+					<span class="layout-text">用户角色</span>
+				</Menu-item>
+			</sec:authorize>
+		</Submenu>
+	</sec:authorize>
+       
+       <sec:authorize access="hasPermission('permission','permission:list')">
+		<Menu-item name="${pageContext.request.contextPath}/admin/permission/adminList">
+			<Icon type="locked" :size="iconSize"></Icon>
+			<span class="layout-text">权限管理</span>
+		</Menu-item>
+	</sec:authorize>
+	
+	<sec:authorize access="hasPermission('organization','organization:list')">
+		<Menu-item name="${pageContext.request.contextPath}/admin/organization/adminList">
+			<Icon type="earth" :size="iconSize"></Icon>
+			<span class="layout-text">组织结构管理</span>
+		</Menu-item>
+	</sec:authorize>
+	
+	<sec:authorize access="hasPermission('system','system:list')">
+		<Submenu name="2">
+			<template slot="title">
+				<Icon type="settings" :size="iconSize"></Icon>
+				<span class="layout-text">系统设置</span>
+			</template>
+			<sec:authorize access="hasPermission('actionMonitor','actionMonitor:list')">
+				<Menu-item name="${pageContext.request.contextPath}/admin/actionMonitor/adminList">
+					<Icon type="monitor"></Icon>
+					<span class="layout-text">行为监控</span>
+				</Menu-item>
+			</sec:authorize>
+			<!-- 
+			<Menu-item name="${pageContext.request.contextPath}/admin/systemLog">
+				<Icon type="ios-keypad"></Icon>
+				<span class="layout-text">系统日志</span>
+			</Menu-item>
+			 -->
+		</Submenu>
+	</sec:authorize>
+	
+	<Menu-item name="${pageContext.request.contextPath}/logout">
+		<Icon type="log-out" :size="iconSize"></Icon>
+		<span class="layout-text">注销</span>
+	</Menu-item>
+</i-menu>

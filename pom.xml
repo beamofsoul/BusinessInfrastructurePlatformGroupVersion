@@ -1,0 +1,328 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+ 
+	<groupId>com.beamofsoul</groupId>
+	<artifactId>bip</artifactId>
+	<version>1.0.0</version>
+	<packaging>war</packaging>
+
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>1.4.1.RELEASE</version>
+		<relativePath />
+	</parent>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<java.version>1.8</java.version>
+		
+		<jstl.version>1.2</jstl.version>
+		<druid.version>1.0.28</druid.version>
+		<fastjson.version>1.2.15</fastjson.version>
+		<cglib.version>2.2.2</cglib.version>
+		<commons-io.version>2.4</commons-io.version>
+		<commons-lang3.version>3.0</commons-lang3.version>
+		<commons-fileupload.version>1.2.2</commons-fileupload.version>
+		<guava.version>17.0</guava.version>
+		<jodd.version>3.3.2</jodd.version>
+		<ckfinder.version>2.6.2.1</ckfinder.version>
+		<thumbnailator.version>0.4.8</thumbnailator.version>
+		<zxing.version>3.3.0</zxing.version>
+		<apt-maven-plugin.version>1.1.3</apt-maven-plugin.version>
+	</properties>
+
+	<dependencies>
+
+		<!-- Spring Boot -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-starter-tomcat</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<!-- <dependency> <groupId>org.springframework.boot</groupId> <artifactId>spring-boot-starter-test</artifactId> 
+			<scope>test</scope> </dependency> -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<!-- Hibernate -->
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-core</artifactId>
+		</dependency>
+
+		<!-- Cache (Ehcache) -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-cache</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>net.sf.ehcache</groupId>
+			<artifactId>ehcache</artifactId>
+		</dependency>
+
+		<!-- MySQL connector -->
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+		</dependency>
+
+		<!-- Servlet -->
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- JSTL -->
+		<dependency>
+			<groupId>jstl</groupId>
+			<artifactId>jstl</artifactId>
+			<version>${jstl.version}</version>
+		</dependency>
+
+		<!-- Tomcat -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-tomcat</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.tomcat.embed</groupId>
+			<artifactId>tomcat-embed-jasper</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- Logging -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-core</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+		</dependency>
+
+		<!-- Database Connection Pool -->
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>druid</artifactId>
+			<version>${druid.version}</version>
+		</dependency>
+
+		<!-- Monitoring Production Environment -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
+
+		<!-- Security -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-taglibs</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context-support</artifactId>
+		</dependency>
+
+		<!-- Fastjson -->
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>fastjson</artifactId>
+			<version>${fastjson.version}</version>
+		</dependency>
+
+		<!-- Querydsl -->
+		<dependency>
+			<groupId>com.querydsl</groupId>
+			<artifactId>querydsl-core</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.querydsl</groupId>
+			<artifactId>querydsl-apt</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>com.querydsl</groupId>
+			<artifactId>querydsl-jpa</artifactId>
+		</dependency>
+		
+		<!-- 添加WebScoket支持 -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-websocket</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-messaging</artifactId>
+		</dependency>
+		
+		<!-- 支持mail发送 -->
+		<dependency>  
+		    <groupId>org.springframework.boot</groupId>  
+		    <artifactId>spring-boot-starter-mail</artifactId>  
+		</dependency>
+		
+		<!-- 支持二维码生成与解析 -->
+		<dependency>
+		    <groupId>com.google.zxing</groupId>
+		    <artifactId>core</artifactId>
+		    <version>${zxing.version}</version>
+		</dependency>
+		
+
+		<!-- 支持 @ConfigurationProperties 注解 -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-configuration-processor</artifactId>
+			<optional>true</optional>
+		</dependency>
+		
+		<!-- 编译期代码生成 -->
+		<dependency>
+		    <groupId>org.projectlombok</groupId>
+		    <artifactId>lombok</artifactId>
+		    <scope>provided</scope>
+		</dependency>
+		
+		<!-- Tools -->
+		<dependency>
+			<groupId>cglib</groupId>
+			<artifactId>cglib</artifactId>
+			<version>${cglib.version}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>${commons-io.version}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>${commons-lang3.version}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>commons-beanutils</groupId>
+			<artifactId>commons-beanutils</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>commons-logging</groupId>
+					<artifactId>commons-logging</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		
+		<!-- 上传文件 -->
+		<dependency>
+            <groupId>commons-fileupload</groupId>
+            <artifactId>commons-fileupload</artifactId>
+            <version>${commons-fileupload.version}</version>
+        </dependency>
+		
+		<!-- 开源Google核心的Java常用类库 -->
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>${guava.version}</version>
+		</dependency>
+		
+		<!-- Java工具类库 -->
+		<dependency>
+			<groupId>org.jodd</groupId>
+			<artifactId>jodd</artifactId>
+			<version>${jodd.version}</version>
+		</dependency>
+		
+		<!-- 手动解析yaml文件 -->
+		<dependency>
+		    <groupId>org.yaml</groupId>
+		    <artifactId>snakeyaml</artifactId>
+		</dependency>
+		
+		<!-- CKEdit下CKFinder依赖的.jar包 -->
+		<dependency>
+		    <groupId>com.ckfinder</groupId>
+		    <artifactId>ckfinder</artifactId>
+		    <version>${ckfinder.version}</version>
+		</dependency>
+		
+		<dependency>
+		    <groupId>net.coobird</groupId>
+		    <artifactId>thumbnailator</artifactId>
+		    <version>${thumbnailator.version}</version>
+		</dependency>
+		
+		<!-- 业务代码生成 
+		<dependency>
+		    <groupId>com.beamofsoul.core</groupId>
+		    <artifactId>generator</artifactId>
+		    <version>1.0.4</version>
+		</dependency>
+		-->
+	</dependencies>
+
+	<build>
+		<finalName>bip</finalName>
+		<plugins>
+			<plugin>
+				<groupId>com.mysema.maven</groupId>
+				<artifactId>apt-maven-plugin</artifactId>
+				<version>${apt-maven-plugin.version}</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>process</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>target/generated-sources/java</outputDirectory>
+							<processor>com.querydsl.apt.jpa.JPAAnnotationProcessor</processor>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>

@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE xml>
+<configuration>
+
+	<!--定义日志文件的存储地址 勿在 LogBack 的配置中使用相对路径-->    
+    <property name="LOG_HOME" value="d:/bip/log" />    
+
+	<!-- 控制台输出 -->
+	<appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder charset="utf-8">
+			<!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符-->
+			<pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{80} - %msg%n</pattern>
+		</encoder>
+	</appender>
+
+	<!-- 时间滚动输出 level为 DEBUG 日志 -->
+	<appender name="file-debug" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${LOG_HOME}/BIP.debug.log</file>
+		
+		<!-- 
+		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+			<level>TRACE</level>
+		</filter>
+		 -->
+		
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+			<level>DEBUG</level>
+			<onMatch>ACCEPT</onMatch>
+			<onMismatch>DENY </onMismatch>
+		</filter>
+
+		<!-- 每天产生一个日志文件，最多30个，自动回滚 -->
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<!-- 指定日志保存的文件名和路径，不写会根据fileNamePattern动态变化 -->
+			<!-- <file>logs/app.log</file> -->
+			<!--日志文件输出的文件名-->
+			<fileNamePattern>${LOG_HOME}/BIP-%d{yyyy-MM-dd}.debug.log</fileNamePattern>
+			<!-- 控制保留的归档文件的最大数量，超出数量就删除旧文件 -->
+			<maxHistory>30</maxHistory>
+		</rollingPolicy>
+
+		<!-- 在日志文件超过5MB时进行归档，并且归档文件后缀只要是.zip或.gz就会自动压缩日志归档 -->
+		<rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+			<fileNamePattern>D:/Log/BIP.%i.debug.log.zip</fileNamePattern>
+			<minIndex>1</minIndex>
+			<maxIndex>10</maxIndex>
+		</rollingPolicy>
+
+		<!-- 日志文件最大的大小 -->
+		<triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+			<maxFileSize>5MB</maxFileSize>
+		</triggeringPolicy>
+
+		<encoder>
+			<pattern>%date %level [%thread] %logger{80} [%file : %line] %msg%n</pattern>
+		</encoder>
+	</appender>
+
+	<!-- 时间滚动输出 level为 ERROR 日志 -->
+	<appender name="file—error" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${LOG_HOME}/BIP.error.log</file>
+	
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+			<level>ERROR</level>
+			<onMatch>ACCEPT</onMatch>
+			<onMismatch>DENY </onMismatch>
+		</filter>
+		
+		<!-- 每天产生一个日志文件，最多30个，自动回滚 -->
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<!-- 指定日志保存的文件名和路径，不写会根据fileNamePattern动态变化 -->
+			<!-- <file>logs/app.log</file> -->
+			<!--日志文件输出的文件名-->
+			<fileNamePattern>${LOG_HOME}/BIP-%d{yyyy-MM-dd}.error.log</fileNamePattern>
+			<!-- 控制保留的归档文件的最大数量，超出数量就删除旧文件 -->
+			<maxHistory>30</maxHistory>
+		</rollingPolicy>
+		
+		<!-- 在日志文件超过5MB时进行归档，并且归档文件后缀只要是.zip或.gz就会自动压缩日志归档 -->
+		<rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+			<fileNamePattern>D:/Log/BIP.%i.error.log.zip</fileNamePattern>
+			<minIndex>1</minIndex>
+			<maxIndex>10</maxIndex>
+		</rollingPolicy>
+
+		<!-- 日志文件最大的大小 -->
+		<triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+			<maxFileSize>5MB</maxFileSize>
+		</triggeringPolicy>
+		
+		<encoder>
+			<pattern>%date %level [%thread] %logger{80} [%file : %line] %msg%n</pattern>
+		</encoder>
+	</appender>
+	
+	<!-- 特定过滤含有某字符串的日志 
+	<appender name="file—error" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${LOG_HOME}/BIP.error.log</file>
+		<filter class="ch.qos.logback.core.filter.EvaluatorFilter">
+			<evaluator>
+				<expression>message.contains("str")</expression>
+			</evaluator>
+			<onMatch>ACCEPT</onMatch>
+			<onMismatch>DENY</onMismatch>
+		</filter>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>${LOG_HOME}/BIP-%d{yyyy-MM-dd}.str.log</fileNamePattern>
+			<maxHistory>30</maxHistory>
+		</rollingPolicy>
+		<rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+			<fileNamePattern>D:/Log/BIP.%i.str.log.zip</fileNamePattern>
+			<minIndex>1</minIndex>
+			<maxIndex>10</maxIndex>
+		</rollingPolicy>
+		<triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+			<maxFileSize>5MB</maxFileSize>
+		</triggeringPolicy>
+		<encoder>
+			<pattern>%date %level [%thread] %logger{80} [%file : %line] %msg%n</pattern>
+		</encoder>
+	</appender>
+	-->
+	
+	<root level="DEBUG">  
+        <appender-ref ref="console" />  
+        <appender-ref ref="file-debug" />
+        <appender-ref ref="file—error" />
+        <!-- <appender-ref ref="file-str" /> -->
+    </root> 
+    
+	<!-- 第三方包的日志过滤级别，用于避免刷屏 -->
+	<logger name="net.sf.ehcache" level="WARN" />
+	<logger name="org.jboss.logging" level="WARN" />
+	<logger name="com.alibaba" level="WARN" />
+	<logger name="druid.sql.Connection" level="WARN" />
+    <logger name="org.hibernate" level="WARN" />
+    <logger name="org.springframework" level="WARN" />  
+    <logger name="org.apache" level="WARN" />
+    
+    <!-- 日志logger(包.类)的输出级别 -->  
+    <logger name="org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver" level="ERROR" >  
+        <appender-ref ref="console" />  
+        <appender-ref ref="file—error" />
+    </logger>
+  
+    <!-- 为Hibernate SQL定制的配置 -->  
+    <!-- 
+    <logger name="org.hibernate.type.descriptor.sql.BasicBinder" level="TRACE" />  
+    <logger name="org.hibernate.type.descriptor.sql.BasicExtractor" level="DEBUG" />  
+    <logger name="org.hibernate.SQL" level="DEBUG" />  
+    <logger name="org.hibernate.engine.QueryParameters" level="DEBUG" />  
+    <logger name="org.hibernate.engine.query.HQLQueryPlan" level="DEBUG" />
+     --> 
+     
+	<!--日志异步到数据库 -->
+    <!-- 
+    <appender name="DB" class="ch.qos.logback.classic.db.DBAppender">
+        <connectionSource class="ch.qos.logback.core.db.DriverManagerConnectionSource">
+            <dataSource class="com.mchange.v2.c3p0.ComboPooledDataSource">
+				<driverClass>com.mysql.jdbc.Driver</driverClass>
+				<url>jdbc:mysql://127.0.0.1:3306/databaseName</url>
+				<user>root</user>
+				<password>root</password>
+            </dataSource>
+        </connectionSource>
+    </appender>
+     -->
+
+</configuration>
