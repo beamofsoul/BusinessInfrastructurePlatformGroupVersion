@@ -141,8 +141,19 @@
 	    	
 		</div>
 
-	<%@ include file="../include_list_required_iview.html"%>  
-	<script src="${pageContext.request.contextPath }/static/js/business/user-biz-iview.js"></script>
+	
+	<%-- <%@ include file="../include_list_required_iview.html"%>   --%>
+	
+	<script src="${pageContext.request.contextPath }/static/js/utils/format-utils.js"></script>
+	<script src="${pageContext.request.contextPath }/static/js/utils/iview-ajax-utils.js"></script>
+	
+	<script src="${pageContext.request.contextPath }/static/js/utils/iview-utils.js"></script>
+ 	<script src="${pageContext.request.contextPath }/static/js/utils/iview-table-utils.js"></script>
+	<script src="${pageContext.request.contextPath }/static/js/utils/iview-form-utils.js"></script>
+ 
+ 	<script src="${pageContext.request.contextPath }/static/js/utils/iview-init.js"></script>
+ 	<script src="${pageContext.request.contextPath }/static/js/business/user-biz-iview.js"></script>
+	
 
 </body>
 </html>
