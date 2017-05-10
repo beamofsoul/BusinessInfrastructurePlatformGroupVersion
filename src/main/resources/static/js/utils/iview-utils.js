@@ -1,3 +1,48 @@
+function getVueObject() {
+	return vueContentObject;
+}
+
+//获取指定vue ref name 对象 
+function getVueRefObject(refName) {
+	return getVueObject().$refs[refName];
+}
+
+function toastError(content, duration, onClose){
+	toast(content, 'error', duration, onClose);
+}
+
+function toastSuccess(content, duration, onClose){
+	toast(content, 'success', duration, onClose);
+}
+
+function toastInfo(content, duration, onClose){
+	toast(content, 'info', duration, onClose);
+}
+
+function toastLoading(content, duration, onClose){
+	return toast(content, 'loading', duration, onClose);
+}
+
+function toastWarning(content, duration, onClose){
+	toast(content, 'warning', duration, onClose);
+}
+
+function toast(content, type, duration, onClose){
+	if('success' === type){
+		getVueObject().$Message.success(content, duration, onClose)
+	}else if('warning' === type){
+		getVueObject().$Message.warning(content, duration, onClose)
+	}else if('error' === type){
+		getVueObject().$Message.error(content, duration, onClose)
+	}else if('loading' === type){
+		return getVueObject().$Message.loading(content, duration, onClose)
+	}else if('info' === type){
+		getVueObject().$Message.info(content, duration, onClose)
+	}else{
+		getVueObject().$Message.info(content, duration, onClose);
+	}
+}
+
 // 添加
 function addButtonFn (){
 	formDataReset(addFormName);
@@ -7,7 +52,7 @@ function addButtonFn (){
 function submitAddFn () {
 	var _self = this;
 	submitFormValidate(currentAction,function(data){
-		_self.$Message.success('提交成功!');
+		toastSuccess('提交成功!');
 		_self.modalAdd=false;
 		formDataReset(getCurrentFormName());
 	});
@@ -17,7 +62,7 @@ function submitAddFn () {
 function updateButtonFn (){
 	var _self = this;
 	if(_self.tableCheckedData.length!=1){
-		_self.$Message.error('请选择1条记录!');
+		toastInfo('请选择1条记录!');
 		return;
 	}
 
@@ -32,7 +77,7 @@ function updateButtonFn (){
 function submitUpdateFn(){
 	var _self = this;
 	submitFormValidate(currentAction,function(data){
-		_self.$Message.success('更新成功!');
+		toastSuccess('更新成功!');
 		_self.modalUpdate = false;
 		formDataReset(getCurrentFormName());
 	});
@@ -41,7 +86,7 @@ function submitUpdateFn(){
 // 删除
 function deleteButtonFn (){
 	if(this.tableCheckedData.length==0){
-		this.$Message.error('至少选中一条记录!');
+		toastInfo('至少选中一条记录!');
 		return;
 	}
 	this.modalDelMessage = "即将删除"+this.tableCheckedData.length+"条记录,是否继续删除?";
@@ -54,8 +99,8 @@ function submitDeleteFn (){
 	var _self = this;
 	_self.modalDelSubmitLoading = true;
 	submitForm(currentAction,_self.modalDelRowIds,
-		function(data){_self.$Message.success('删除成功');_self.modalDelSubmitLoading = false;_self.modalDel = false;},
-		function(errorMessage){_self.$Message.error(errorMessage);_self.modalDelSubmitLoading = false;}
+		function(data){toastSuccess('删除成功');_self.modalDelSubmitLoading = false;_self.modalDel = false;},
+		function(errorMessage){toastError(errorMessage);_self.modalDelSubmitLoading = false;}
 	);
 }
 
@@ -73,7 +118,7 @@ function rowUpdateButtonFn (index) {
 	var _self = this;
 	$.iposty('user/single', {'id':_self.tableData[index].id}, 
 		function(data){_self.updateForm = data.obj;_self.modalUpdate = true;},
-		function(errorMessage){_self.$Message.error(errorMessage);}
+		function(errorMessage){toastError(errorMessage);}
 	);
 }
 //table row 删除按钮

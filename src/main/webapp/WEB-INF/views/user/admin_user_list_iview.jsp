@@ -79,7 +79,7 @@
 		    	<!-- 自定义 modal 底部按钮 -->
 			    <div slot="footer">
 			     	<i-button type="primary"  @click="submitAdd()">提交</i-button>
-		            <i-button type="primary"  @click="formReset('addForm')"  style="margin-left: 8px">重置</i-button>
+		            <i-button type="primary"  @click="formDataReset('addForm')"  style="margin-left: 8px">重置</i-button>
 		            <i-button type="primary"  @click="modalAdd = false"  style="margin-left: 8px">取消</i-button>
 		        </div>
 	    	</Modal>
@@ -145,9 +145,10 @@
 	<%-- <%@ include file="../include_list_required_iview.html"%>   --%>
 	
 	<script src="${pageContext.request.contextPath }/static/js/utils/format-utils.js"></script>
-	<script src="${pageContext.request.contextPath }/static/js/utils/iview-ajax-utils.js"></script>
 	
 	<script src="${pageContext.request.contextPath }/static/js/utils/iview-utils.js"></script>
+	<script src="${pageContext.request.contextPath }/static/js/utils/iview-ajax-utils.js"></script>
+	
  	<script src="${pageContext.request.contextPath }/static/js/utils/iview-table-utils.js"></script>
 	<script src="${pageContext.request.contextPath }/static/js/utils/iview-form-utils.js"></script>
  

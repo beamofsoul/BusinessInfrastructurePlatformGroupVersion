@@ -9,35 +9,7 @@ var vueContentDestroyed = function(){};
 var vueContentMethods = {};
 var vueContentData = function() {};
 
-
-
-
 var vueContentElementSelector = '#contentContainer';
-
-var tableColumnDatas;
-var parseValuesOnTableEachRow = function() {};
-
-var addFormContent;
-var updateFormContent;
-var queryFormContent;
-var addFormValidateContent;
-var updateFormValidateContent;
-
-var pageTotal = 0;
-var pageCurrent = 1;
-var pageSize = 10;
-
-var modalAdd = false;
-var modalUpdate = false;
-var modalDelSubmitLoading = false;
-var modalDel = false;
-
-var addFormName = 'addForm';
-var updateFormName = 'updateForm';
-var queryFormName = 'queryForm';
-
-var loadPageableDataUrl;//加载分页业务数据用的URL
-var currentAction = null;// 当前用户操作的行为 - add、update、delete 等
 
 //##########################################################//
 vueContentData = function() {

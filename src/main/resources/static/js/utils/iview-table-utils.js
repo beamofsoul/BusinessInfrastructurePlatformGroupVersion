@@ -1,17 +1,27 @@
+var tableColumnDatas;
+var parseValuesOnTableEachRow = function() {};
+
+var pageTotal = 0;
+var pageCurrent = 1;
+var pageSize = 10;
+
+var loadPageableDataUrl;//加载分页业务数据用的URL
+
 // 加载table数据	
 function loadPageFn () {
 	var _self = this;
-	const msg = _self.$Message.loading('正在加载中...',0);
+//	var _self = getVueObject();
+	const msg = toastLoading('正在加载中...',0);
 	clearTableCheckedData();
-	$.iposty(loadPageableDataUrl, {page: (_self.pageCurrent-1) , size: _self.pageSize,condition:formatQueryFormData(_self)}, 
+	$.iposty(loadPageableDataUrl, {page: (_self.pageCurrent-1) , size: _self.pageSize,condition:formatQueryFormData(_self.queryForm)}, 
 			function(data){
 				_self.tableData = formatTableData(data);// 分页数据
 				_self.pageTotal = data.pageableData.totalElements;// 总记录数
-				setTimeout(msg, 100);//销毁加载提示
+				setTimeout(msg, 120);//销毁加载提示
 			},
 			function(errorMessage){
 				_self.$Message.error(errorMessage);	
-				setTimeout(msg, 100);//销毁加载提示
+				setTimeout(msg, 120);//销毁加载提示
 			}
 	);
 }
@@ -35,16 +45,14 @@ function getTableCheckedDataIds(tableCheckedData) {
 
 // 清空当页选中的table中checkbox
 function clearTableCheckedData(){
-	vueContentObject.tableCheckedData = [];
+	getVueObject().tableCheckedData = [];
 }
 
 // 格式化服务端返回的table数据
 function formatTableData(data){
 	var value = [];
 	for(var i=0;i<data.pageableData.numberOfElements;i++) {
-//		value[i] = parseValuesOnEachRow(data.pageableData.content[i]);
 		value[i] = parseValuesOnTableEachRow(data.pageableData.content[i]);
-		
 	}
 	return value;
 }
@@ -52,7 +60,7 @@ function formatTableData(data){
 // 对table中的数据进行更新
 function fresh4NewData(data,callback) {
 	// 暂时先请求后台 来重新加载数据
-	vueContentObject.loadPage();
+	getVueObject().loadPage();
 	callback();
 }
 

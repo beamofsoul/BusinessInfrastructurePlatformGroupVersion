@@ -1,38 +1,40 @@
 /** 在未销毁vueContentObject之前 可自定义操作  **/
 //##########################################################//
 //销毁上一个content页面遗留vueContentObject对象实例
-if (vueContentObject) vueContentObject.$destroy();
+if (vueContentObject) getVueObject().$destroy();
 //^^^^^^^^^^^^^^^^^^^^^^ 格式 顺序 不动 ^^^^^^^^^^^^^^^^^^^^^//
-console.log('-------快进来看看------');
-vueContentBeforeCreate = function() {
-	 this.statusList = [{value: '1',label: '启用'},{value: '0',label: '禁用'}]
-	 this.validateUserName = function (rule,value,callback) {
-		var form = getCurrentForm();
-		console.log('-------刷新页面后 点两次链接才能进入 ，已失去怀疑对象 不知哪有问题------');
-		$.iposty('user/checkUsernameUnique',{'data':value,'id':form.id}, function(data) {
-			if (!data.isUnique) callback(new Error('用户名已被占用'));
-			else callback();
-	    });
-	}
-	this.validatePass = function n(rule,value,callback) {
-    	var form = getCurrentForm();
-    	var formName = getCurrentFormName();
-    	if (value === '') {
-            callback(new Error('请输入密码'));
-        } else {
-            if (form.repassword !== '') vueContentObject.$refs[formName].validateField('repassword');
-            callback();
-        }
-    }
-    this.validatePassCheck = function n(rule, value, callback) {
-    	var form = getCurrentForm();
-    	if (value === '') {callback(new Error('请输入确认密码'));} 
-    	else if (value !== form.password) {callback(new Error('两次输入密码不一致!'));} 
-        else {callback();}
-    }
-   
+
+function validateUserName (rule,value,callback) {
+	var form = getCurrentForm();
+	$.iposty('user/checkUsernameUnique',{'data':value,'id':form.id}, function(data) {
+		formValidateCallback(callback,data.isUnique,'用户名已被占用');
+    });
 }
+function validatePass(rule,value,callback) {
+	if (value === '') {
+		formValidateCallback(callback,false,'请输入密码');
+    } else {
+        if (getCurrentForm().repassword !== '')
+        	getVueRefObject(getCurrentFormName()).validateField('repassword');
+        formValidateCallback(callback,true);
+    }
+}
+function validatePassCheck(rule, value, callback) {
+	if (value === '') {
+		formValidateCallback(callback,false,'请输入确认密码');
+	} else if (value !== getCurrentForm().password) {
+		formValidateCallback(callback,false,'两次输入密码不一致!');
+	} else {
+		formValidateCallback(callback,true);
+    }
+}
+
+vueContentBeforeCreate = function() {
+	this.statusList = [{value: '1',label: '启用'},{value: '0',label: '禁用'}];
+}
+
 vueContentMounted = function () {this.loadPage()}
+
 
 // 当前用户能够操作的所有行为
 var actions = {'del': {'key':'del','url':'delete'},'add': {'key':'add','url':'user/singleAdd'},'update':{'key':'update','url':'user/singleUpdate'},'copy':{'key':'copy','url':'singleAdd'}};
@@ -47,7 +49,7 @@ loadPageableDataUrl = 'user/usersByPage';
 //综合查询 form
 var queryFormItemName = ['ID','昵称','用户名','密码','邮箱地址','电话号码','状态','注册日期'];
 var queryFormItems = ['id','nickname','username','password','email','phone','status','createDate'];
-var queryFormItemType = ['input','input','input','input','input','input','select:statusList','date'];
+var queryFormItemType = ['string','string','string','string','string','string','select#statusList','date'];
 
 //##########################################################//
 //table 创建列头
@@ -76,9 +78,9 @@ var generalFormContent = {	id:-1,username: '',password: '',repassword: '',nickna
 addFormContent = updateFormContent = generalFormContent;
 
 var generalValidataionContent = {
-	'username': [{ required: true,  min: 6, message: '用户名要大于6个字符', trigger: 'blur' },{ validator: vueContentObject.validateUserName, trigger: 'blur'}],
-	'password': [{ required: true,validator: vueContentObject.validatePass, trigger: 'blur' }],
-    'repassword': [{ required: true,validator: vueContentObject.validatePassCheck, trigger: 'blur' }]
+	'username': [{ required: true,  min: 6, message: '用户名要大于6个字符', trigger: 'blur' },{ validator: this.validateUserName, trigger: 'blur'}],
+	'password': [{ required: true,validator: this.validatePass, trigger: 'blur' }],
+    'repassword': [{ required: true,validator: this.validatePassCheck, trigger: 'blur' }]
 }
 addFormValidateContent = updateFormValidateContent = generalValidataionContent;
 
@@ -86,9 +88,5 @@ addFormValidateContent = updateFormValidateContent = generalValidataionContent;
 var vueContentObject = new Vue(initializeContentOptions());
 //^^^^^^^^^^^^^^^^^^^^^^ 格式 顺序 不动 ^^^^^^^^^^^^^^^^^^^^^//
 /** 初始化vueContentObject之后 可自定义操作  **/
-//console.log(vueContentBeforeCreate)
-//console.log(vueContentObject)
-//console.log(vueContentObject.validateUserName)
-//console.log(vueContentObject.validateUserName())
 
 
