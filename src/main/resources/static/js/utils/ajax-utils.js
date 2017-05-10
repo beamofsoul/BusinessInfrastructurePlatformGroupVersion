@@ -1,19 +1,20 @@
 $(function() {
-	$.del = function(url,data,fn) {
+	$.del = function(url, data, successCallback, errorCallback) {
 		$.ajax({
 			type : 'DELETE',
 			url : url,
 			data : data,
 			dataType : 'json',
-			success : function(data) {
-				fn(data);
-			},
-			error : function(XMLHttpRequest,textStatus,errorThrown) {
-				console.log(XMLHttpRequest.responseText);
-			}
+			success : function(result) {
+		    	if (successCallback) successCallback(result);
+		    },
+		    error: function(XMLHttpRequest, textStatus, errorThrown) {
+		    	console.log(XMLHttpRequest.status+' readyState:'+XMLHttpRequest.readyState +' '+XMLHttpRequest.responseText);
+		        if(errorCallback)  errorCallback('请求异常（代码:'+XMLHttpRequest.status+')');
+		    }
 		});
 	}
-	
+		
 	$.call = function(url) {
 		$.ajax({
 	        url: url,
