@@ -48,6 +48,32 @@ function formValidateCallback(callback,isSuccess,errorMessage) {
 	else callback();
 }
 
+// anys 校验方法
+function validateFunction (rule,value,callback) {
+	var form = getCurrentForm();
+	
+	if(rule.equal){
+		var equalValue = form[rule.equal];
+		if (value === '') {
+			formValidateCallback(callback,false);
+		} else if (value !== equalValue) {
+			formValidateCallback(callback,false);
+		} else {
+			formValidateCallback(callback,true);
+	    }
+	}else if(rule.unique){
+		var url = rule.unique;
+		$.iposty(url,{'data':value,'id':form.id}, function(data) {
+			formValidateCallback(callback,data.isUnique);
+	    });
+	}else if(rule.otherValidate){
+		var filedName= rule.otherValidate;
+		if (form[filedName] !== '')
+        	getVueRefObject(getCurrentFormName()).validateField(filedName);
+        formValidateCallback(callback,true);
+	}
+}
+
 // 提交表单
 function submitForm(currentAction,data, callback,errorCallback) {
 	// 包装请求后 回调函数.data 请求成功后 后台返回的值

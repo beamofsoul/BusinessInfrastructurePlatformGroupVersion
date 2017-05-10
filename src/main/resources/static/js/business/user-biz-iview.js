@@ -4,40 +4,14 @@
 if (vueContentObject) getVueObject().$destroy();
 //^^^^^^^^^^^^^^^^^^^^^^ 格式 顺序 不动 ^^^^^^^^^^^^^^^^^^^^^//
 
-function validateUserName (rule,value,callback) {
-	var form = getCurrentForm();
-	$.iposty('user/checkUsernameUnique',{'data':value,'id':form.id}, function(data) {
-		formValidateCallback(callback,data.isUnique,'用户名已被占用');
-    });
-}
-function validatePass(rule,value,callback) {
-	if (value === '') {
-		formValidateCallback(callback,false,'请输入密码');
-    } else {
-        if (getCurrentForm().repassword !== '')
-        	getVueRefObject(getCurrentFormName()).validateField('repassword');
-        formValidateCallback(callback,true);
-    }
-}
-function validatePassCheck(rule, value, callback) {
-	if (value === '') {
-		formValidateCallback(callback,false,'请输入确认密码');
-	} else if (value !== getCurrentForm().password) {
-		formValidateCallback(callback,false,'两次输入密码不一致!');
-	} else {
-		formValidateCallback(callback,true);
-    }
-}
-
 vueContentBeforeCreate = function() {
 	this.statusList = [{value: '1',label: '启用'},{value: '0',label: '禁用'}];
 }
 
 vueContentMounted = function () {this.loadPage()}
 
-
 // 当前用户能够操作的所有行为
-var actions = {'del': {'key':'del','url':'delete'},'add': {'key':'add','url':'user/singleAdd'},'update':{'key':'update','url':'user/singleUpdate'},'copy':{'key':'copy','url':'singleAdd'}};
+var actions = {'del': {'key':'del','url':'user/delete'},'add': {'key':'add','url':'user/singleAdd'},'update':{'key':'update','url':'user/singleUpdate'},'copy':{'key':'copy','url':'singleAdd'}};
 //tableContainer中表格显示列的中文名称
 var columnNames = ['','ID','昵称','用户名','密码','邮箱地址','电话号码','状态','注册日期','最后修改日期','操作'];
 //tableContainer中表格每列对应的业务模型实体类的属性名  全选 加 'selection' 项 , 操作 加 'operation' 项。
@@ -77,10 +51,11 @@ queryFormContent = {id:'',name:'',status: '',createDate: '',username: ''};//考�
 var generalFormContent = {	id:-1,username: '',password: '',repassword: '',nickname: '',phone: '',email: '',status: '1'};//考虑生成 form是否和table结构相同
 addFormContent = updateFormContent = generalFormContent;
 
+var usernameReg = /^[a-zA-Z\d]\w{4,11}[a-zA-Z\d]$/;
 var generalValidataionContent = {
-	'username': [{ required: true,  min: 6, message: '用户名要大于6个字符', trigger: 'blur' },{ validator: this.validateUserName, trigger: 'blur'}],
-	'password': [{ required: true,validator: this.validatePass, trigger: 'blur' }],
-    'repassword': [{ required: true,validator: this.validatePassCheck, trigger: 'blur' }]
+	'username': [{trigger: 'blur',type: 'string', required: true, pattern: usernameReg, message: '用户名称必须为长度6至12位之间以字母、特殊字符(·)或数字字符组成的字符串!'},{validator: this.validateFunction, trigger: 'blur',unique:'user/checkUsernameUnique',message: '用户名已被占用'}],
+	'password': [{trigger: 'blur',type: 'string', required: true, min:6,max :16,message: '密码为长度6至12位之间字符串!'},{validator: this.validateFunction, trigger: 'blur',otherValidate:'repassword',message: '用户名已被占用'}],
+    'repassword': [{trigger: 'blur',type: 'string', required: true,message:'请输入确认密码'},{trigger: 'blur',type: 'string', validator: this.validateFunction,equal:'password',message: '两次输入密码不一致!'}]
 }
 addFormValidateContent = updateFormValidateContent = generalValidataionContent;
 
