@@ -7,6 +7,17 @@ function getVueRefObject(refName) {
 	return getVueObject().$refs[refName];
 }
 
+//
+function setVueContentBeforeCreateFunction (beforeCreateFunction){
+	vueContentBeforeCreate = beforeCreateFunction;
+}
+
+//
+function setVueContentMountedFunction (mountedFunction){
+	vueContentMounted = mountedFunction;
+}
+
+
 function toastError(content, duration, onClose){
 	toast(content, 'error', duration, onClose);
 }
@@ -42,91 +53,73 @@ function toast(content, type, duration, onClose){
 		getVueObject().$Message.info(content, duration, onClose);
 	}
 }
+//##########################################################//
 
-// 添加
-function addButtonFn (){
-	formDataReset(addFormName);
-	currentAction = actions.add;
-	this.modalAdd = true;
-}
-function submitAddFn () {
-	var _self = this;
-	submitFormValidate(currentAction,function(data){
-		toastSuccess('提交成功!');
-		_self.modalAdd=false;
-		formDataReset(getCurrentFormName());
-	});
-}
+var vueContentBeforeCreate = function(){};
+var vueContentCreated = function(){};
+var vueContentBeforeMount = function(){};
+var vueContentMounted = function(){};
+var vueContentBeforeUpdate = function(){};
+var vueContentUpdated = function(){};
+var vueContentBeforeDestroy = function(){};
+var vueContentDestroyed = function(){};
+var vueContentMethods = {};
+var vueContentData = function() {};
 
-// 修改
-function updateButtonFn (){
-	var _self = this;
-	if(_self.tableCheckedData.length!=1){
-		toastInfo('请选择1条记录!');
-		return;
-	}
+var vueContentElementSelector = '#contentContainer';
 
-	currentAction = actions.update;
-	this.modalUpdate = true;
+
+vueContentData = function() {
+	return {
+    	pageTotal: pageTotal,
+		pageCurrent: pageCurrent,
+		pageSize: pageSize,
+	    	
+		modalAdd: modalAdd,
+		modalUpdate: modalUpdate,
+		modalDel: modalDel,
 		
-	$.iposty('user/single', {'id':getTableCheckedDataIds(this.tableCheckedData)}, function(data){
-			_self.updateForm = data.obj;
-		});
-}
-
-function submitUpdateFn(){
-	var _self = this;
-	submitFormValidate(currentAction,function(data){
-		toastSuccess('更新成功!');
-		_self.modalUpdate = false;
-		formDataReset(getCurrentFormName());
-	});
-}
-
-// 删除
-function deleteButtonFn (){
-	if(this.tableCheckedData.length==0){
-		toastInfo('至少选中一条记录!');
-		return;
-	}
-	this.modalDelMessage = "即将删除"+this.tableCheckedData.length+"条记录,是否继续删除?";
-	this.modalDelRowIds = getTableCheckedDataIds(this.tableCheckedData);//将要删除的id 赋值给data
+		modalDelSubmitLoading: modalDelSubmitLoading,
+		modalDelMessage: '',
+		modalDelRowIds: '',
+	        	
+	    tableColumns: tableColumnData,
+	    tableData: [],
+	    tableCheckedData: [],
+            
+        addForm: addFormContent,
+        addFormValidate: addFormValidateContent,
+        updateForm: updateFormContent,
+        updateFormValidate: updateFormValidateContent,
+        queryForm: queryFormContent,
+        
+    	self: this
+    }
+};
+vueContentMethods = {
 		
-	currentAction = actions.del;
-	this.modalDel = true;
-}
-function submitDeleteFn (){
-	var _self = this;
-	_self.modalDelSubmitLoading = true;
-	submitForm(currentAction,_self.modalDelRowIds,
-		function(data){toastSuccess('删除成功');_self.modalDelSubmitLoading = false;_self.modalDel = false;},
-		function(errorMessage){toastError(errorMessage);_self.modalDelSubmitLoading = false;}
-	);
-}
-
-//查询 
-function querySubmitFn(){
-	this.loadPage();
-}
-
-// iview table binding checkbox 选中事件，selection：当前所有已选中的数据
-function tableCheckboxSelectedDataFn(selection){
-	this.tableCheckedData = selection;
-}
-// table row 修改按钮
-function rowUpdateButtonFn (index) {
-	var _self = this;
-	$.iposty('user/single', {'id':_self.tableData[index].id}, 
-		function(data){_self.updateForm = data.obj;_self.modalUpdate = true;},
-		function(errorMessage){toastError(errorMessage);}
-	);
-}
-//table row 删除按钮
-function rowDeleteButtonFn (index) {
-	this.modalDelMessage = "是否继续删除此条记录?";
-	this.modalDelRowIds = ''+this.tableData[index].id;
-	this.modalDel = true;// 显示删除界面
+	loadPage:loadPageFn,
+	changePage:changePageFn,
+	
+	addButton:addButtonFn,
+	submitAdd:submitAddFn,
+	
+	updateButton:updateButtonFn,
+	submitUpdate:submitUpdateFn,
+	
+	deleteButton:deleteButtonFn,
+    submitDelete:submitDeleteFn,
+	
+	querySubmit:querySubmitFn,
+	
+	tableCheckboxSelectedData:tableCheckboxSelectedDataFn,
+    
+    rowUpdateButton:rowUpdateButtonFn,
+    rowDeleteButton:rowDeleteButtonFn
+    
 }
 
-
-
+function initializeContentOptions() {
+	return {el: vueContentElementSelector, data: vueContentData, methods: vueContentMethods, beforeCreate: vueContentBeforeCreate, created: vueContentCreated, beforeMount: vueContentBeforeMount, mounted: vueContentMounted, beforeUpdate: vueContentBeforeUpdate, updated: vueContentUpdated, beforeDestroy: vueContentBeforeDestroy, destroyed: vueContentDestroyed};
+}
+//^^^^^^^^^^^^^^^^^^^^^^ 格式 顺序 不动 ^^^^^^^^^^^^^^^^^^^^^//

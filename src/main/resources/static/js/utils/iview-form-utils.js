@@ -19,6 +19,72 @@ var queryFromRowItemNum = 4;//综合查询 每行放控件的数量
 var queryFormItemWidth = 80;//综合查询 控件的宽度 像素
 var querySubmitButtonName = 'querySubmit';//综合查询 提交按钮触发函数名
 
+//添加
+function addButtonFn (){
+	formDataReset(addFormName);
+	currentAction = actions.add;
+	this.modalAdd = true;
+}
+function submitAddFn () {
+	var _self = this;
+	submitFormValidate(currentAction,function(data){
+		toastSuccess('提交成功!');
+		_self.modalAdd=false;
+		formDataReset(getCurrentFormName());
+	});
+}
+
+// 修改
+function updateButtonFn (){
+	var _self = this;
+	if(_self.tableCheckedData.length!=1){
+		toastInfo('请选择1条记录!');
+		return;
+	}
+
+	currentAction = actions.update;
+	this.modalUpdate = true;
+		
+	$.iposty('user/single', {'id':getTableCheckedDataIds(this.tableCheckedData)}, function(data){
+			_self.updateForm = data.obj;
+		});
+}
+
+function submitUpdateFn(){
+	var _self = this;
+	submitFormValidate(currentAction,function(data){
+		toastSuccess('更新成功!');
+		_self.modalUpdate = false;
+		formDataReset(getCurrentFormName());
+	});
+}
+
+// 删除
+function deleteButtonFn (){
+	if(this.tableCheckedData.length==0){
+		toastInfo('至少选中一条记录!');
+		return;
+	}
+	this.modalDelMessage = "即将删除"+this.tableCheckedData.length+"条记录,是否继续删除?";
+	this.modalDelRowIds = getTableCheckedDataIds(this.tableCheckedData);//将要删除的id 赋值给data
+		
+	currentAction = actions.del;
+	this.modalDel = true;
+}
+function submitDeleteFn (){
+	var _self = this;
+	_self.modalDelSubmitLoading = true;
+	submitForm(currentAction,_self.modalDelRowIds,
+		function(data){toastSuccess('删除成功');_self.modalDelSubmitLoading = false;_self.modalDel = false;},
+		function(errorMessage){toastError(errorMessage);_self.modalDelSubmitLoading = false;}
+	);
+}
+
+//查询 
+function querySubmitFn(){
+	this.loadPage();
+}
+
 // 获得当前form
 function getCurrentForm() {
 	return (!currentAction || !vueContentObject) ? null : currentAction.key == actions.add.key ? getVueObject().addForm : getVueObject().updateForm;
@@ -146,4 +212,24 @@ function createTableQueryFrom(queryFormName,queryFormItemName,queryFormItems,que
 	queryForm+='</Row>';
 	queryForm+='</i-form>';
 	return queryForm;
+}
+
+function setQueryFormTemplate(queryFormName,queryFormItemName,queryFormItems,queryFormItemType,queryFormDomId){
+	document.getElementById(queryFormDomId).innerHTML = createTableQueryFrom(queryFormName,queryFormItemName,queryFormItems,queryFormItemType);
+}
+
+function setQueryFormContent(queryFormDataContentValue,queryFormDataContent){
+	if(!queryFormDataContent) queryFormContent = queryFormDataContentValue;
+	queryFormDataContent = queryFormDataContentValue;
+}
+
+function setFormContent(formDataContentValue,formDataContent){
+	if(!formDataContent) addFormContent = updateFormContent = formDataContentValue;
+	formDataContent = formDataContentValue;
+}
+
+function setValidataionContent(validataionContentValue,validataionContent){
+	if(!validataionContent) addFormValidateContent = updateFormValidateContent = validataionContentValue;
+	validataionContent = validataionContentValue;
+	
 }

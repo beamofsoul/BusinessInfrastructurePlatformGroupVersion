@@ -1,4 +1,4 @@
-var tableColumnDatas;
+var tableColumnData;
 var parseValuesOnTableEachRow = function() {};
 
 var pageTotal = 0;
@@ -6,6 +6,25 @@ var pageCurrent = 1;
 var pageSize = 10;
 
 var loadPageableDataUrl;//加载分页业务数据用的URL
+
+//iview table binding checkbox 选中事件，selection：当前所有已选中的数据
+function tableCheckboxSelectedDataFn(selection){
+	this.tableCheckedData = selection;
+}
+// table row 修改按钮
+function rowUpdateButtonFn (index) {
+	var _self = this;
+	$.iposty('user/single', {'id':_self.tableData[index].id}, 
+		function(data){_self.updateForm = data.obj;_self.modalUpdate = true;},
+		function(errorMessage){toastError(errorMessage);}
+	);
+}
+//table row 删除按钮
+function rowDeleteButtonFn (index) {
+	this.modalDelMessage = "是否继续删除此条记录?";
+	this.modalDelRowIds = ''+this.tableData[index].id;
+	this.modalDel = true;// 显示删除界面
+}
 
 // 加载table数据	
 function loadPageFn () {
@@ -97,4 +116,10 @@ function createTable(columnNames,attributeNames,buttonsOnEachRow){
 		}
 	}
 	return tableColumnData;
+}
+
+function setTableColumnData(columnNames,attributeNames,buttonsOnEachRow,columnData){
+	var createTableResult = createTable(columnNames,attributeNames,buttonsOnEachRow);
+	if(!columnData) tableColumnData = createTableResult;
+	columnData = createTableResult;
 }
