@@ -6,19 +6,15 @@
 	<head>
 		<title></title>
 		<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath }/static/iview/iview.css">
-		<style lang="less">
-			/* form 间距 */
-		    /* .ivu-form-item{margin-bottom: 10px;} */
-		    /* 折叠面板内 超出部分显示 */
-			.ivu-collapse-content{overflow:visible;}
-		</style>
+		<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath }/static/iview/iview-custom.css">
+		
 	</head>
 	<body>
 		<div id="contentContainer" width="100%" height="100%" style="margin: 15px;">
 			<!-- 综合查询 form -->
 			<Collapse>
 		        <Panel>
-		            综合查询
+		           	 综合查询
 		            <p slot="content"  id="queryFormDiv"></p>
 		        </Panel>
 		    </Collapse>
@@ -42,7 +38,6 @@
 		        </div>
 		    </div>
 			
-			<%-- <%@ include file="admin_user_add_iview.html"%> --%>
 			<!-- 新增用户 -->
 	    	<Modal
 		    	width="600"
@@ -142,19 +137,16 @@
 		</div>
 
 	
-	<%-- <%@ include file="../include_list_required_iview.html"%>   --%>
-	
-	<script src="${pageContext.request.contextPath }/static/js/utils/format-utils.js"></script>
-	
-	<script src="${pageContext.request.contextPath }/static/js/utils/iview-utils.js"></script>
-	<script src="${pageContext.request.contextPath }/static/js/utils/iview-ajax-utils.js"></script>
-	
- 	<script src="${pageContext.request.contextPath }/static/js/utils/iview-table-utils.js"></script>
-	<script src="${pageContext.request.contextPath }/static/js/utils/iview-form-utils.js"></script>
- 
- 	<script src="${pageContext.request.contextPath }/static/js/utils/iview-init.js"></script>
- 	<script src="${pageContext.request.contextPath }/static/js/business/user-biz-iview.js"></script>
+		<%-- <%@ include file="../include_list_required_iview.html"%>   --%>
+		
+		<script src="${pageContext.request.contextPath }/static/js/utils/format-utils.js"></script>
+		<script src="${pageContext.request.contextPath }/static/js/utils/iview-ajax-utils.js"></script>
+	 	<script src="${pageContext.request.contextPath }/static/js/utils/iview-table-utils.js"></script>
+		<script src="${pageContext.request.contextPath }/static/js/utils/iview-form-utils.js"></script>
+	 	<script src="${pageContext.request.contextPath }/static/js/utils/iview-utils.js"></script>
+	 	
+	 	<script src="${pageContext.request.contextPath }/static/js/business/user-biz-iview.js"></script>
 	
 
-</body>
+	</body>
 </html>
