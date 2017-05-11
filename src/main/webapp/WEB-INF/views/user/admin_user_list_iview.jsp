@@ -29,12 +29,12 @@
 			</div>
 			
 			<!-- 数据表格 -->
-			<i-table border :context="self" :columns="tableColumns" :data="tableData" @on-selection-change="tableCheckboxSelectedData" ></i-table>
+			<i-table border :context="self" :columns="defaultVueBindTableColumnsData" :data="defaultVueBindTableDataData" @on-selection-change="vueBindTableCheckboxSelectMethod($event,'defaultVueTableCheckedData')" ></i-table>
 			
 			<!-- 分页标签 -->
 			<div style="margin: 10px;overflow: hidden">
 		        <div style="float: right;">
-		            <Page show-total :page-size="pageSize" :total="pageTotal" :current="pageCurrent" @on-change="changePage($event)"></Page>
+		            <Page show-total :page-size="defaultVueBindPageSizeData" :total="defaultVueBindPageTotalData" :current="defaultVueBindPageCurrentData" @on-change="vueBindPageOnChangeMethod($event)"></Page>
 		        </div>
 		    </div>
 			

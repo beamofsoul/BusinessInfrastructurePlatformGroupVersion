@@ -3,12 +3,12 @@ if (vueContentObject) getVueObject().$destroy();
 
 // 当前用户能够操作的所有行为
 var actions = {'del': {'key':'del','url':'user/delete'},'add': {'key':'add','url':'user/singleAdd'},'update':{'key':'update','url':'user/singleUpdate'},'copy':{'key':'copy','url':'singleAdd'}};
-//tableContainer中表格显示列的中文名称
-var columnNames = ['','ID','昵称','用户名','密码','邮箱地址','电话号码','状态','注册日期','最后修改日期','操作'];
-//tableContainer中表格每列对应的业务模型实体类的属性名  全选 加 'selection' 项 , 操作 加 'operation' 项。
-var attributeNames = ['selection','id','nickname','username','password','email','phone','status','createDate','modifyDate','operation'];
-//tableContainer中表格每列需要的按钮 
-var buttonsOnEachRow = ['rowUpdateButton#修改','rowDeleteButton#删除'];
+//table column 显示名
+var tableColumnsName = ['','ID','昵称','用户名','密码','邮箱地址','电话号码','状态','注册日期','最后修改日期','操作'];
+//table column 对应data中的属性名   全选 加 'selection' 项 , 操作 加 'operation' 项。
+var tableColumnsKey = ['selection','id','nickname','username','password','email','phone','status','createDate','modifyDate','operation'];
+//table 每行需要的按钮 
+var tableButtonsOnEachRow = ['rowUpdateButton#修改','rowDeleteButton#删除'];
 //综合查询 form
 var queryFormItemName = ['ID','昵称','用户名','密码','邮箱地址','电话号码','状态','注册日期'];
 var queryFormItems = ['id','nickname','username','password','email','phone','status','createDate'];
@@ -17,8 +17,8 @@ var queryFormItemType = ['string','string','string','string','string','string','
 loadPageableDataUrl = 'user/usersByPage';
 
 setVueContentBeforeCreateFunction(function() {this.statusList = [{value: '1',label: '启用'},{value: '0',label: '禁用'}];});
-setVueContentMountedFunction(function () {this.loadPage()});
-setTableColumnData(columnNames,attributeNames,buttonsOnEachRow);
+setVueContentMountedFunction(function () {this.vueTableLoadPageMethod()});
+setVueTableColumnsData(tableColumnsName,tableColumnsKey,tableButtonsOnEachRow);
 setQueryFormTemplate(queryFormName,queryFormItemName,queryFormItems,queryFormItemType,'queryFormDiv');
 setQueryFormContent({id:'',name:'',status: '',createDate: '',username: ''});
 setFormContent({id:-1,username: '',password: '',repassword: '',nickname: '',phone: '',email: '',status: '1'});

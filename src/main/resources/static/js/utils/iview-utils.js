@@ -71,9 +71,9 @@ var vueContentElementSelector = '#contentContainer';
 
 vueContentData = function() {
 	return {
-    	pageTotal: pageTotal,
-		pageCurrent: pageCurrent,
-		pageSize: pageSize,
+//    	pageTotal: pageTotal,
+//		pageCurrent: pageCurrent,
+//		pageSize: pageSize,
 	    	
 		modalAdd: modalAdd,
 		modalUpdate: modalUpdate,
@@ -83,23 +83,28 @@ vueContentData = function() {
 		modalDelMessage: '',
 		modalDelRowIds: '',
 	        	
-	    tableColumns: tableColumnData,
-	    tableData: [],
-	    tableCheckedData: [],
+		
+		defaultVueBindTableColumnsData : defaultVueBindTableColumnsData,
+		defaultVueBindTableDataData :[],
+		defaultVueTableCheckedData: [],
+		defaultVueBindPageTotalData: defaultVueBindPageTotalData,
+		defaultVueBindPageCurrentData: defaultVueBindPageCurrentData,
+		defaultVueBindPageSizeData: defaultVueBindPageSizeData,
             
         addForm: addFormContent,
         addFormValidate: addFormValidateContent,
         updateForm: updateFormContent,
         updateFormValidate: updateFormValidateContent,
-        queryForm: queryFormContent,
+        defaultVueBindFormQueryData: defaultVueBindFormQueryData,
         
     	self: this
     }
 };
 vueContentMethods = {
 		
-	loadPage:loadPageFn,
-	changePage:changePageFn,
+	vueBindTableCheckboxSelectMethod:vueBindTableCheckboxSelectMethod,
+	vueTableLoadPageMethod:vueTableLoadPageMethod,
+	vueBindPageOnChangeMethod:vueBindPageOnChangeMethod,
 	
 	addButton:addButtonFn,
 	submitAdd:submitAddFn,
@@ -112,7 +117,7 @@ vueContentMethods = {
 	
 	querySubmit:querySubmitFn,
 	
-	tableCheckboxSelectedData:tableCheckboxSelectedDataFn,
+	
     
     rowUpdateButton:rowUpdateButtonFn,
     rowDeleteButton:rowDeleteButtonFn

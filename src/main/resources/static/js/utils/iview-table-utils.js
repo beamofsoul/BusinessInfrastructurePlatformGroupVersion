@@ -1,20 +1,14 @@
-var tableColumnData;
-var parseValuesOnTableEachRow = function() {};
-
-var pageTotal = 0;
-var pageCurrent = 1;
-var pageSize = 10;
+var defaultVueBindTableColumnsData;//table 列数据 data
+var defaultVueBindPageTotalData = 0;//记录总数
+var defaultVueBindPageCurrentData = 1;//当前页数
+var defaultVueBindPageSizeData = 4;//每一页显示条数
 
 var loadPageableDataUrl;//加载分页业务数据用的URL
 
-//iview table binding checkbox 选中事件，selection：当前所有已选中的数据
-function tableCheckboxSelectedDataFn(selection){
-	this.tableCheckedData = selection;
-}
 // table row 修改按钮
 function rowUpdateButtonFn (index) {
 	var _self = this;
-	$.iposty('user/single', {'id':_self.tableData[index].id}, 
+	$.iposty('user/single', {'id':_self.defaultVueBindTableDataData[index].id}, 
 		function(data){_self.updateForm = data.obj;_self.modalUpdate = true;},
 		function(errorMessage){toastError(errorMessage);}
 	);
@@ -22,36 +16,11 @@ function rowUpdateButtonFn (index) {
 //table row 删除按钮
 function rowDeleteButtonFn (index) {
 	this.modalDelMessage = "是否继续删除此条记录?";
-	this.modalDelRowIds = ''+this.tableData[index].id;
+	this.modalDelRowIds = ''+this.defaultVueBindTableDataData[index].id;
 	this.modalDel = true;// 显示删除界面
 }
 
-// 加载table数据	
-function loadPageFn () {
-	var _self = this;
-//	var _self = getVueObject();
-	const msg = toastLoading('正在加载中...',0);
-	clearTableCheckedData();
-	$.iposty(loadPageableDataUrl, {page: (_self.pageCurrent-1) , size: _self.pageSize,condition:formatQueryFormData(_self.queryForm)}, 
-			function(data){
-				_self.tableData = formatTableData(data);// 分页数据
-				_self.pageTotal = data.pageableData.totalElements;// 总记录数
-				setTimeout(msg, 120);//销毁加载提示
-			},
-			function(errorMessage){
-				_self.$Message.error(errorMessage);	
-				setTimeout(msg, 120);//销毁加载提示
-			}
-	);
-}
 
-// 翻页
-function changePageFn (pageClick) {
-	if (this.pageCurrent != pageClick) {
-		this.pageCurrent = pageClick;
-	}
-	this.loadPage();
-}
 
 // 取出table选中checkbox的所有记录id
 function getTableCheckedDataIds(tableCheckedData) {
@@ -62,10 +31,7 @@ function getTableCheckedDataIds(tableCheckedData) {
 	return (ids == '' ? ids : ids.substring(0, ids.length - 1));
 }
 
-// 清空当页选中的table中checkbox
-function clearTableCheckedData(){
-	getVueObject().tableCheckedData = [];
-}
+
 
 // 格式化服务端返回的table数据
 function formatTableData(data){
@@ -118,8 +84,90 @@ function createTable(columnNames,attributeNames,buttonsOnEachRow){
 	return tableColumnData;
 }
 
-function setTableColumnData(columnNames,attributeNames,buttonsOnEachRow,columnData){
-	var createTableResult = createTable(columnNames,attributeNames,buttonsOnEachRow);
-	if(!columnData) tableColumnData = createTableResult;
-	columnData = createTableResult;
+
+/**
+ * table 翻页方法
+ * @param clickPageNumber 当前点击页数
+ * @param vueBindPageCurrentDataName 当前页数vue data name
+ * @param vueBindTableDataDataName 数据vue data name 第一个参数null 所有值取默认项
+ * @param vueBindPageTotalDataName 总记录数 vue data name
+ * @param vueBindPageSizeDataName 每页显示数据条数vue data name
+ * @param vueTableCheckedDataName 需要清空的以选择 vue data name
+ * @param vueBindFormQueryDataName 查询form的数据 vue data name
+ * @returns
+ */
+function vueBindPageOnChangeMethod (clickPageNumber,vueBindPageCurrentDataName,vueBindTableDataDataName,vueBindPageTotalDataName,vueBindPageSizeDataName,vueTableCheckedDataName,vueBindFormQueryDataName) {
+	if(!vueBindPageCurrentDataName) vueBindPageCurrentDataName = 'defaultVueBindPageCurrentData';
+	if (this[vueBindPageCurrentDataName] != clickPageNumber) {
+		this[vueBindPageCurrentDataName] = clickPageNumber;
+	}
+	this.vueTableLoadPageMethod(vueBindTableDataDataName,vueBindPageTotalDataName,vueBindPageSizeDataName,vueBindPageCurrentDataName,vueTableCheckedDataName,vueBindFormQueryDataName);
+}
+
+/**
+ * table 加载分页数据
+ * @param vueBindTableDataDataName 数据vue data name 第一个参数null 所有值取默认项
+ * @param vueBindPageTotalDataName 总记录数 vue data name
+ * @param vueBindPageSizeDataName 每页显示数据条数vue data name
+ * @param vueBindPageCurrentDataName 当前页数vue data name
+ * @param vueTableCheckedDataName 需要清空的以选择 vue data name
+ * @param vueBindFormQueryDataName 查询form的数据 vue data name
+ * @returns
+ */
+function vueTableLoadPageMethod (vueBindTableDataDataName,vueBindPageTotalDataName,vueBindPageSizeDataName,vueBindPageCurrentDataName,vueTableCheckedDataName,vueBindFormQueryDataName) {
+	if(!vueBindTableDataDataName){
+		vueBindTableDataDataName = 'defaultVueBindTableDataData';
+		vueBindPageTotalDataName = 'defaultVueBindPageTotalData';
+		vueBindPageSizeDataName = 'defaultVueBindPageSizeData';
+		vueBindPageCurrentDataName = 'defaultVueBindPageCurrentData';
+		vueTableCheckedDataName = 'defaultVueTableCheckedData';
+		vueBindFormQueryDataName = 'defaultVueBindFormQueryData';
+	}
+	
+	var _self = this;
+	const msg = toastLoading('正在加载中...',0);
+	clearVueTableCheckedDataMethod(_self[vueTableCheckedDataName]);//清空选中数据
+	$.iposty(loadPageableDataUrl, {page: (_self[vueBindPageCurrentDataName]-1) , size: _self[vueBindPageSizeDataName],condition:formatQueryFormData(_self[vueBindFormQueryDataName])}, 
+			function(data){
+				_self[vueBindTableDataDataName] = formatTableData(data);// 分页数据
+				_self[vueBindPageTotalDataName] = data.pageableData.totalElements;// 总记录数
+				setTimeout(msg, 120);//销毁加载提示
+			},
+			function(errorMessage){
+				_self.$Message.error(errorMessage);	
+				setTimeout(msg, 120);//销毁加载提示
+			}
+	);
+}
+
+/**
+ * 清空指定 table 以选中的记录 vue data
+ * @param vueTableCheckedData vue data
+ * @returns
+ */
+function clearVueTableCheckedDataMethod(vueTableCheckedData){
+	vueTableCheckedData = [];
+}
+
+/**
+ * table checkbox 选中数据 返回给指定vue data
+ * @param selection 已选项数据 当前所有被选择的数据
+ * @param vueTableCheckedDataName vue 装选中项的data 名字 
+ * @returns
+ */
+function vueBindTableCheckboxSelectMethod(selection,vueTableCheckedDataName){
+	this[vueTableCheckedDataName] = selection;
+}
+/**
+ * 设置TableColumnsData
+ * @param tableColumnsName 列名 
+ * @param tableColumnsKey 列 对应Vue Data 属性名 。全选 加 'selection' 项 , 操作 加 'operation' 项。
+ * @param tableButtonsOnEachRow 每行数据后的按钮
+ * @param vueTableColumnsData 绑定在i-table的Columns的data引用 (有默认值)
+ * @returns
+ */
+function setVueTableColumnsData(tableColumnsName,tableColumnsKey,tableButtonsOnEachRow,vueBindTableColumnsData){
+	var createTableResult = createTable(tableColumnsName,tableColumnsKey,tableButtonsOnEachRow);
+	if(!vueBindTableColumnsData) defaultVueBindTableColumnsData = createTableResult;
+	vueBindTableColumnsData = createTableResult;
 }

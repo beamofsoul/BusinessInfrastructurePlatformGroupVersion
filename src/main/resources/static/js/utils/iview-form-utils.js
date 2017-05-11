@@ -1,12 +1,12 @@
 var addFormContent;
 var updateFormContent;
-var queryFormContent;
+var defaultVueBindFormQueryData;
 var addFormValidateContent;
 var updateFormValidateContent;
 
 var addFormName = 'addForm';
 var updateFormName = 'updateForm';
-var queryFormName = 'queryForm';
+var queryFormName = 'defaultVueBindFormQueryData';
 
 var modalAdd = false;//添加form 对话框 显示状态
 var modalUpdate = false;//修改form 对话框 显示状态
@@ -219,7 +219,7 @@ function setQueryFormTemplate(queryFormName,queryFormItemName,queryFormItems,que
 }
 
 function setQueryFormContent(queryFormDataContentValue,queryFormDataContent){
-	if(!queryFormDataContent) queryFormContent = queryFormDataContentValue;
+	if(!queryFormDataContent) defaultVueBindFormQueryData = queryFormDataContentValue;
 	queryFormDataContent = queryFormDataContentValue;
 }
 
