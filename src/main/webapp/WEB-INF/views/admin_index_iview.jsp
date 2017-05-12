@@ -23,6 +23,7 @@
             </i-col>
         </Row>
     </div>
+    <script src="${pageContext.request.contextPath}/static/js/utils/project-path-utils.js"></script>
 	<script src="${pageContext.request.contextPath}/static/iview/jquery.min.js"></script>
 	<script src="${pageContext.request.contextPath}/static/iview/vue.min.js"></script>
 	<script src="${pageContext.request.contextPath}/static/iview/iview.min.js"></script>

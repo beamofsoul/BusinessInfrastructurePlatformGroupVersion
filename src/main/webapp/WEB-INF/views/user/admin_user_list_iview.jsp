@@ -29,7 +29,7 @@
 			</div>
 			
 			<!-- 数据表格 -->
-			<i-table border :context="self" :columns="defaultVueBindTableColumnsData" :data="defaultVueBindTableDataData" @on-selection-change="vueBindTableCheckboxSelectMethod($event,'defaultVueTableCheckedData')" ></i-table>
+			<i-table border :context="self" :columns="defaultVueBindTableColumnsData" :data="defaultVueBindTableDataData" @on-selection-change="vueBindTableCheckedDataMethod($event,'defaultVueTableCheckedData')" ></i-table>
 			
 			<!-- 分页标签 -->
 			<div style="margin: 10px;overflow: hidden">
@@ -101,27 +101,27 @@
 		      	:styles="{top: '50px'}"
 		        title="修改用户">
 	       	
-			    <i-form ref="updateForm" :model="updateForm" :rules="updateFormValidate" :label-width="80">
+			    <i-form ref="defaultVueBindFormUpdateData" :model="defaultVueBindFormUpdateData" :rules="updateFormValidate" :label-width="80">
 			        <Form-item label="姓名" prop="username">
-			            <i-input v-model="updateForm.username" disabled  placeholder="请输入姓名"></i-input>
+			            <i-input v-model="defaultVueBindFormUpdateData.username" disabled  placeholder="请输入姓名"></i-input>
 			        </Form-item>
 			        <Form-item label="密码" prop="password">
-			            <i-input v-model="updateForm.password"  type="password" placeholder="请输入密码"></i-input>
+			            <i-input v-model="defaultVueBindFormUpdateData.password"  type="password" placeholder="请输入密码"></i-input>
 			        </Form-item>
 			        <Form-item label="确认密码" prop="repassword">
-			            <i-input v-model="updateForm.repassword" type="password" placeholder="请输入确认密码"></i-input>
+			            <i-input v-model="defaultVueBindFormUpdateData.repassword" type="password" placeholder="请输入确认密码"></i-input>
 			        </Form-item>
 			        <Form-item label="昵称" disabled  prop="nickname">
-			            <i-input v-model="updateForm.nickname" placeholder="请输入确认密码"></i-input>
+			            <i-input v-model="defaultVueBindFormUpdateData.nickname" placeholder="请输入确认密码"></i-input>
 			        </Form-item>
 			        <Form-item label="手机号码" prop="phone">
-			        	<i-input v-model="updateForm.phone" placeholder="请输入确认密码"></i-input>
+			        	<i-input v-model="defaultVueBindFormUpdateData.phone" placeholder="请输入确认密码"></i-input>
 			        </Form-item>
 			        <Form-item label="电子邮箱" prop="email">
-			        	<i-input v-model="updateForm.email" placeholder="请输入确认密码"></i-input>
+			        	<i-input v-model="defaultVueBindFormUpdateData.email" placeholder="请输入确认密码"></i-input>
 			        </Form-item>
 			        <Form-item label="可用状态" prop="status">
-			            <Radio-group v-model="updateForm.status" type="button">
+			            <Radio-group v-model="defaultVueBindFormUpdateData.status" type="button">
 					        <Radio label="1"><span>可用</span></Radio>
 					        <Radio label="0"><span>冻结</span></Radio>
 					    </Radio-group>
