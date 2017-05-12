@@ -19,6 +19,7 @@ function setGridScale(left,element) {
 }
 
 function loadContent(name) {
+	initCurrentRequestMappingRootPath(name);//设置当前点击path所属的requestMapping 模块名
 	if (name.indexOf('logout') != -1) $(window).attr('location',name);
 	else $('.layout-content-main').load(name);
 }

@@ -71,9 +71,6 @@ var vueContentElementSelector = '#contentContainer';
 
 vueContentData = function() {
 	return {
-//    	pageTotal: pageTotal,
-//		pageCurrent: pageCurrent,
-//		pageSize: pageSize,
 	    	
 		modalAdd: modalAdd,
 		modalUpdate: modalUpdate,
@@ -82,7 +79,6 @@ vueContentData = function() {
 		modalDelSubmitLoading: modalDelSubmitLoading,
 		modalDelMessage: '',
 		modalDelRowIds: '',
-	        	
 		
 		defaultVueBindTableColumnsData : defaultVueBindTableColumnsData,
 		defaultVueBindTableDataData :[],
@@ -93,7 +89,7 @@ vueContentData = function() {
             
         addForm: addFormContent,
         addFormValidate: addFormValidateContent,
-        updateForm: updateFormContent,
+        defaultVueBindFormUpdateData: updateFormContent,
         updateFormValidate: updateFormValidateContent,
         defaultVueBindFormQueryData: defaultVueBindFormQueryData,
         
@@ -101,10 +97,14 @@ vueContentData = function() {
     }
 };
 vueContentMethods = {
+	
 		
-	vueBindTableCheckboxSelectMethod:vueBindTableCheckboxSelectMethod,
+	vueBindTableCheckedDataMethod:vueBindTableCheckedDataMethod,
 	vueTableLoadPageMethod:vueTableLoadPageMethod,
 	vueBindPageOnChangeMethod:vueBindPageOnChangeMethod,
+	
+	defaultVueBindButtonUpdateMethod:defaultVueBindButtonUpdateMethod,
+	defaultVueBindButtonDeleteMethod:defaultVueBindButtonDeleteMethod,
 	
 	addButton:addButtonFn,
 	submitAdd:submitAddFn,
@@ -115,12 +115,11 @@ vueContentMethods = {
 	deleteButton:deleteButtonFn,
     submitDelete:submitDeleteFn,
 	
-	querySubmit:querySubmitFn,
+	querySubmit:querySubmitFn
 	
 	
     
-    rowUpdateButton:rowUpdateButtonFn,
-    rowDeleteButton:rowDeleteButtonFn
+   
     
 }
 

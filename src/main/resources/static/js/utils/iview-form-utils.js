@@ -5,7 +5,7 @@ var addFormValidateContent;
 var updateFormValidateContent;
 
 var addFormName = 'addForm';
-var updateFormName = 'updateForm';
+var updateFormName = 'defaultVueBindFormUpdateData';
 var queryFormName = 'defaultVueBindFormQueryData';
 
 var modalAdd = false;//添加form 对话框 显示状态
@@ -37,7 +37,7 @@ function submitAddFn () {
 // 修改
 function updateButtonFn (){
 	var _self = this;
-	if(_self.tableCheckedData.length!=1){
+	if(_self.defaultVueTableCheckedData.length!=1){
 		toastInfo('请选择1条记录!');
 		return;
 	}
@@ -45,8 +45,8 @@ function updateButtonFn (){
 	currentAction = actions.update;
 	this.modalUpdate = true;
 		
-	$.iposty('user/single', {'id':getTableCheckedDataIds(this.tableCheckedData)}, function(data){
-			_self.updateForm = data.obj;
+	$.iposty('single', {'id':getVueTableCheckedDataIds(this.defaultVueTableCheckedData)}, function(data){
+		_self['defaultVueBindFormUpdateData'] = data.obj;
 		});
 }
 
@@ -61,12 +61,12 @@ function submitUpdateFn(){
 
 // 删除
 function deleteButtonFn (){
-	if(this.tableCheckedData.length==0){
+	if(this.defaultVueTableCheckedData.length==0){
 		toastInfo('至少选中一条记录!');
 		return;
 	}
-	this.modalDelMessage = "即将删除"+this.tableCheckedData.length+"条记录,是否继续删除?";
-	this.modalDelRowIds = getTableCheckedDataIds(this.tableCheckedData);//将要删除的id 赋值给data
+	this.modalDelMessage = "即将删除"+this.defaultVueTableCheckedData.length+"条记录,是否继续删除?";
+	this.modalDelRowIds = getVueTableCheckedDataIds(this.defaultVueTableCheckedData);//将要删除的id 赋值给data
 		
 	currentAction = actions.del;
 	this.modalDel = true;
@@ -87,7 +87,7 @@ function querySubmitFn(){
 
 // 获得当前form
 function getCurrentForm() {
-	return (!currentAction || !vueContentObject) ? null : currentAction.key == actions.add.key ? getVueObject().addForm : getVueObject().updateForm;
+	return (!currentAction || !vueContentObject) ? null : currentAction.key == actions.add.key ? getVueObject().addForm : getVueObject()['defaultVueBindFormUpdateData'];
 }
 
 // 获得当前form name
@@ -142,6 +142,7 @@ function validateFunction (rule,value,callback) {
 
 // 提交表单
 function submitForm(currentAction,data, callback,errorCallback) {
+	
 	// 包装请求后 回调函数.data 请求成功后 后台返回的值
 	var successCallback = function(data){
 		fresh4NewData(data,function(){callback();});

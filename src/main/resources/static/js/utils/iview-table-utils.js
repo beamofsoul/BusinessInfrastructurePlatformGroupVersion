@@ -2,38 +2,73 @@ var defaultVueBindTableColumnsData;//table 列数据 data
 var defaultVueBindPageTotalData = 0;//记录总数
 var defaultVueBindPageCurrentData = 1;//当前页数
 var defaultVueBindPageSizeData = 4;//每一页显示条数
+var defaultVueBindButtonUpdateMethodCallback;//table 行 修改按钮 成功回调
+var defaultVueBindButtonDeleteMethodCallback;//table 行 修改按钮 成功回调
 
 var loadPageableDataUrl;//加载分页业务数据用的URL
 
-// table row 修改按钮
-function rowUpdateButtonFn (index) {
+//table 行 修改按钮 成功回调 需要可重写
+defaultVueBindButtonUpdateMethodCallback = function (data,index,vueBindTableDataDataName){
+	getVueObject()['defaultVueBindFormUpdateData'] = data.obj;
+	getVueObject()['modalUpdate'] = true;
+	currentAction = actions.update;
+}
+
+//table 行 删除按钮  需要可重写
+defaultVueBindButtonDeleteMethodCallback = function (index,vueBindTableDataDataName){
+	getVueObject().modalDelMessage = "是否继续删除此条记录?";
+	getVueObject().modalDelRowIds = ''+getVueObject()[vueBindTableDataDataName][index].id;
+	getVueObject().modalDel = true;// 显示删除界面
+	currentAction = actions.del;
+}
+
+/**
+ * table row 修改按钮
+ * @param index 索引
+ * @param vueBindTableDataDataName index所在data的名称
+ * @returns
+ */
+function defaultVueBindButtonUpdateMethod(index,vueBindTableDataDataName) {
 	var _self = this;
-	$.iposty('user/single', {'id':_self.defaultVueBindTableDataData[index].id}, 
-		function(data){_self.updateForm = data.obj;_self.modalUpdate = true;},
-		function(errorMessage){toastError(errorMessage);}
+	
+	$.iposty('single', {'id':_self[vueBindTableDataDataName][index].id}, 
+		function(data){
+			defaultVueBindButtonUpdateMethodCallback(data,index,vueBindTableDataDataName);
+		},
+		function(errorMessage){
+			toastError(errorMessage);
+		}
 	);
 }
-//table row 删除按钮
-function rowDeleteButtonFn (index) {
-	this.modalDelMessage = "是否继续删除此条记录?";
-	this.modalDelRowIds = ''+this.defaultVueBindTableDataData[index].id;
-	this.modalDel = true;// 显示删除界面
+
+/**
+ * table row 删除按钮
+ * @param index 索引
+ * @param vueBindTableDataDataName index所在data的名称
+ * @returns
+ */
+function defaultVueBindButtonDeleteMethod (index,vueBindTableDataDataName) {
+	defaultVueBindButtonDeleteMethodCallback(index,vueBindTableDataDataName);
 }
 
-
-
-// 取出table选中checkbox的所有记录id
-function getTableCheckedDataIds(tableCheckedData) {
+/**
+ * 获取table check data ids
+ * @param vueTableCheckedData vue data object
+ * @returns
+ */
+function getVueTableCheckedDataIds(vueTableCheckedData) {
 	var ids = '';
-	for (var i in tableCheckedData){
-		ids+=tableCheckedData[i].id+",";
+	for (var i in vueTableCheckedData){
+		ids+=vueTableCheckedData[i].id+",";
 	}
 	return (ids == '' ? ids : ids.substring(0, ids.length - 1));
 }
 
-
-
-// 格式化服务端返回的table数据
+/**
+ * 格式化服务端返回的table数据
+ * @param data 服务端返回的数据
+ * @returns
+ */
 function formatTableData(data){
 	var value = [];
 	for(var i=0;i<data.pageableData.numberOfElements;i++) {
@@ -42,46 +77,71 @@ function formatTableData(data){
 	return value;
 }
 
-// 对table中的数据进行更新
-function fresh4NewData(data,callback) {
+/**
+ * 刷新vue table 数据
+ * @param data 后台返回变更的数据
+ * @param callback table 查询数据成功后的回调函数
+ * @param vueBindTableDataDataName 数据vue data name 参数null 以下所有取默认data
+ * @param vueBindPageTotalDataName 总记录数 vue data name
+ * @param vueBindPageSizeDataName 每页显示数据条数vue data name
+ * @param vueBindPageCurrentDataName 当前页数vue data name
+ * @param vueTableCheckedDataName 需要清空的以选择 vue data name
+ * @param vueBindFormQueryDataName 查询form的数据 vue data name
+ * @returns
+ */
+function fresh4NewData(data,callback,vueBindTableDataDataName,vueBindPageTotalDataName,vueBindPageSizeDataName,vueBindPageCurrentDataName,vueTableCheckedDataName,vueBindFormQueryDataName) {
 	// 暂时先请求后台 来重新加载数据
-	getVueObject().loadPage();
+	getVueObject().vueTableLoadPageMethod(vueBindTableDataDataName,vueBindPageTotalDataName,vueBindPageSizeDataName,vueBindPageCurrentDataName,vueTableCheckedDataName,vueBindFormQueryDataName);
 	callback();
 }
 
-// 创建 iview table 行 button
-function createTableRowButtons(buttonsOnEachRow,row, column, index){
+/**
+ * 创建 table column data render 内按钮
+ * @param tableButtonsOnEachRow 要创建的按钮 格式（点击按钮触发vue方法名#按钮名称）
+ * @param row 点击按钮的vue data 行数据
+ * @param column 点击按钮的vue data 列数据
+ * @param index 点击按钮的vue data index
+ * @param vueBindTableDataDataName 绑定在i-table的Data的data名称 (有默认值)
+ * @returns
+ */
+function createVueTableColumnsDataButtons(tableButtonsOnEachRow,row, column, index,vueBindTableDataDataName){
 	var btnStr = '';
-	for (var btnIndex in buttonsOnEachRow){
-		var btn = buttonsOnEachRow[btnIndex];
+	for (var btnIndex in tableButtonsOnEachRow){
+		var btn = tableButtonsOnEachRow[btnIndex];
 		var btnAttributes = btn.split('#');
 		btn = btnAttributes[0];
 		var btnName = btnAttributes[1] ? btnAttributes[1] : btnAttributes[0];
-		btnStr +='<i-button type="text" size="small" @click="'+btn+'('+index+')">'+btnName+'</i-button>';
+		btnStr +='<i-button type="text" size="small" @click="'+btn+'('+index+',\''+vueBindTableDataDataName+'\')">'+btnName+'</i-button>';
 	}
 	return btnStr;
 }
 
-//创建 iview table 
-function createTable(columnNames,attributeNames,buttonsOnEachRow){
-	if(columnNames.length != attributeNames.length) return;
-	var tableColumnData = [];
-	for (var i=0;i<attributeNames.length;i++) { 
-//		//测试 日期
-//		if(i==7){tableColumnData[i]={title:columnNames[i],key:attributeNames[i],render (row) {return formatDate(row.createDate,true);}};continue;}
-		if('operation'==attributeNames[i]){
-			tableColumnData[i]={title:columnNames[i],key:attributeNames[i],
+
+/**
+ * 创建table columns data
+ * @param tableColumnsName 列名
+ * @param tableColumnsKey data 属性名
+ * @param tableButtonsOnEachRow data 重写操作列 按钮
+ * @returns
+ */
+function createVueTableColumnsData(tableColumnsName,tableColumnsKey,tableButtonsOnEachRow,vueBindTableColumnsDataName){
+	var tableColumnsData = [];
+	for (var i=0;i<tableColumnsKey.length;i++) { 
+		var oneKey = tableColumnsKey[i];
+		var oneName = tableColumnsName[i];
+		if('operation'==oneKey){
+			tableColumnsData[i]={title:oneName,key:oneKey,
 				render (row, column, index) {
-					return createTableRowButtons(buttonsOnEachRow,row, column, index);
+					return createVueTableColumnsDataButtons(tableButtonsOnEachRow,row, column, index,vueBindTableColumnsDataName);
 				}
 			};
-		}else if('selection'==attributeNames[i]){
-			tableColumnData[i] = {type: 'selection',width: 60,align: 'center'};
+		}else if('selection'==oneKey){
+			tableColumnsData[i] = {type: 'selection',width: 60,align: 'center'};
 		}else{
-			tableColumnData[i]={title:columnNames[i],key:attributeNames[i]};
+			tableColumnsData[i] = {title:oneName,key:oneKey};
 		}
 	}
-	return tableColumnData;
+	return tableColumnsData;
 }
 
 
@@ -155,7 +215,7 @@ function clearVueTableCheckedDataMethod(vueTableCheckedData){
  * @param vueTableCheckedDataName vue 装选中项的data 名字 
  * @returns
  */
-function vueBindTableCheckboxSelectMethod(selection,vueTableCheckedDataName){
+function vueBindTableCheckedDataMethod(selection,vueTableCheckedDataName){
 	this[vueTableCheckedDataName] = selection;
 }
 /**
@@ -164,10 +224,12 @@ function vueBindTableCheckboxSelectMethod(selection,vueTableCheckedDataName){
  * @param tableColumnsKey 列 对应Vue Data 属性名 。全选 加 'selection' 项 , 操作 加 'operation' 项。
  * @param tableButtonsOnEachRow 每行数据后的按钮
  * @param vueTableColumnsData 绑定在i-table的Columns的data引用 (有默认值)
+ * @param vueBindTableDataDataName 绑定在i-table的Data的data名称 (有默认值)
  * @returns
  */
-function setVueTableColumnsData(tableColumnsName,tableColumnsKey,tableButtonsOnEachRow,vueBindTableColumnsData){
-	var createTableResult = createTable(tableColumnsName,tableColumnsKey,tableButtonsOnEachRow);
-	if(!vueBindTableColumnsData) defaultVueBindTableColumnsData = createTableResult;
-	vueBindTableColumnsData = createTableResult;
+function setVueTableColumnsData(tableColumnsName,tableColumnsKey,tableButtonsOnEachRow,vueBindTableColumnsData,vueBindTableDataDataName){
+	if(!vueBindTableDataDataName) vueBindTableDataDataName = 'defaultVueBindTableDataData';
+	var vueTableColumnsDataResult = createVueTableColumnsData(tableColumnsName,tableColumnsKey,tableButtonsOnEachRow,vueBindTableDataDataName);
+	if(!vueBindTableColumnsData) defaultVueBindTableColumnsData = vueTableColumnsDataResult;
+	vueBindTableColumnsData = vueTableColumnsDataResult;
 }
