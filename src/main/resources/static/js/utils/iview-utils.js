@@ -86,12 +86,14 @@ vueContentData = function() {
 		defaultVueBindPageTotalData: defaultVueBindPageTotalData,
 		defaultVueBindPageCurrentData: defaultVueBindPageCurrentData,
 		defaultVueBindPageSizeData: defaultVueBindPageSizeData,
-            
-        addForm: addFormContent,
-        addFormValidate: addFormValidateContent,
-        defaultVueBindFormUpdateData: updateFormContent,
-        updateFormValidate: updateFormValidateContent,
-        defaultVueBindFormQueryData: defaultVueBindFormQueryData,
+        
+		defaultVueBindFormAddData :defaultVueBindFormAddData,
+		defaultVueBindFormUpdateData: defaultVueBindFormUpdateData,
+		defaultVueBindFormQueryData: defaultVueBindFormQueryData,
+		
+        defaultVueBindFormRulesAddData:defaultVueBindFormRulesAddData,
+        defaultVueBindFormRulesUpdateData:defaultVueBindFormRulesUpdateData,
+        
         
     	self: this
     }
@@ -102,24 +104,20 @@ vueContentMethods = {
 	vueBindTableCheckedDataMethod:vueBindTableCheckedDataMethod,
 	vueTableLoadPageMethod:vueTableLoadPageMethod,
 	vueBindPageOnChangeMethod:vueBindPageOnChangeMethod,
+	vueBindButtonClickQueryMethod:vueBindButtonClickQueryMethod,
 	
 	defaultVueBindButtonUpdateMethod:defaultVueBindButtonUpdateMethod,
 	defaultVueBindButtonDeleteMethod:defaultVueBindButtonDeleteMethod,
 	
-	addButton:addButtonFn,
+	defaultVueBindButtonHeadAddMethod:defaultVueBindButtonHeadAddMethod,
 	submitAdd:submitAddFn,
 	
-	updateButton:updateButtonFn,
+	defaultVueBindButtonHeadUpdateMethod:defaultVueBindButtonHeadUpdateMethod,
 	submitUpdate:submitUpdateFn,
 	
-	deleteButton:deleteButtonFn,
-    submitDelete:submitDeleteFn,
+	defaultVueBindButtonHeadDeleteMethod:defaultVueBindButtonHeadDeleteMethod,
+    submitDelete:submitDeleteFn
 	
-	querySubmit:querySubmitFn
-	
-	
-    
-   
     
 }
 
