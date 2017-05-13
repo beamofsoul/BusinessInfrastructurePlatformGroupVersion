@@ -1,24 +1,28 @@
-var defaultVueBindTableColumnsData;//table 列数据 data
+var defaultVueBindTableColumnsData={};//table 列数据 data
 var defaultVueBindPageTotalData = 0;//记录总数
 var defaultVueBindPageCurrentData = 1;//当前页数
 var defaultVueBindPageSizeData = 4;//每一页显示条数
-var defaultVueBindButtonUpdateMethodCallback;//table 行 修改按钮 成功回调
-var defaultVueBindButtonDeleteMethodCallback;//table 行 修改按钮 成功回调
+
+var vueBindButtonUpdateMethodCallback;//table 行 修改按钮 成功回调
+var vueBindButtonDeleteMethodCallback;//table 行 修改按钮 成功回调
+
+var defaultVueBindTableDataDataName = 'defaultVueBindTableDataData';
 
 var loadPageableDataUrl;//加载分页业务数据用的URL
 
 //table 行 修改按钮 成功回调 需要可重写
-defaultVueBindButtonUpdateMethodCallback = function (data,index,vueBindTableDataDataName){
+vueBindButtonUpdateMethodCallback = function (data,index,vueBindTableDataDataName){
+	
 	getVueObject()['defaultVueBindFormUpdateData'] = data.obj;
-	getVueObject()['modalUpdate'] = true;
+	getVueObject()['defaultVueBindModalUpdateData'] = true;
 	currentAction = actions.update;
 }
 
 //table 行 删除按钮  需要可重写
-defaultVueBindButtonDeleteMethodCallback = function (index,vueBindTableDataDataName){
-	getVueObject().modalDelMessage = "是否继续删除此条记录?";
-	getVueObject().modalDelRowIds = ''+getVueObject()[vueBindTableDataDataName][index].id;
-	getVueObject().modalDel = true;// 显示删除界面
+vueBindButtonDeleteMethodCallback = function (index,vueBindTableDataDataName){
+	getVueObject().defaultVueBindModalDelMessageData = "是否继续删除此条记录?";
+	getVueObject().defaultVueTableDelRowIdsData = ''+getVueObject()[vueBindTableDataDataName][index].id;
+	getVueObject().defaultVueBindModalDelData = true;// 显示删除界面
 	currentAction = actions.del;
 }
 
@@ -28,12 +32,12 @@ defaultVueBindButtonDeleteMethodCallback = function (index,vueBindTableDataDataN
  * @param vueBindTableDataDataName index所在data的名称
  * @returns
  */
-function defaultVueBindButtonUpdateMethod(index,vueBindTableDataDataName) {
+function vueBindButtonUpdateMethod(index,vueBindTableDataDataName) {
 	var _self = this;
 	
 	$.iposty('single', {'id':_self[vueBindTableDataDataName][index].id}, 
 		function(data){
-			defaultVueBindButtonUpdateMethodCallback(data,index,vueBindTableDataDataName);
+			vueBindButtonUpdateMethodCallback(data,index,vueBindTableDataDataName);
 		},
 		function(errorMessage){
 			toastError(errorMessage);
@@ -47,8 +51,8 @@ function defaultVueBindButtonUpdateMethod(index,vueBindTableDataDataName) {
  * @param vueBindTableDataDataName index所在data的名称
  * @returns
  */
-function defaultVueBindButtonDeleteMethod (index,vueBindTableDataDataName) {
-	defaultVueBindButtonDeleteMethodCallback(index,vueBindTableDataDataName);
+function vueBindButtonDeleteMethod (index,vueBindTableDataDataName) {
+	vueBindButtonDeleteMethodCallback(index,vueBindTableDataDataName);
 }
 
 /**
@@ -176,7 +180,7 @@ function vueBindPageOnChangeMethod (clickPageNumber,vueBindPageCurrentDataName,v
  */
 function vueTableLoadPageMethod (vueBindTableDataDataName,vueBindPageTotalDataName,vueBindPageSizeDataName,vueBindPageCurrentDataName,vueTableCheckedDataName,vueBindFormQueryDataName) {
 	if(!vueBindTableDataDataName){
-		vueBindTableDataDataName = 'defaultVueBindTableDataData';
+		vueBindTableDataDataName = defaultVueBindTableDataDataName;
 		vueBindPageTotalDataName = 'defaultVueBindPageTotalData';
 		vueBindPageSizeDataName = 'defaultVueBindPageSizeData';
 		vueBindPageCurrentDataName = 'defaultVueBindPageCurrentData';
@@ -228,7 +232,7 @@ function vueBindTableCheckedDataMethod(selection,vueTableCheckedDataName){
  * @returns
  */
 function setVueTableColumnsData(tableColumnsName,tableColumnsKey,tableButtonsOnEachRow,vueBindTableColumnsData,vueBindTableDataDataName){
-	if(!vueBindTableDataDataName) vueBindTableDataDataName = 'defaultVueBindTableDataData';
+	if(!vueBindTableDataDataName) vueBindTableDataDataName = defaultVueBindTableDataDataName;
 	var vueTableColumnsDataResult = createVueTableColumnsData(tableColumnsName,tableColumnsKey,tableButtonsOnEachRow,vueBindTableDataDataName);
 	if(!vueBindTableColumnsData) defaultVueBindTableColumnsData = vueTableColumnsDataResult;
 	vueBindTableColumnsData = vueTableColumnsDataResult;

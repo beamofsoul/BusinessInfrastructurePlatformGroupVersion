@@ -22,9 +22,9 @@
 			<!-- 按钮 -->
 		 	<div style="margin-bottom: 10px;margin-top: 20px;">
 		 		<Button-group>
-			        <i-button type="ghost"  @click="defaultVueBindButtonHeadAddMethod()"  ><Icon type="ios-download-outline"></Icon> 新增</i-button>
-			    	<i-button type="ghost"  @click="defaultVueBindButtonHeadUpdateMethod()"><Icon type="ios-download-outline"></Icon> 修改</i-button>
-			    	<i-button type="ghost"  @click="defaultVueBindButtonHeadDeleteMethod()"><Icon type="ios-download-outline"></Icon> 删除</i-button>
+			        <i-button type="ghost"  @click="vueBindButtonHeadAddMethod()"><Icon type="ios-download-outline"></Icon> 新增</i-button>
+			    	<i-button type="ghost"  @click="vueBindButtonHeadUpdateMethod()"><Icon type="ios-download-outline"></Icon> 修改</i-button>
+			    	<i-button type="ghost"  @click="vueBindButtonHeadDeleteMethod()"><Icon type="ios-download-outline"></Icon> 删除</i-button>
 			    </Button-group>
 			</div>
 			
@@ -41,7 +41,7 @@
 			<!-- 新增用户 -->
 	    	<Modal
 		    	width="600"
-		        v-model="modalAdd"
+		        v-model="defaultVueBindModalAddData"
 		      	:styles="{top: '80px'}"
 		        title="增加用户">
 	       	
@@ -73,31 +73,31 @@
 			    </i-form>
 		    	<!-- 自定义 modal 底部按钮 -->
 			    <div slot="footer">
-			     	<i-button type="primary"  @click="submitAdd()">提交</i-button>
+			     	<i-button type="primary"  @click="vueBindButtonHeadAddSubmitMethod()">提交</i-button>
 		            <i-button type="primary"  @click="resetVueFormData('defaultVueBindFormAddData')"  style="margin-left: 8px">重置</i-button>
-		            <i-button type="primary"  @click="modalAdd = false"  style="margin-left: 8px">取消</i-button>
+		            <i-button type="primary"  @click="defaultVueBindModalAddData = false"  style="margin-left: 8px">取消</i-button>
 		        </div>
 	    	</Modal>
 	    	
 	    	<!-- 删除 -->
-		    <Modal v-model="modalDel" width="360">
+		    <Modal v-model="defaultVueBindModalDelData" width="360">
 		        <p slot="header" style="color:#f60;text-align:center">
 		            <Icon type="information-circled"></Icon>
 		            <span>删除确认</span>
 		        </p>
 		        <div style="text-align:center">
-		            <p>{{modalDelMessage}} </p>
+		            <p>{{defaultVueBindModalDelMessageData}} </p>
 		        </div>
 		        <div slot="footer">
-		        	<i-button type="error"  :loading="modalDelSubmitLoading" @click="submitDelete">删除</i-button>
-		        	<i-button type="primary"  @click="modalDel = false">取消</i-button>
+		        	<i-button type="error"  :loading="defaultVueBindModalDelLoadingData" @click="vueBindButtonHeadDeleteSubmitMethod">删除</i-button>
+		        	<i-button type="primary"  @click="defaultVueBindModalDelData = false">取消</i-button>
 		        </div>
 		    </Modal>
 		    
 		    <!-- 修改 -->
 	    	<Modal
 		    	width="600"
-		        v-model="modalUpdate"
+		        v-model="defaultVueBindModalUpdateData"
 		      	:styles="{top: '50px'}"
 		        title="修改用户">
 	       	
@@ -129,8 +129,8 @@
 			    </i-form>
 		    	<!-- 自定义 modal 底部按钮 -->
 			    <div slot="footer">
-			     	<i-button type="primary"  @click="submitUpdate()">提交</i-button>
-		            <i-button type="primary"  @click="modalUpdate = false"  style="margin-left: 8px">取消</i-button>
+			     	<i-button type="primary"  @click="vueBindButtonHeadUpdateSubmitMethod()">提交</i-button>
+		            <i-button type="primary"  @click="defaultVueBindModalUpdateData = false"  style="margin-left: 8px">取消</i-button>
 		        </div>
 	    	</Modal>
 	    	

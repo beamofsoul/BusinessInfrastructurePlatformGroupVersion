@@ -7,12 +7,16 @@ var defaultVueBindFormRulesUpdateData;
 
 var defaultVueBindFormAddDataName = 'defaultVueBindFormAddData';
 var defaultVueBindFormUpdateDataName = 'defaultVueBindFormUpdateData';
+//这条要删除
 var vueBindFormQueryDataName = 'defaultVueBindFormQueryData';
+var defaultVueBindFormQueryDataName = 'defaultVueBindFormQueryData';
 
-var modalAdd = false;//添加form 对话框 显示状态
-var modalUpdate = false;//修改form 对话框 显示状态
-var modalDelSubmitLoading = false;//删除form 对话框 按钮状态
-var modalDel = false;//删除 对话框 显示状态
+var defaultVueBindModalAddData = false;//添加form 对话框 显示状态
+var defaultVueBindModalUpdateData = false;//修改form 对话框 显示状态
+var defaultVueBindModalDelData = false;//删除 对话框 显示状态
+
+var defaultVueBindModalDelLoadingData = false;//删除form 对话框 按钮状态
+var defaultVueBindModalDelMessageData = '';
 
 var currentAction = null;// 当前用户操作的行为 - add、update、delete 等
 
@@ -20,6 +24,7 @@ var queryFromRowItemNum = 4;//综合查询 每行放控件的数量
 var queryFormItemWidth = 80;//综合查询 控件的宽度 像素
 var querySubmitButtonName = 'vueBindButtonClickQueryMethod';//综合查询 提交按钮触发函数名
 
+var defaultQueryFormDomId = 'queryFormDomId';//默认的 query form 页面 dom id
 /**
  * 添加
  * @param vueBindFormAddDataName
@@ -27,20 +32,24 @@ var querySubmitButtonName = 'vueBindButtonClickQueryMethod';//综合查询 提�
  * @param vueBindModalDataName
  * @returns
  */
-function defaultVueBindButtonHeadAddMethod (vueBindFormAddDataName,actionsType,vueBindModalDataName){
+function vueBindButtonHeadAddMethod (vueBindFormAddDataName,actionsType,vueBindModalDataName){
 	if(!vueBindFormAddDataName) vueBindFormAddDataName = defaultVueBindFormAddDataName;
 	resetVueFormData(vueBindFormAddDataName);
 	if(!actionsType) currentAction = actions.add;
 	else currentAction = actions[actionsType];
-	if(!vueBindModalDataName) this.modalAdd = true;
+	if(!vueBindModalDataName) this.defaultVueBindModalAddData = true;
 	else this[vueBindModalDataName] = true;
 }
-function submitAddFn () {
+function vueBindButtonHeadAddSubmitMethod (vueBindFormAddDataName,vueBindModalDataName) {
 	var _self = this;
+	console.log(123123)
 	submitFormValidate(currentAction,function(data){
 		toastSuccess('提交成功!');
-		_self.modalAdd=false;
-		resetVueFormData(getCurrentVueFormDataName());
+		if(!vueBindModalDataName) _self.defaultVueBindModalAddData = false;
+		else _self[vueBindModalDataName] = false;
+		
+		if(!vueBindFormAddDataName) vueBindFormAddDataName = defaultVueBindFormAddDataName;
+		resetVueFormData(vueBindFormAddDataName);
 	});
 }
 
@@ -52,7 +61,7 @@ function submitAddFn () {
  * @param vueBindModalDataName
  * @returns
  */
-function defaultVueBindButtonHeadUpdateMethod(vueTableCheckedDataName,vueBindFormUpdateDataName,actionsType,vueBindModalDataName){
+function vueBindButtonHeadUpdateMethod(vueTableCheckedDataName,vueBindFormUpdateDataName,actionsType,vueBindModalDataName){
 	var _self = this;
 	var vueTableCheckedDataLength = 0;
 	if(!vueTableCheckedDataName) vueTableCheckedDataName = 'defaultVueTableCheckedData';
@@ -63,7 +72,7 @@ function defaultVueBindButtonHeadUpdateMethod(vueTableCheckedDataName,vueBindFor
 	}
 	if(!actionsType) currentAction = actions.update;
 	else currentAction = actions[actionsType];
-	if(!vueBindModalDataName) this.modalUpdate = true;
+	if(!vueBindModalDataName) this.defaultVueBindModalUpdateData = true;
 	else this[vueBindModalDataName] = true;
 	if(!vueBindFormUpdateDataName) vueBindFormUpdateDataName = defaultVueBindFormUpdateDataName;
 	resetVueFormData(vueBindFormUpdateDataName);
@@ -74,12 +83,14 @@ function defaultVueBindButtonHeadUpdateMethod(vueTableCheckedDataName,vueBindFor
 		});
 }
 
-function submitUpdateFn(){
+function vueBindButtonHeadUpdateSubmitMethod(vueTableCheckedDataName,vueBindFormUpdateDataName,vueBindModalDataName){
 	var _self = this;
 	submitFormValidate(currentAction,function(data){
 		toastSuccess('更新成功!');
-		_self.modalUpdate = false;
-		resetVueFormData(getCurrentVueFormDataName());
+		if(!vueBindModalDataName) _self.defaultVueBindModalUpdateData = false;
+		else _self[vueBindModalDataName] = false;
+		if(!vueBindFormUpdateDataName) vueBindFormUpdateDataName = defaultVueBindFormUpdateDataName;
+		resetVueFormData(vueBindFormUpdateDataName);
 	});
 }
 
@@ -90,7 +101,7 @@ function submitUpdateFn(){
  * @param vueBindModalDataName
  * @returns
  */
-function defaultVueBindButtonHeadDeleteMethod(vueTableCheckedDataName,actionsType,vueBindModalDataName){
+function vueBindButtonHeadDeleteMethod(vueTableCheckedDataName,actionsType,vueBindModalDataName){
 	var _self = this;
 	var vueTableCheckedDataLength = 0;
 	if(!vueTableCheckedDataName) vueTableCheckedDataName = 'defaultVueTableCheckedData';
@@ -99,19 +110,26 @@ function defaultVueBindButtonHeadDeleteMethod(vueTableCheckedDataName,actionsTyp
 		toastInfo('至少选中1条记录!');
 		return;
 	}
-	this.modalDelMessage = "即将删除"+vueTableCheckedDataLength+"条记录,是否继续删除?";
-	this.modalDelRowIds = getVueTableCheckedDataIds(_self[vueTableCheckedDataName]);//将要删除的id 赋值给data
+	this.defaultVueBindModalDelMessageData = "即将删除"+vueTableCheckedDataLength+"条记录,是否继续删除?";
+	this.defaultVueTableDelRowIdsData = getVueTableCheckedDataIds(_self[vueTableCheckedDataName]);//将要删除的id 赋值给data
 	if(!actionsType) currentAction = actions.del;
 	else currentAction = actions[actionsType];	
-	if(!vueBindModalDataName) this.modalDel = true;
+	if(!vueBindModalDataName) this.defaultVueBindModalDelData = true;
 	else this[vueBindModalDataName] = true;
 }
-function submitDeleteFn (){
+function vueBindButtonHeadDeleteSubmitMethod (vueTableCheckedDataName,vueBindModalDataName){
 	var _self = this;
 	_self.modalDelSubmitLoading = true;
-	submitForm(currentAction,_self.modalDelRowIds,
-		function(data){toastSuccess('删除成功');_self.modalDelSubmitLoading = false;_self.modalDel = false;},
-		function(errorMessage){toastError(errorMessage);_self.modalDelSubmitLoading = false;}
+	submitForm(currentAction,_self.defaultVueTableDelRowIdsData,
+		function(data){
+			toastSuccess('删除成功');
+			_self.defaultVueBindModalDelLoadingData = false;
+			_self.defaultVueBindModalDelData = false;
+		},
+		function(errorMessage){
+			toastError(errorMessage);
+			_self.defaultVueBindModalDelLoadingData = false;
+		}
 	);
 }
 
@@ -134,7 +152,7 @@ function vueBindButtonClickQueryMethod(vueBindTableDataDataName,vueBindPageTotal
  * @returns
  */ 
 function getCurrentVueFormData() {
-	return (!currentAction || !vueContentObject) ? null : currentAction.key == actions.add.key ? getVueObject().addForm : getVueObject()['defaultVueBindFormUpdateData'];
+	return (!currentAction || !vueContentObject) ? null : currentAction.key == actions.add.key ? getVueObject()['defaultVueBindFormAddData'] : getVueObject()['defaultVueBindFormUpdateData'];
 }
 
 /**
@@ -176,6 +194,7 @@ function formValidateCallback(callback,isSuccess,errorMessage) {
  */
 function vueFormRulesCommonValidate (rule,value,callback) {
 	var form = getCurrentVueFormData();
+	console.log(form);
 	
 	if(rule.equal){
 		var equalValue = form[rule.equal];
@@ -333,7 +352,25 @@ function setVueFormTemplate(vueBindFormQueryDataName,queryFormItemName,queryForm
  */
 function setVueBindFormQueryData(vueBindFormQueryDataValue,vueBindFormQueryData){
 	if(!vueBindFormQueryData) defaultVueBindFormQueryData = vueBindFormQueryDataValue;
-	vueBindFormQueryData = vueBindFormQueryDataValue;
+	else vueBindFormQueryData = vueBindFormQueryDataValue;
+}
+
+/**
+ * 生成 query from data
+ * @param vueBindFormQueryDataValue
+ * @param vueBindFormQueryData
+ * @returns
+ */
+function createVueBindFormQueryData(queryFormItemKey){
+	var queryformdata = {};
+	for(var i in queryFormItemKey){
+		queryformdata[queryFormItemKey[i]] = '';
+	}
+//	console.log(queryformdata);
+//	console.log(JSON.stringify(queryformdata))
+	return queryformdata;
+	
+
 }
 
 /**
@@ -344,7 +381,7 @@ function setVueBindFormQueryData(vueBindFormQueryDataValue,vueBindFormQueryData)
  */
 function setVueBindFormModelData(vueBindFormModelDataValue,vueBindFormModelData){
 	if(!vueBindFormModelData) defaultVueBindFormAddData = defaultVueBindFormUpdateData = vueBindFormModelDataValue;
-	vueBindFormModelData = vueBindFormModelDataValue;
+	else vueBindFormModelData = vueBindFormModelDataValue;//可修改为vueBindFormModelData数组赋值
 }
 
 
@@ -355,7 +392,11 @@ function setVueBindFormModelData(vueBindFormModelDataValue,vueBindFormModelData)
  * @returns
  */
 function setVueBindFormRulesData(vueBindFormRulesDataValue,vueBindFormRulesData){
-	if(!vueBindFormRulesData) defaultVueBindFormRulesAddData = defaultVueBindFormRulesUpdateData = vueBindFormRulesDataValue;
-	vueBindFormRulesData = vueBindFormRulesDataValue;
+	if(!vueBindFormRulesData) {
+		defaultVueBindFormRulesAddData = defaultVueBindFormRulesUpdateData = vueBindFormRulesDataValue;
+	} else {
+		// 此处 可修改为 vueBindFormRulesData数组 循环赋值
+		vueBindFormRulesData = vueBindFormRulesDataValue;
+	}
 	
 }
