@@ -14,7 +14,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.alibaba.fastjson.JSONObject;
 import com.beamofsoul.bip.entity.User;
@@ -34,7 +36,7 @@ public class UserController extends BaseAbstractController {
 	@PreAuthorize("authenticated and hasPermission('user','user:list')")
 	@RequestMapping(value = "/adminList")
 	public String adminList() {
-		return "/user/admin_user_list_iview";
+		return "/user/admin_user_list";
 	}
 	
 	@PreAuthorize("authenticated and hasPermission('user','user:add')")
@@ -110,5 +112,12 @@ public class UserController extends BaseAbstractController {
 	@ResponseBody
 	public JSONObject changePasswordWithCode(@RequestBody Map<String, String> map, HttpSession session) {
 		return newInstance("changed", userService.changePassword(map.get("code"), map.get("password")));
+	}
+	
+	@RequestMapping(value = "/updatePhoto", method = RequestMethod.POST)
+	public void updatePhoto(@RequestParam("file") MultipartFile[] files) {
+		MultipartFile file = files[0];
+		System.out.println(file.getOriginalFilename());
+		System.out.println(file.getSize());
 	}
 }

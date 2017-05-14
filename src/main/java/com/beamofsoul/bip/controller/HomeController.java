@@ -27,18 +27,18 @@ public class HomeController {
 	private UserService userService;
 
 	@RequestMapping(value = { "/", "/index" }, method = RequestMethod.GET)
-	public ModelAndView index(HttpServletRequest request, HttpServletResponse response, HttpSession session) {
-		return new ModelAndView("index");
+	public String index(HttpServletRequest request, HttpServletResponse response, Map<String, Object> map) {
+		return "index";
 	}
 	
 	@RequestMapping(value = "/admin/adminIndex", method = RequestMethod.GET)
 	public ModelAndView adminIndex(HttpServletRequest request, HttpServletResponse response, HttpSession session) {
-		return new ModelAndView("admin_index_iview");
+		return new ModelAndView("admin_index");
 	}
 	
 	@RequestMapping(value = "/admin/adminIndexContent", method = RequestMethod.GET)
 	public ModelAndView adminIndexContent() {
-		return new ModelAndView("/backend/admin_backend_index_content_iview");
+		return new ModelAndView("/fragment/admin_content");
 	}
 
 	@RequestMapping(value = "/login", method = RequestMethod.GET)
