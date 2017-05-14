@@ -14,7 +14,7 @@ spring:
     type: com.alibaba.druid.pool.DruidDataSource
     url: jdbc:mysql://localhost:3306/bip?characterEncoding=utf-8&useSSL=true
     username: root
-    password:
+    password: 
     driverClassName: com.mysql.jdbc.Driver
     # 初始化大小，最小，最大
     initialSize: 5
@@ -60,10 +60,16 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQL5Dialect
+  thymeleaf:
+    prefix: classpath:/templates/
+    suffix: .html
+    mode: HTML5
+    content-type: text/html; charset=utf-8
+    cache: false
   mvc:
-    view:
-      prefix: /WEB-INF/views/
-      suffix: .jsp
+#    view:
+#      prefix: /WEB-INF/views/
+#      suffix: .jsp
     static-path-pattern: /static/**
   cache:
     cache-names: es
