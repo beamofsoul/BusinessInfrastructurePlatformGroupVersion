@@ -138,6 +138,7 @@
 
 	
 		<%-- <%@ include file="../include_list_required_iview.html"%>   --%>
+		<script src="${pageContext.request.contextPath }/static/HOTKEYS/js/hotkeys.min.js"></script>
 		
 		<script src="${pageContext.request.contextPath }/static/js/utils/format-utils.js"></script>
 		<script src="${pageContext.request.contextPath }/static/js/utils/iview-ajax-utils.js"></script>
