@@ -18,6 +18,9 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.security.web.authentication.rememberme.TokenBasedRememberMeServices;
 import org.springframework.security.web.header.HeaderWriter;
 import org.springframework.security.web.header.HeaderWriterFilter;
+import org.thymeleaf.extras.springsecurity4.dialect.SpringSecurityDialect;
+import org.thymeleaf.spring4.SpringTemplateEngine;
+import org.thymeleaf.templateresolver.TemplateResolver;
 
 import com.google.common.collect.Lists;
 
@@ -37,6 +40,17 @@ public class CustomWebSecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	@Autowired
 	private AuthenticationSuccessHandler customAuthenticationSuccessHandler;
+	
+	@Autowired
+	private TemplateResolver tmeplateResolver;
+	
+	@Bean
+	public SpringTemplateEngine templateEngine() {
+		SpringTemplateEngine templateEngine = new SpringTemplateEngine();
+		templateEngine.setTemplateResolver(tmeplateResolver);
+		templateEngine.addDialect(new SpringSecurityDialect());
+		return templateEngine;
+	}
 	
 	@Bean
 	public TokenBasedRememberMeServices customRememberMeServices() {
