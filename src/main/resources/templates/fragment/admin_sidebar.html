@@ -1,0 +1,79 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"  
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+	<body>
+		<i-menu active-name="1" theme="dark" width="auto" v-on:on-select="contentClick">
+			<div class="layout-logo-left"></div>
+		
+			<div style="vertical-align: middle;">
+				<table style="margin-left: auto;margin-right: auto;">
+					<tr>
+						<td rowspan="2"><img th:src="@{/static/image/default_avatar.png}" style="border-radius: 100px;height: 50px;width: 50px;" /></td>
+						<td class="layout-text">&nbsp;&nbsp;<span style="color: white;">firstname lastname</span></td>
+					</tr>
+					<tr>
+						<td class="layout-text">&nbsp;&nbsp;<i class="ivu-icon ivu-icon-record" style="color: #3C763D;font-size: x-small;"><span style="color: white;"> Online</span></i></td>
+					</tr>
+				</table>
+			</div>
+		
+			<Menu-item th:name="@{adminIndexContent}">
+				<Icon type="home" :size="iconSize"></Icon>
+				<span class="layout-text">首页</span>
+			</Menu-item>
+			
+			<Menu-item sec:authorize="hasPermission('user','user:list')" th:name="@{user/adminList}">
+				<Icon type="person-stalker" :size="iconSize"></Icon>
+				<span class="layout-text">用户管理</span>
+			</Menu-item>
+			
+			<Submenu sec:authorize="hasPermission('role','role:list') or hasPermission('role','role:roleuser')" name="1">
+				<template slot="title">
+					<Icon type="tshirt" :size="iconSize"></Icon>
+					<span class="layout-text">角色管理</span>
+				</template>
+				<Menu-item sec:authorize="hasPermission('role','role:list')" th:name="@{role/adminList}">
+					<Icon type="ios-list"></Icon>
+					<span class="layout-text">角色列表</span>
+				</Menu-item>
+				<Menu-item sec:authorize="hasPermission('role','role:roleuser')" th:name="@{role/adminListWithUsers}">
+					<Icon type="ios-body"></Icon>
+					<span class="layout-text">用户角色</span>
+				</Menu-item>
+			</Submenu>
+		       
+			<Menu-item sec:authorize="hasPermission('permission','permission:list')" th:name="@{permission/adminList}">
+				<Icon type="locked" :size="iconSize"></Icon>
+				<span class="layout-text">权限管理</span>
+			</Menu-item>
+			
+			<Menu-item sec:authorize="hasPermission('organization','organization:list')" th:name="@{organization/adminList}">
+				<Icon type="earth" :size="iconSize"></Icon>
+				<span class="layout-text">组织结构管理</span>
+			</Menu-item>
+			
+			<Submenu sec:authorize="hasPermission('system','system:list')" name="2">
+				<template slot="title">
+					<Icon type="settings" :size="iconSize"></Icon>
+					<span class="layout-text">系统设置</span>
+				</template>
+					<Menu-item access="hasPermission('actionMonitor','actionMonitor:list')" th:name="@{actionMonitor/adminList}">
+						<Icon type="monitor"></Icon>
+						<span class="layout-text">行为监控</span>
+					</Menu-item>
+				<!-- 
+				<Menu-item name="${pageContext.request.contextPath}/admin/systemLog">
+					<Icon type="ios-keypad"></Icon>
+					<span class="layout-text">系统日志</span>
+				</Menu-item>
+				 -->
+			</Submenu>
+			
+			<Menu-item th:name="@{/logout}">
+				<Icon type="log-out" :size="iconSize"></Icon>
+				<span class="layout-text">注销</span>
+			</Menu-item>
+		</i-menu>
+	</body>
+</html>

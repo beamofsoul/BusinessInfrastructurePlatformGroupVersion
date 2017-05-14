@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+	<head>
+		<title>Triall 登录</title>
+	</head>
+	<body>
+		<form method="post" action="login">
+			<label for="username">用户名:</label> <input type="text" name="username" id="username" value="tom" /> <br />
+			<label for="password">密码:</label> <input type="password" name="password" id="password" value="123456" /> <br /> 
+			<input id="remember-me" name="remember-me" type="checkbox" value="true" />自动登录 <br /> <br />
+			<div>
+				<input type="submit" name="" value="登 录" />
+				<button type="button" id="forgotPassword">忘记密码 ^_^?</button>
+			</div>
+			
+			<div th:with="message=${session.SPRING_SECURITY_LAST_EXCEPTION != null} ? ${session.SPRING_SECURITY_LAST_EXCEPTION.message}"></div>
+			<span th:text="${message != null} ? ${message} : (${expired != null} ? ${expired})">没有任何提示信息...</span>
+		</form>
+	</body>
+</html>

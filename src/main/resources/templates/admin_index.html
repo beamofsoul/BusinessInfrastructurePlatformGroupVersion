@@ -1,0 +1,35 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<link rel="stylesheet" type="text/css" th:href="@{/static/iview/iview.css}" />
+		<link rel="stylesheet" type="text/css" th:href="@{/static/css/business/admin-index.css}" />
+	</head>
+	<body>
+	    <div class="layout" :class="{'layout-hide-text': spanLeft &lt; 3}">
+	        <Row type="flex">
+	        	<i-col :span="spanLeft" class="layout-menu-left">
+	        		<div th:replace="fragment/admin_sidebar"></div>
+	            </i-col>
+	            <i-col :span="spanRight">
+	            	<div th:replace="fragment/admin_header"></div>
+	            	<div th:replace="fragment/admin_breadcrumb"></div>
+	            	<div class="layout-content">
+						<div class="layout-content-main"></div>
+					</div>
+					<div th:replace="fragment/admin_footer"></div>
+	            </i-col>
+	        </Row>
+	    </div>
+
+		<script th:src="@{/static/HOTKEYS/js/hotkeys.min.js}"></script>
+		<script th:src="@{/static/js/utils/hotkeys-utils.js}"></script>
+
+ 		<script th:src="@{/static/js/utils/project-path-utils.js}"></script>
+		<script th:src="@{/static/iview/jquery.min.js}"></script>
+		<script th:src="@{/static/iview/vue.min.js}"></script>
+		<script th:src="@{/static/iview/iview.min.js}"></script>
+		<script th:src="@{/static/js/business/admin-index.js}"></script>
+		
+		<script th:src="@{/static/js/utils/ajax-utils.js}"></script>
+	</body>
+</html>

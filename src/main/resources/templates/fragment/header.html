@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:th="http://www.thymeleaf.org"  
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">  
+<body>
+	<div>
+		<div sec:authorize="isAuthenticated()">
+			<span sec:authentication="name">Justin</span>
+			
+			<div sec:authorize="hasAnyRole('ADMIN','MANAGER')">
+				<a th:href="@{admin/adminIndex}"> 后台管理</a>
+      		</div>
+			<a th:href="@{logout}"> 退出</a>
+		</div>
+
+		<div th:if="${session.CURRENT_USER==null}">
+			<button onclick="window.location.href='login'"> 登录</button>
+		</div>
+	</div>
+</body>
+</html>
