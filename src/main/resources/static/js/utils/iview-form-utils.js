@@ -23,7 +23,7 @@ var currentAction = null;// 当前用户操作的行为 - add、update、delete 
 var queryFromRowItemNum = 4;//综合查询 每行放控件的数量
 var queryFormItemWidth = 80;//综合查询 控件的宽度 像素
 var querySubmitButtonName = 'vueBindButtonClickQueryMethod';//综合查询 提交按钮触发函数名
-
+var defaultVueBindCollapseQueryFormData='-1';
 var defaultQueryFormDomId = 'queryFormDomId';//默认的 query form 页面 dom id
 /**
  * 添加
