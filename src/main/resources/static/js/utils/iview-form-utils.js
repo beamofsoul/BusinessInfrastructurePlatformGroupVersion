@@ -304,15 +304,18 @@ function createTableQueryFrom(vueBindFormQueryDataName,queryFormItemName,queryFo
 				queryForm+='<Form-item label="'+queryFormItemName[itemIndex]+'：" prop="'+queryFormItemKey[itemIndex]+'">';
 				queryForm+='<i-input v-model="'+vueBindFormQueryDataName+'.'+queryFormItemKey[itemIndex]+'" ></i-input>';
 				queryForm+='</Form-item>';
-			}else if(itemType=='number'){
+			}else if(itemType.indexOf('number')>=0){
 				queryForm+='<Form-item label="'+queryFormItemName[itemIndex]+'：" prop="'+queryFormItemKey[itemIndex]+'">';
 				var rangeStr = '';
-				if(itemTypeArray[1]){
-					rangeStr+=' :max="'+itemTypeArray[1]+'"';
+				if(itemType.indexOf('<number')>=0){
+					var minIndex = itemType.indexOf('<number');
+					rangeStr+=' :min="'+itemType.substring(0,minIndex)+'"';
 				}
-				if(itemTypeArray[2]){
-					rangeStr+=' :min="'+itemTypeArray[2]+'"';
+				if(itemType.indexOf('number<')>=0){
+					var maxIndex = itemType.lastIndexOf('<');
+					rangeStr+=' :max="'+itemType.substring(maxIndex+1)+'"';
 				}
+				
 				queryForm+='<Input-number '+rangeStr+' v-model="'+vueBindFormQueryDataName+'.'+queryFormItemKey[itemIndex]+'"></Input-number>';
 				queryForm+='</Form-item>';
 				
