@@ -153,7 +153,7 @@ beforeNewVueDefaultFunction = function (){
 		//根据用户定义的数据 设置table columns data
 		setVueTableColumnsData(tableColumnsName,tableColumnsKey,tableButtonsOnEachRow);
 		//设置 vue 生命周期 Mounted 时 调用table读取页数据
-//		setVueContentMountedFunction(function () {this.vueTableLoadPageMethod()});
+		setVueContentMountedFunction(function () {this.vueTableLoadPageMethod()});
 	}
 	
 	if(defaultVueBindFormQueryDataName&&queryFormItemName&&queryFormItemKey&&queryFormItemType&&defaultQueryFormDomId){
