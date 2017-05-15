@@ -63,7 +63,7 @@
 			</div>
 			
 			<!-- 数据表格 -->
-			<i-table border="true" :context="self" :columns="defaultVueBindTableColumnsData" :data="defaultVueBindTableDataData" v-on:on-selection-change="vueBindTableCheckedDataMethod($event,'defaultVueTableCheckedData')" ></i-table>
+			<i-table border="true" :context="self" :columns="defaultVueBindTableColumnsData" :data="defaultVueBindTableDataData" v-on:on-sort-change="vueBindTableSortMethod" v-on:on-selection-change="vueBindTableCheckedDataMethod($event,'defaultVueTableCheckedData')" ></i-table>
 			
 			<!-- 分页标签 -->
 			<div style="margin: 10px;overflow: hidden">

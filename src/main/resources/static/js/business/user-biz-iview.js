@@ -9,7 +9,7 @@ loadPageableDataUrl = 'usersByPage';
 //table column 显示名
 var tableColumnsName = ['','ID','昵称','用户名','密码','邮箱地址','电话号码','状态','注册日期','最后修改日期','操作'];
 //table column 对应data中的属性名   全选 加 'selection' 项 , 操作 加 'operation' 项。
-var tableColumnsKey = ['selection','id','nickname','username','password','email','phone','status','createDate','modifyDate','operation'];
+var tableColumnsKey = ['selection','id#sortable','nickname','username#sortable','password','email','phone','status','createDate','modifyDate','operation'];
 //table 每行需要的按钮 
 var tableButtonsOnEachRow = ['vueBindButtonUpdateMethod#修改','vueBindButtonDeleteMethod#删除'];
 //格式化table行数据格式
@@ -96,6 +96,15 @@ vueContentMethods.handleBeforeUpload = function() {
         });
     }
     return check;
+}
+//排序方法
+vueContentMethods.vueBindTableSortMethod= function(a,b,c,d,e) {
+	this.vueTableLoadPageMethod();
+    console.log(a)
+    console.log(b)
+    console.log(e)
+    console.log(d)
+    console.log(e)
 }
 
 //////////////////////////////new vue 前自定义方法 ////////////////////////////////

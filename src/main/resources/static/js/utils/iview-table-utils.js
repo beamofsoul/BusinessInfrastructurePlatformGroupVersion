@@ -131,7 +131,12 @@ function createVueTableColumnsDataButtons(tableButtonsOnEachRow,row, column, ind
 function createVueTableColumnsData(tableColumnsName,tableColumnsKey,tableButtonsOnEachRow,vueBindTableColumnsDataName){
 	var tableColumnsData = [];
 	for (var i=0;i<tableColumnsKey.length;i++) { 
-		var oneKey = tableColumnsKey[i];
+		var oneKeyArray = tableColumnsKey[i].split('#');
+		var oneKey = oneKeyArray[0];
+		var oneKeySortable = false;
+		if(oneKeyArray.length>1){
+			if(oneKeyArray[1]=='sortable') oneKeySortable = true;
+		}
 		var oneName = tableColumnsName[i];
 		if('operation'==oneKey){
 			tableColumnsData[i]={title:oneName,key:oneKey,
@@ -142,7 +147,10 @@ function createVueTableColumnsData(tableColumnsName,tableColumnsKey,tableButtons
 		}else if('selection'==oneKey){
 			tableColumnsData[i] = {type: 'selection',width: 60,align: 'center'};
 		}else{
-			tableColumnsData[i] = {title:oneName,key:oneKey};
+			if(oneKeySortable)
+			tableColumnsData[i] = {title:oneName,key:oneKey,sortable:'custom'};
+			else
+				tableColumnsData[i] = {title:oneName,key:oneKey};
 		}
 	}
 	return tableColumnsData;
