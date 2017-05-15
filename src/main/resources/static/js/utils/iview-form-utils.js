@@ -42,7 +42,6 @@ function vueBindButtonHeadAddMethod (vueBindFormAddDataName,actionsType,vueBindM
 }
 function vueBindButtonHeadAddSubmitMethod (vueBindFormAddDataName,vueBindModalDataName) {
 	var _self = this;
-	console.log(123123)
 	submitFormValidate(currentAction,function(data){
 		toastSuccess('提交成功!');
 		if(!vueBindModalDataName) _self.defaultVueBindModalAddData = false;
@@ -194,7 +193,6 @@ function formValidateCallback(callback,isSuccess,errorMessage) {
  */
 function vueFormRulesCommonValidate (rule,value,callback) {
 	var form = getCurrentVueFormData();
-	console.log(form);
 	
 	if(rule.equal){
 		var equalValue = form[rule.equal];
@@ -285,12 +283,6 @@ function formatQueryFormData(vueBindFormQueryData){
  * 
  */
 function createTableQueryFrom(vueBindFormQueryDataName,queryFormItemName,queryFormItemKey,queryFormItemType){
-	
-	console.log(vueBindFormQueryDataName)
-	console.log(queryFormItemName)
-	console.log(queryFormItemKey)
-	console.log(queryFormItemType)
-	
 	var icolSpan = 24/queryFromRowItemNum-1;//24栅格
 	var totalRow = parseInt(queryFormItemKey.length/queryFromRowItemNum);
 	if(queryFormItemKey.length%queryFromRowItemNum!=0) totalRow ++;
@@ -299,15 +291,10 @@ function createTableQueryFrom(vueBindFormQueryDataName,queryFormItemName,queryFo
 	var queryForm = '<i-form ref="'+vueBindFormQueryDataName+'" :model="'+vueBindFormQueryDataName+'"  :show-message="false" label-position="left" :label-width="'+queryFormItemWidth+'" >';
 	//行
 	for(var rowIndex = 0;rowIndex<totalRow;rowIndex++){
-		console.log('row index '+rowIndex);
-		console.log('row index totalRow '+totalRow);
 		queryForm+='<Row type="flex" justify="space-between" >';
 		//项
 		for(var rowItemIndex = 0;rowItemIndex<queryFromRowItemNum;rowItemIndex++){
-			console.log(itemIndex);
-		
 			if(itemIndex == queryFormItemKey.length) break;
-			
 			queryForm+='<i-col span="'+icolSpan+'">';
 			
 			var itemTypeArray = queryFormItemType[itemIndex].split('#');
@@ -379,11 +366,7 @@ function createVueBindFormQueryData(queryFormItemKey){
 	for(var i in queryFormItemKey){
 		queryformdata[queryFormItemKey[i]] = '';
 	}
-//	console.log(queryformdata);
-//	console.log(JSON.stringify(queryformdata))
 	return queryformdata;
-	
-
 }
 
 /**
@@ -411,5 +394,4 @@ function setVueBindFormRulesData(vueBindFormRulesDataValue,vueBindFormRulesData)
 		// 此处 可修改为 vueBindFormRulesData数组 循环赋值
 		vueBindFormRulesData = vueBindFormRulesDataValue;
 	}
-	
 }
