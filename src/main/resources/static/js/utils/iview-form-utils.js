@@ -285,18 +285,31 @@ function formatQueryFormData(vueBindFormQueryData){
  * 
  */
 function createTableQueryFrom(vueBindFormQueryDataName,queryFormItemName,queryFormItemKey,queryFormItemType){
+	
+	console.log(vueBindFormQueryDataName)
+	console.log(queryFormItemName)
+	console.log(queryFormItemKey)
+	console.log(queryFormItemType)
+	
 	var icolSpan = 24/queryFromRowItemNum-1;//24栅格
-	var totalRow = queryFormItemKey.length/queryFromRowItemNum;
+	var totalRow = parseInt(queryFormItemKey.length/queryFromRowItemNum);
 	if(queryFormItemKey.length%queryFromRowItemNum!=0) totalRow ++;
 	
 	var itemIndex = 0;
 	var queryForm = '<i-form ref="'+vueBindFormQueryDataName+'" :model="'+vueBindFormQueryDataName+'"  :show-message="false" label-position="left" :label-width="'+queryFormItemWidth+'" >';
 	//行
 	for(var rowIndex = 0;rowIndex<totalRow;rowIndex++){
+		console.log('row index '+rowIndex);
+		console.log('row index totalRow '+totalRow);
 		queryForm+='<Row type="flex" justify="space-between" >';
 		//项
 		for(var rowItemIndex = 0;rowItemIndex<queryFromRowItemNum;rowItemIndex++){
+			console.log(itemIndex);
+		
+			if(itemIndex == queryFormItemKey.length) break;
+			
 			queryForm+='<i-col span="'+icolSpan+'">';
+			
 			var itemTypeArray = queryFormItemType[itemIndex].split('#');
 			var itemType = itemTypeArray[0];
 			
