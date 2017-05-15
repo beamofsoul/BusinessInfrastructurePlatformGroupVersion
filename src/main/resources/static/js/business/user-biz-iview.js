@@ -33,7 +33,6 @@ var queryFormItemName = ['ID','昵称','用户名','密码','邮箱地址','电�
 var queryFormItemKey = ['id','nickname','username','password','email','phone','status','createDate','number'];
 var queryFormItemType = ['string','string','string','string','string','string','select#statusDataSelect','date','10<number<20'];
 
-
 //form 验证信息 
 setVueBindFormRulesData({
 	'username': [{trigger: 'blur',type: 'string', required: true, pattern: /^[a-zA-Z\d]\w{4,11}[a-zA-Z\d]$/, message: '用户名称必须为长度6至12位之间以字母、特殊字符(·)或数字字符组成的字符串!'},{validator: this.vueFormRulesCommonValidate, trigger: 'blur',unique:'checkUsernameUnique',message: '用户名已被占用'}],
@@ -42,14 +41,10 @@ setVueBindFormRulesData({
     'nickname': [{trigger: 'blur',type: 'string', required: true, pattern: /^[a-zA-Z0-9·\u4e00-\u9fa5]{2,12}$/, message: '昵称必须为长度2至12位之间以字母、特殊字符(·)、汉字或数组字符组成的字符串!'},{validator: this.vueFormRulesCommonValidate, trigger: 'blur',unique:'checkNicknameUnique',message: '昵称已被占用'}]
 });
 
-//new Vue 生命周期 ,此处可定义 vue data obj
-setVueContentBeforeCreateFunction(function() {
-});
-
-/////////////////////////// 设置data
-vueContentCreated = function(){
+////////////////////////////// 在vue生命周期 created 自定义 data ////////////////////////////////
+setVueContentCreatedFunction(function(){
 	this.statusDataSelect = [{value: '1',label: '启用'},{value: '0',label: '禁用'}];
-	this.customVueData.defaultList= [
+	this.defaultList= [
 	    {
 	        'name': 'a42bdcc1178e62b4694c830f028db5c0',
 	        'url': 'https://o5wwk8baw.qnssl.com/a42bdcc1178e62b4694c830f028db5c0/avatar'
@@ -60,19 +55,18 @@ vueContentCreated = function(){
 	    }
 	];
 	this.customVueData.imgName = '';
-	this.customVueData.visible = false;
+	this.customVueData.imgvisible = false;
 	this.customVueData.uploadList = [];
-	
-};
-
-setVueContentMountedFunction(function () {this.vueTableLoadPageMethod();
-	this.customVueData.uploadList = this.$refs.upload.fileList;
 });
 
-//////////////////////////////自定义 vue data methods
+
+////////////////////////////// 自定义 vue  methods ////////////////////////////////
 vueContentMethods.handleView = function(name) {
+	console.log(123123123)
+	console.log(this.customVueData.imgvisible);
 	this.customVueData.imgName = name;
-	this.customVueData.visible = true;
+	this.customVueData.imgvisible = true;
+	console.log(this.customVueData.imgvisible);
 }
 vueContentMethods.handleRemove = function(file) {
     // 从 upload 实例删除数据
@@ -106,22 +100,8 @@ vueContentMethods.handleBeforeUpload = function() {
     return check;
 }
 
+//////////////////////////////new vue 前自定义方法 ////////////////////////////////
+beforeNewVueFunction = function(){setVueContentMountedFunction(function () {this.vueTableLoadPageMethod();this.customVueData.uploadList = this.$refs.upload.fileList;});}
+
 var vueContentObject = new Vue(initializeContentOptions());
 
-/** 初始化vueContentObject之后 可自定义操作  **/
-$(document).ready(function(){
-	//伸出与收缩queryForm
-	hotkey('space+q', function() {getVueRefObject('defaultVueBindCollapseQueryFormData').value = String(parseInt(getVueRefObject('defaultVueBindCollapseQueryFormData').value) * -1)});
-	//弹出与关闭addForm
-	hotkey('space+a', function() {if(!vueContentObject.defaultVueBindModalAddData) vueContentObject.vueBindButtonHeadAddMethod(); else vueContentObject.defaultVueBindModalAddData = false});
-	//回归页面顶部
-	hotkey('space+b', function() {$('.ivu-back-top').click()});
-	//数据表格上一页
-	hotkey('space+n', function() {$('.ivu-page-prev').click()});
-	//数据表格下一页
-	hotkey('space+m', function() {$('.ivu-page-next').click()});
-	//数据表格第一页
-	hotkey('space+,', function() {vueContentObject.defaultVueBindPageCurrentData = 1;vueContentObject.vueBindPageOnChangeMethod(1)});
-	//数据表格最后一页
-	hotkey('space+.', function() {var pageFinal = Math.ceil(vueContentObject.defaultVueBindPageTotalData / vueContentObject.defaultVueBindPageSizeData);vueContentObject.defaultVueBindPageCurrentData = pageFinal;vueContentObject.vueBindPageOnChangeMethod(pageFinal)});
-});

@@ -1,9 +1,14 @@
+/**
+ * 获取 vue object
+ * @param refName
+ * @returns
+ */
 function getVueObject() {
 	return vueContentObject;
 }
  
 /**
- * 获取指定vue ref name 对象
+ * 获取指定 vue ref name 对象
  * @param refName
  * @returns
  */
@@ -12,7 +17,7 @@ function getVueRefObject(refName) {
 }
 
 /**
- * vue 生命周期 new Vue后 第一个方法
+ * vue 生命周期 
  * @param beforeCreateFunction
  * @returns
  */
@@ -20,12 +25,20 @@ function setVueContentBeforeCreateFunction (beforeCreateFunction){
 	vueContentBeforeCreate = beforeCreateFunction;
 }
 
-//
+function setVueContentCreatedFunction (createdFunction){
+	vueContentCreated = createdFunction;
+}
 function setVueContentMountedFunction (mountedFunction){
 	vueContentMounted = mountedFunction;
 }
 
-
+/**
+ * 全局显示吐司消息
+ * @param content 内容
+ * @param duration 指定时间后关闭
+ * @param onClose callback
+ * @returns
+ */
 function toastError(content, duration, onClose){
 	toast(content, 'error', duration, onClose);
 }
@@ -61,10 +74,13 @@ function toast(content, type, duration, onClose){
 		getVueObject().$Message.info(content, duration, onClose);
 	}
 }
-//##########################################################//
-//new Vue() 之前 方法
+
+//////////////////////////////////////////////////////////////////
+// new Vue() 之前  默认方法 加载默认的控件用
+var beforeNewVueDefaultFunction = function(){};
+// new Vue() 之前  自定义方法 可覆盖默认方法中的方法
 var beforeNewVueFunction = function(){};
-// new Vue() 之后 生命周期方法
+// vue 生命周期 beforeCreate（创建前）,created（创建后）,beforeMount(载入前),mounted（载入后）,beforeUpdate（更新前）,updated（更新后）,beforeDestroy（销毁前）,destroyed（销毁后）
 var vueContentBeforeCreate = function(){};
 var vueContentCreated = function(){};
 var vueContentBeforeMount = function(){};
@@ -131,17 +147,13 @@ vueContentMethods = {
 
 }
 
-beforeNewVueFunction = function (){
+beforeNewVueDefaultFunction = function (){
 	
 	if(tableColumnsName&&tableColumnsKey) {
 		//根据用户定义的数据 设置table columns data
 		setVueTableColumnsData(tableColumnsName,tableColumnsKey,tableButtonsOnEachRow);
-		
 		//设置 vue 生命周期 Mounted 时 调用table读取页数据
 //		setVueContentMountedFunction(function () {this.vueTableLoadPageMethod()});
-//		console.log('此处先注释 在biz 文件中调用')
-//		setVueContentMountedFunction(function () {this.vueTableLoadPageMethod();this.uploadList = this.$refs.upload.fileList;});
-		
 	}
 	
 	if(defaultVueBindFormQueryDataName&&queryFormItemName&&queryFormItemKey&&queryFormItemType&&defaultQueryFormDomId){
@@ -155,6 +167,7 @@ beforeNewVueFunction = function (){
 
 // new Vue() 构造参数
 function initializeContentOptions() {
-	if(beforeNewVueFunction) beforeNewVueFunction();
+	if(beforeNewVueDefaultFunction) beforeNewVueDefaultFunction();//new vue 前 默认的方法
+	if(beforeNewVueFunction) beforeNewVueFunction();//new vue 前 自定义方法 可在此中 覆盖上面的beforeNewVueDefaultFunction中方法
 	return {el: vueContentElementSelector, data: vueContentData, methods: vueContentMethods, beforeCreate: vueContentBeforeCreate, created: vueContentCreated, beforeMount: vueContentBeforeMount, mounted: vueContentMounted, beforeUpdate: vueContentBeforeUpdate, updated: vueContentUpdated, beforeDestroy: vueContentBeforeDestroy, destroyed: vueContentDestroyed};
 }
