@@ -41,32 +41,30 @@ setVueBindFormRulesData({
     'nickname': [{trigger: 'blur',type: 'string', required: true, pattern: /^[a-zA-Z0-9·\u4e00-\u9fa5]{2,12}$/, message: '昵称必须为长度2至12位之间以字母、特殊字符(·)、汉字或数组字符组成的字符串!'},{validator: this.vueFormRulesCommonValidate, trigger: 'blur',unique:'checkNicknameUnique',message: '昵称已被占用'}]
 });
 
-////////////////////////////// 在vue生命周期 created 自定义 data ////////////////////////////////
-setVueContentCreatedFunction(function(){
-	this.statusDataSelect = [{value: '1',label: '启用'},{value: '0',label: '禁用'}];
-	this.defaultList= [
-	    {
-	        'name': 'a42bdcc1178e62b4694c830f028db5c0',
-	        'url': 'https://o5wwk8baw.qnssl.com/a42bdcc1178e62b4694c830f028db5c0/avatar'
-	    },
-	    {
-	        'name': 'bc7521e033abdd1e92222d733590f104',
-	        'url': 'https://o5wwk8baw.qnssl.com/bc7521e033abdd1e92222d733590f104/avatar'
-	    }
-	];
-	this.customVueData.imgName = '';
-	this.customVueData.imgvisible = false;
-	this.customVueData.uploadList = [];
-});
-
+////////////////////////////// 在vue生命周期 BeforeCreate 自定义 data ////////////////////////////////
+vueContentBeforeCreate = function(){
+	customVueContentData = {
+		statusDataSelect : [{value: '1',label: '启用'},{value: '0',label: '禁用'}],
+		defaultList: [
+		    {
+		        'name': 'a42bdcc1178e62b4694c830f028db5c0',
+		        'url': 'https://o5wwk8baw.qnssl.com/a42bdcc1178e62b4694c830f028db5c0/avatar'
+		    },
+		    {
+		        'name': 'bc7521e033abdd1e92222d733590f104',
+		        'url': 'https://o5wwk8baw.qnssl.com/bc7521e033abdd1e92222d733590f104/avatar'
+		    }
+		],
+		imgName : '',
+		imgvisible : false,
+		uploadList : []
+	}
+};
 
 ////////////////////////////// 自定义 vue  methods ////////////////////////////////
 vueContentMethods.handleView = function(name) {
-	console.log(123123123)
-	console.log(this.customVueData.imgvisible);
-	this.customVueData.imgName = name;
-	this.customVueData.imgvisible = true;
-	console.log(this.customVueData.imgvisible);
+	this.imgName = name;
+	this.imgvisible = true;
 }
 vueContentMethods.handleRemove = function(file) {
     // 从 upload 实例删除数据
@@ -101,7 +99,7 @@ vueContentMethods.handleBeforeUpload = function() {
 }
 
 //////////////////////////////new vue 前自定义方法 ////////////////////////////////
-beforeNewVueFunction = function(){setVueContentMountedFunction(function () {this.vueTableLoadPageMethod();this.customVueData.uploadList = this.$refs.upload.fileList;});}
+beforeNewVueFunction = function(){setVueContentMountedFunction(function () {this.vueTableLoadPageMethod();this.uploadList = this.$refs.upload.fileList;});}
 
 var vueContentObject = new Vue(initializeContentOptions());
 

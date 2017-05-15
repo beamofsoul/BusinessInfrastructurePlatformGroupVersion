@@ -76,10 +76,8 @@ function toast(content, type, duration, onClose){
 }
 
 //////////////////////////////////////////////////////////////////
-// new Vue() 之前  默认方法 加载默认的控件用
-var beforeNewVueDefaultFunction = function(){};
-// new Vue() 之前  自定义方法 可覆盖默认方法中的方法
-var beforeNewVueFunction = function(){};
+var beforeNewVueDefaultFunction = function(){};// new Vue() 之前  默认方法 加载默认的控件用
+var beforeNewVueFunction = function(){};// new Vue() 之前  自定义方法 可覆盖默认方法中的方法
 // vue 生命周期 beforeCreate（创建前）,created（创建后）,beforeMount(载入前),mounted（载入后）,beforeUpdate（更新前）,updated（更新后）,beforeDestroy（销毁前）,destroyed（销毁后）
 var vueContentBeforeCreate = function(){};
 var vueContentCreated = function(){};
@@ -95,8 +93,9 @@ var vueContentData = function() {};
 
 var vueContentElementSelector = '#contentContainer';
 
+var customVueContentData = {};//自定义 vue data
 vueContentData = function() {
-	return {
+	var defaultVueContentData = {
 	    	
 		defaultVueBindModalAddData: defaultVueBindModalAddData,
 		defaultVueBindModalUpdateData: defaultVueBindModalUpdateData,
@@ -121,10 +120,9 @@ vueContentData = function() {
         defaultVueBindFormRulesAddData:defaultVueBindFormRulesAddData,
         defaultVueBindFormRulesUpdateData:defaultVueBindFormRulesUpdateData,
         
-        customVueData:{},
-        
-    	self: this
-    }
+        self: this
+	}
+	return Object.assign({},customVueContentData,defaultVueContentData); 
 }
 
 vueContentMethods = {
@@ -165,9 +163,11 @@ beforeNewVueDefaultFunction = function (){
 	
 }
 
+//计算可能会用到 貌似在这也能返回data var vueComputedData ={} computed:vueComputedData 
+		
 // new Vue() 构造参数
 function initializeContentOptions() {
 	if(beforeNewVueDefaultFunction) beforeNewVueDefaultFunction();//new vue 前 默认的方法
 	if(beforeNewVueFunction) beforeNewVueFunction();//new vue 前 自定义方法 可在此中 覆盖上面的beforeNewVueDefaultFunction中方法
-	return {el: vueContentElementSelector, data: vueContentData, methods: vueContentMethods, beforeCreate: vueContentBeforeCreate, created: vueContentCreated, beforeMount: vueContentBeforeMount, mounted: vueContentMounted, beforeUpdate: vueContentBeforeUpdate, updated: vueContentUpdated, beforeDestroy: vueContentBeforeDestroy, destroyed: vueContentDestroyed};
+	return {el: vueContentElementSelector, data: vueContentData,methods: vueContentMethods, beforeCreate: vueContentBeforeCreate, created: vueContentCreated, beforeMount: vueContentBeforeMount, mounted: vueContentMounted, beforeUpdate: vueContentBeforeUpdate, updated: vueContentUpdated, beforeDestroy: vueContentBeforeDestroy, destroyed: vueContentDestroyed};
 }
