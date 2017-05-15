@@ -304,6 +304,18 @@ function createTableQueryFrom(vueBindFormQueryDataName,queryFormItemName,queryFo
 				queryForm+='<Form-item label="'+queryFormItemName[itemIndex]+'：" prop="'+queryFormItemKey[itemIndex]+'">';
 				queryForm+='<i-input v-model="'+vueBindFormQueryDataName+'.'+queryFormItemKey[itemIndex]+'" ></i-input>';
 				queryForm+='</Form-item>';
+			}else if(itemType=='number'){
+				queryForm+='<Form-item label="'+queryFormItemName[itemIndex]+'：" prop="'+queryFormItemKey[itemIndex]+'">';
+				var rangeStr = '';
+				if(itemTypeArray[1]){
+					rangeStr+=' :max="'+itemTypeArray[1]+'"';
+				}
+				if(itemTypeArray[2]){
+					rangeStr+=' :min="'+itemTypeArray[2]+'"';
+				}
+				queryForm+='<Input-number '+rangeStr+' v-model="'+vueBindFormQueryDataName+'.'+queryFormItemKey[itemIndex]+'"></Input-number>';
+				queryForm+='</Form-item>';
+				
 			}else if(itemType=='select'){
 				queryForm+='<Form-item label="'+queryFormItemName[itemIndex]+'：" prop="'+queryFormItemKey[itemIndex]+'">';
 				queryForm+='<i-select v-model="'+vueBindFormQueryDataName+'.'+queryFormItemKey[itemIndex]+'" clearable>';
