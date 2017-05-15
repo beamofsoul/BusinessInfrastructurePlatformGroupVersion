@@ -79,7 +79,8 @@ var vueContentData = function() {};
 
 var vueContentElementSelector = '#contentContainer';
 
-var vueContentDataObject = {
+vueContentData = function() {
+	return {
 	    	
 		defaultVueBindModalAddData: defaultVueBindModalAddData,
 		defaultVueBindModalUpdateData: defaultVueBindModalUpdateData,
@@ -102,48 +103,15 @@ var vueContentDataObject = {
 		defaultVueBindCollapseQueryFormData: defaultVueBindCollapseQueryFormData,
 		
         defaultVueBindFormRulesAddData:defaultVueBindFormRulesAddData,
-        defaultVueBindFormRulesUpdateData:defaultVueBindFormRulesUpdateData
+        defaultVueBindFormRulesUpdateData:defaultVueBindFormRulesUpdateData,
         
-//    	self: this
-    };
-
-
-//var vueContentDataObject;
-vueContentData = function() {
-//  console.log(‘此处定义 biz 文件中 用vueContentDataObject 为 undefined’)	
-//	vueContentDataObject = {
-//	    	
-//			defaultVueBindModalAddData: defaultVueBindModalAddData,
-//			defaultVueBindModalUpdateData: defaultVueBindModalUpdateData,
-//			defaultVueBindModalDelData: defaultVueBindModalDelData,
-//			
-//			defaultVueBindModalDelLoadingData: defaultVueBindModalDelLoadingData,
-//			defaultVueBindModalDelMessageData: defaultVueBindModalDelMessageData,
-//			defaultVueTableDelRowIdsData:'',
-//			
-//			defaultVueBindTableColumnsData : defaultVueBindTableColumnsData,
-//			defaultVueBindTableDataData :[],
-//			defaultVueTableCheckedData: [],
-//			defaultVueBindPageTotalData: defaultVueBindPageTotalData,
-//			defaultVueBindPageCurrentData: defaultVueBindPageCurrentData,
-//			defaultVueBindPageSizeData: defaultVueBindPageSizeData,
-//	        
-//			defaultVueBindFormAddData :defaultVueBindFormAddData,
-//			defaultVueBindFormUpdateData: defaultVueBindFormUpdateData,
-//			defaultVueBindFormQueryData: defaultVueBindFormQueryData,
-//			defaultVueBindCollapseQueryFormData: defaultVueBindCollapseQueryFormData,
-//			
-//	        defaultVueBindFormRulesAddData:defaultVueBindFormRulesAddData,
-//	        defaultVueBindFormRulesUpdateData:defaultVueBindFormRulesUpdateData,
-//	        aa:console.log(this),
-//	    	self: this
-//	    };
-	vueContentDataObject.self = this;
-	return vueContentDataObject;
-	
+        customVueData:{},
+        
+    	self: this
+    }
 }
+
 vueContentMethods = {
-		
 	vueBindTableCheckedDataMethod:vueBindTableCheckedDataMethod,
 	vueTableLoadPageMethod:vueTableLoadPageMethod,
 	vueBindPageOnChangeMethod:vueBindPageOnChangeMethod,
@@ -171,7 +139,7 @@ beforeNewVueFunction = function (){
 		
 		//设置 vue 生命周期 Mounted 时 调用table读取页数据
 //		setVueContentMountedFunction(function () {this.vueTableLoadPageMethod()});
-		console.log('此处先注释 在biz 文件中调用')
+//		console.log('此处先注释 在biz 文件中调用')
 //		setVueContentMountedFunction(function () {this.vueTableLoadPageMethod();this.uploadList = this.$refs.upload.fileList;});
 		
 	}

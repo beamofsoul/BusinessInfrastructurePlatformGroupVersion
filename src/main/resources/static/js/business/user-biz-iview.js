@@ -29,9 +29,11 @@ parseValuesOnTableEachRow = function (obj) {
 setVueBindFormModelData({id:-1,username: '',password: '',repassword: '',nickname: '',phone: '',email: '',status: '1'});
 
 //综合查询 form
-var queryFormItemName = ['ID','昵称','用户名','密码','邮箱地址','电话号码','状态','注册日期'];
-var queryFormItemKey = ['id','nickname','username','password','email','phone','status','createDate'];
-var queryFormItemType = ['string','string','string','string','string','string','select#statusDataSelect','date'];
+var queryFormItemName = ['ID','昵称','用户名','密码','邮箱地址','电话号码','状态','注册日期','数字'];
+var queryFormItemKey = ['id','nickname','username','password','email','phone','status','createDate','number'];
+var queryFormItemType = ['string','string','string','string','string','string','select#statusDataSelect','date','10<number<20'];
+
+
 //form 验证信息 
 setVueBindFormRulesData({
 	'username': [{trigger: 'blur',type: 'string', required: true, pattern: /^[a-zA-Z\d]\w{4,11}[a-zA-Z\d]$/, message: '用户名称必须为长度6至12位之间以字母、特殊字符(·)或数字字符组成的字符串!'},{validator: this.vueFormRulesCommonValidate, trigger: 'blur',unique:'checkUsernameUnique',message: '用户名已被占用'}],
@@ -42,29 +44,12 @@ setVueBindFormRulesData({
 
 //new Vue 生命周期 ,此处可定义 vue data obj
 setVueContentBeforeCreateFunction(function() {
-	
-//	console.log('2222222222222222');
-//	console.log(vueContentDataObject);
-//	vueContentDataObject.statusDataSelect = [{value: '1',label: '启用'},{value: '0',label: '禁用'}];
-//	console.log(vueContentDataObject)
-//	vueContentDataObject.defaultList= [
-//	    {
-//	        'name': 'a42bdcc1178e62b4694c830f028db5c0',
-//	        'url': 'https://o5wwk8baw.qnssl.com/a42bdcc1178e62b4694c830f028db5c0/avatar'
-//	    },
-//	    {
-//	        'name': 'bc7521e033abdd1e92222d733590f104',
-//	        'url': 'https://o5wwk8baw.qnssl.com/bc7521e033abdd1e92222d733590f104/avatar'
-//	    }
-//	];
-//	vueContentDataObject.imgName = '';
-//	vueContentDataObject.visible = false;
-//	vueContentDataObject.uploadList = [];
-	
-	
-	console.log('2222222222222222  用this 方法中 获取不到 imgName visible 值，console能看到值');
+});
+
+/////////////////////////// 设置data
+vueContentCreated = function(){
 	this.statusDataSelect = [{value: '1',label: '启用'},{value: '0',label: '禁用'}];
-	this.defaultList= [
+	this.customVueData.defaultList= [
 	    {
 	        'name': 'a42bdcc1178e62b4694c830f028db5c0',
 	        'url': 'https://o5wwk8baw.qnssl.com/a42bdcc1178e62b4694c830f028db5c0/avatar'
@@ -74,41 +59,20 @@ setVueContentBeforeCreateFunction(function() {
 	        'url': 'https://o5wwk8baw.qnssl.com/bc7521e033abdd1e92222d733590f104/avatar'
 	    }
 	];
-	this.imgName = '';
-	this.visible = false;
-	this.uploadList = [];
-});
-//console.log('66666666666666666666666  如果 vueContentDataObject 有值写到外面');
-//vueContentDataObject.statusDataSelect = [{value: '1',label: '启用'},{value: '0',label: '禁用'}];
-//vueContentDataObject.defaultList= [
-//    {
-//        'name': 'a42bdcc1178e62b4694c830f028db5c0',
-//        'url': 'https://o5wwk8baw.qnssl.com/a42bdcc1178e62b4694c830f028db5c0/avatar'
-//    },
-//    {
-//        'name': 'bc7521e033abdd1e92222d733590f104',
-//        'url': 'https://o5wwk8baw.qnssl.com/bc7521e033abdd1e92222d733590f104/avatar'
-//    }
-//];
-//vueContentDataObject.imgName = '';
-//vueContentDataObject.visible = false;
-//vueContentDataObject.uploadList = [];
+	this.customVueData.imgName = '';
+	this.customVueData.visible = false;
+	this.customVueData.uploadList = [];
+	
+};
 
-
-///////////////////////////
 setVueContentMountedFunction(function () {this.vueTableLoadPageMethod();
-//console.log('00000000000000000000000');
-//console.log(this.uploadList);
-this.uploadList = this.$refs.upload.fileList;});
+	this.customVueData.uploadList = this.$refs.upload.fileList;
+});
 
 //////////////////////////////自定义 vue data methods
 vueContentMethods.handleView = function(name) {
-	console.log('data未能起作用---------------------');
-//	console.log(this);
-	console.log(this.imgName);
-
-    this.imgName = name;
-    this.visible = true;
+	this.customVueData.imgName = name;
+	this.customVueData.visible = true;
 }
 vueContentMethods.handleRemove = function(file) {
     // 从 upload 实例删除数据

@@ -169,7 +169,7 @@
 	    	</Modal>
 	    	
 	    	<!-- 上传图片 -->
-	    	<div class="demo-upload-list" v-for="item in uploadList">
+	    	<div class="demo-upload-list" v-for="item in customVueData.uploadList">
 		        <template v-if="item.status === 'finished'">
 		            <img :src="item.url"/>
 		            <div class="demo-upload-list-cover">
@@ -182,10 +182,10 @@
 		        </template>
 		    </div>
 		    
-		    <Upload
+		   <Upload
 		        ref="upload"
 		        :show-upload-list="false"
-		        :default-file-list="defaultList"
+		        :default-file-list="customVueData.defaultList"
 		        :on-success="handleSuccess"
 		        :format="['jpg','jpeg','png']"
 		        :max-size="2048"
@@ -199,8 +199,8 @@
 		            <Icon type="camera" size="20"></Icon>
 		        </div>
 		    </Upload>
-		    <Modal title="查看图片" v-model="visible">
-		        <img :src="'https://o5wwk8baw.qnssl.com/' + imgName + '/large'" v-if="visible" style="width: 100%" />
+		    <Modal title="查看图片"  v-model="customVueData.visible">
+		        <img :src="'https://o5wwk8baw.qnssl.com/' + customVueData.imgName + '/large'" style="width: 100%" />
 		    </Modal>
 	    	
 	    	<Back-top></Back-top>
