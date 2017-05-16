@@ -43,9 +43,6 @@ $(function() {
 		});
 	}
 	
-	
-	
-	
 	$.postify = function(url, data, fn) {
 		$.ajax({
 			headers: {'Accept': 'application/json','Content-Type': 'application/json'},
@@ -76,5 +73,23 @@ $(function() {
 		    	if (fn) fn(result);
 		    }
 		});
+	}
+	
+	$.iposty = function(url, data, successCallback, errorCallback) {
+		if(currentRequestMappingRootPath)
+			url = currentRequestMappingRootPath+"/"+url;
+		if(!errorCallback) errorCallback = defaultErrorCallback;
+		$.posty(url, data, successCallback, errorCallback);
+	}
+	
+	$.idel = function(url, data, successCallback, errorCallback) {
+		if(currentRequestMappingRootPath)
+			url = currentRequestMappingRootPath+"/"+url;
+		if(!errorCallback) errorCallback = defaultErrorCallback;
+		$.del(url, data, successCallback, errorCallback);
+	}
+
+	function defaultErrorCallback(errorMessage){
+		toastError(errorMessage);
 	}
 });
