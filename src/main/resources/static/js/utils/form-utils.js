@@ -1,12 +1,9 @@
 var defaultVueBindFormAddData;
-var defaultVueBindFormUpdateData;
 var defaultVueBindFormQueryData;
 
 var defaultVueBindFormRulesAddData;
 var defaultVueBindFormRulesUpdateData;
 
-var defaultVueBindFormAddDataName = 'defaultVueBindFormAddData';
-var defaultVueBindFormUpdateDataName = 'defaultVueBindFormUpdateData';
 //这条要删除
 var vueBindFormQueryDataName = 'defaultVueBindFormQueryData';
 var defaultVueBindFormQueryDataName = 'defaultVueBindFormQueryData';
@@ -25,71 +22,113 @@ var queryFormItemWidth = 80;//综合查询 控件的宽度 像素
 var querySubmitButtonName = 'vueBindButtonClickQueryMethod';//综合查询 提交按钮触发函数名
 var defaultVueBindCollapseQueryFormData='-1';
 var defaultQueryFormDomId = 'queryFormDomId';//默认的 query form 页面 dom id
+
+
+var initAddForm;    //初始化添加页面表单业务数据的方法
+var initUpdateForm; //初始化更新页面表单业务数据的方法
+var initCopyForm;   //初始化复制页面表单业务数据的方法
+
+var beforeAdd;      //执行进入添加按钮单击事件方法首先需要执行的方法
+var beforeUpdate;   //执行进入修改按钮单击事件方法首先需要执行的方法
+var beforeDelete;   //执行进入删除按钮单击事件方法首先需要执行的方法
+var beforeCopy;     //执行进入复制按钮单击事件方法首先需要执行的方法
+
+var updateBefore;   //执行修改后台方法之前需要执行的方法
+var copyBefore;     //执行复制后台方法之前需要执行的方法
+var deleteBefore;   //执行删除后台方法之前需要执行的方法
+
+var defaultVueBindFormUpdateData;
+var updataFormName = 'defaultVueBindFormUpdateData';
+var updataFormModalName = 'defaultVueBindModalUpdateData';
+var tableCheckDataName = 'defaultVueTableCheckedData';
+
+var addFormName = 'defaultVueBindFormAddData';
+
+/********************  添加按钮  *********************/
 /**
  * 添加
- * @param vueBindFormAddDataName
- * @param actionsType
- * @param vueBindModalDataName
- * @returns
  */
-function vueBindButtonHeadAddMethod (vueBindFormAddDataName,actionsType,vueBindModalDataName){
-	if(!vueBindFormAddDataName) vueBindFormAddDataName = defaultVueBindFormAddDataName;
-	resetVueFormData(vueBindFormAddDataName);
-	if(!actionsType) currentAction = actions.add;
-	else currentAction = actions[actionsType];
-	if(!vueBindModalDataName) this.defaultVueBindModalAddData = true;
-	else this[vueBindModalDataName] = true;
+function vueBindButtonHeadAddMethod (){
+	if(beforeAdd) beforeAdd();
+	
+	resetVueFormData(addFormName);
+	currentAction = actions.add;
+	this.defaultVueBindModalAddData = true;
+	
+	if (initAddForm) initAddForm();
 }
-function vueBindButtonHeadAddSubmitMethod (vueBindFormAddDataName,vueBindModalDataName) {
+/**
+ * 添加提交
+ */
+function vueBindButtonHeadAddSubmitMethod () {
 	var _self = this;
 	submitFormValidate(currentAction,function(data){
 		toastSuccess('提交成功!');
-		if(!vueBindModalDataName) _self.defaultVueBindModalAddData = false;
-		else _self[vueBindModalDataName] = false;
-		
-		if(!vueBindFormAddDataName) vueBindFormAddDataName = defaultVueBindFormAddDataName;
-		resetVueFormData(vueBindFormAddDataName);
+		_self.defaultVueBindModalAddData = false;		
+		resetVueFormData(addFormName);
 	});
 }
+/********************  修改按钮  *********************/
 
+// 默认的初始化updateform逻辑
+initUpdateForm = function (obj){
+	getVueObject()[updataFormName] = obj;
+	getVueObject()[updataFormModalName] = true;
+	currentAction = actions.update;
+}
 /**
- * 修改
- * @param vueTableCheckedDataName
- * @param vueBindFormUpdateDataName
- * @param actionsType
- * @param vueBindModalDataName
- * @returns
+ * table 上部 修改按钮
  */
-function vueBindButtonHeadUpdateMethod(vueTableCheckedDataName,vueBindFormUpdateDataName,actionsType,vueBindModalDataName){
+function vueBindButtonHeadUpdateMethod(){
+	if (beforeUpdate) beforeUpdate();
 	var _self = this;
-	var vueTableCheckedDataLength = 0;
-	if(!vueTableCheckedDataName) vueTableCheckedDataName = 'defaultVueTableCheckedData';
-	vueTableCheckedDataLength = _self[vueTableCheckedDataName].length;
-	if(vueTableCheckedDataLength!=1){
+	var checkdata = _self[tableCheckDataName];
+	if(checkdata.length!=1){
 		toastInfo('请选择1条记录!');
 		return;
 	}
-	if(!actionsType) currentAction = actions.update;
-	else currentAction = actions[actionsType];
-	if(!vueBindModalDataName) this.defaultVueBindModalUpdateData = true;
-	else this[vueBindModalDataName] = true;
-	if(!vueBindFormUpdateDataName) vueBindFormUpdateDataName = defaultVueBindFormUpdateDataName;
-	resetVueFormData(vueBindFormUpdateDataName);
-	
-		
-	$.iposty('single', {'id':getVueTableCheckedDataIds(_self[vueTableCheckedDataName])}, function(data){
-		_self[vueBindFormUpdateDataName] = data.obj;
-		});
+	currentAction = actions.update;
+	resetVueFormData(updataFormName);
+	getSingleData(getVueTableCheckedDataIds(checkdata),updateBefore,function(data){initUpdateForm(data);});
+}
+/**
+ * table row 修改按钮
+ * @param index 索引
+ * @param tableDataName index所在data的名称
+ */
+function vueBindButtonUpdateMethod(index,tableDataName) {
+	if (beforeUpdate) beforeUpdate();
+	var _self = this;
+	getSingleData(_self[tableDataName][index].id,updateBefore,function(data){initUpdateForm(data);});
 }
 
-function vueBindButtonHeadUpdateSubmitMethod(vueTableCheckedDataName,vueBindFormUpdateDataName,vueBindModalDataName){
+/**
+ * 根据数据表格中复选框选中的记录Id，获取所对应的业务对象实例
+ */
+var getSingleData = function(idData, successCallbackBefore,successCallback, errorCallback) {
+	var result = false;
+	$.iposty('single', {'id':idData}, 
+			function(data){
+				var obj = data.obj;
+				if((successCallbackBefore&&successCallbackBefore(obj)) || !successCallbackBefore) {
+					if(successCallback) successCallback(obj);
+					result = true;
+				}
+			},
+			errorCallback,true
+		);
+	return result;
+}
+/**
+ * 修改form提交
+ * @returns
+ */
+function vueBindButtonHeadUpdateSubmitMethod(){
 	var _self = this;
 	submitFormValidate(currentAction,function(data){
 		toastSuccess('更新成功!');
-		if(!vueBindModalDataName) _self.defaultVueBindModalUpdateData = false;
-		else _self[vueBindModalDataName] = false;
-		if(!vueBindFormUpdateDataName) vueBindFormUpdateDataName = defaultVueBindFormUpdateDataName;
-		resetVueFormData(vueBindFormUpdateDataName);
+		_self[updataFormModalName] = false;
+		resetVueFormData(updataFormName);
 	});
 }
 
@@ -100,23 +139,43 @@ function vueBindButtonHeadUpdateSubmitMethod(vueTableCheckedDataName,vueBindForm
  * @param vueBindModalDataName
  * @returns
  */
-function vueBindButtonHeadDeleteMethod(vueTableCheckedDataName,actionsType,vueBindModalDataName){
+function vueBindButtonHeadDeleteMethod(){
+	if (beforeDelete) beforeDelete();
 	var _self = this;
-	var vueTableCheckedDataLength = 0;
-	if(!vueTableCheckedDataName) vueTableCheckedDataName = 'defaultVueTableCheckedData';
-	vueTableCheckedDataLength = _self[vueTableCheckedDataName].length;
-	if(vueTableCheckedDataLength!=1){
+	var checkData  = _self[tableCheckDataName];
+	
+	if(checkData.length!=1){
 		toastInfo('至少选中1条记录!');
 		return;
 	}
+	if (deleteBefore) deleteBefore(getVueTableCheckedDataIds(checkData));
 	this.defaultVueBindModalDelMessageData = "即将删除"+vueTableCheckedDataLength+"条记录,是否继续删除?";
-	this.defaultVueTableDelRowIdsData = getVueTableCheckedDataIds(_self[vueTableCheckedDataName]);//将要删除的id 赋值给data
-	if(!actionsType) currentAction = actions.del;
-	else currentAction = actions[actionsType];	
-	if(!vueBindModalDataName) this.defaultVueBindModalDelData = true;
-	else this[vueBindModalDataName] = true;
+	this.defaultVueTableDelRowIdsData = getVueTableCheckedDataIds(checkData);//将要删除的id 赋值给data
+	currentAction = actions.del;
+	
+	this.defaultVueBindModalDelData = true;
 }
-function vueBindButtonHeadDeleteSubmitMethod (vueTableCheckedDataName,vueBindModalDataName){
+
+/**
+ * table row 删除按钮
+ * @param index 索引
+ * @param vueBindTableDataDataName index所在data的名称
+ * @returns
+ */
+function vueBindButtonDeleteMethod (index,vueBindTableDataDataName) {
+	if (beforeDelete) beforeDelete();
+	if (deleteBefore) deleteBefore(''+getVueObject()[vueBindTableDataDataName][index].id);
+
+	getVueObject().defaultVueBindModalDelMessageData = "是否继续删除此条记录?";
+	getVueObject().defaultVueTableDelRowIdsData = ''+getVueObject()[vueBindTableDataDataName][index].id;
+	getVueObject().defaultVueBindModalDelData = true;// 显示删除界面
+	currentAction = actions.del;
+}
+
+/**
+ * 删除提交
+ */
+function vueBindButtonHeadDeleteSubmitMethod (){
 	var _self = this;
 	_self.modalDelSubmitLoading = true;
 	submitForm(currentAction,_self.defaultVueTableDelRowIdsData,
@@ -151,7 +210,7 @@ function vueBindButtonClickQueryMethod(vueBindTableDataDataName,vueBindPageTotal
  * @returns
  */ 
 function getCurrentVueFormData() {
-	return (!currentAction || !vueContentObject) ? null : currentAction.key == actions.add.key ? getVueObject()['defaultVueBindFormAddData'] : getVueObject()['defaultVueBindFormUpdateData'];
+	return (!currentAction || !vueContentObject) ? null : currentAction.key == actions.add.key ? getVueObject()['defaultVueBindFormAddData'] : getVueObject()[updataFormName];
 }
 
 /**
@@ -159,7 +218,7 @@ function getCurrentVueFormData() {
  * @returns
  */ 
 function getCurrentVueFormDataName() {
-	return (!currentAction || !vueContentObject) ? null : currentAction.key == actions.add.key ? defaultVueBindFormAddDataName : defaultVueBindFormUpdateDataName;
+	return (!currentAction || !vueContentObject) ? null : currentAction.key == actions.add.key ? addFormName : updataFormName;
 }
 
 /**
@@ -234,6 +293,7 @@ function submitForm(currentAction,data, callback,errorCallback,vueBindTableDataD
 	
 	// 包装请求后 回调函数.data 请求成功后 后台返回的值
 	var successCallback = function(data){
+		//
 //		fresh4NewData(data,function(){callback();});
 		fresh4NewData(data,function(){callback();},vueBindTableDataDataName,vueBindPageTotalDataName,vueBindPageSizeDataName,vueBindPageCurrentDataName,vueTableCheckedDataName,vueBindFormQueryDataName);
 	}

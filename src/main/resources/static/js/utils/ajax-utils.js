@@ -75,18 +75,32 @@ $(function() {
 		});
 	}
 	
-	$.iposty = function(url, data, successCallback, errorCallback) {
+	$.iposty = function(url, data, successCallback, errorCallback, isChangeResponseJsonItemType) {
+		var changeTypeSuccessCallback = createResponseSuccessCallback(successCallback,isChangeResponseJsonItemType);
+		
 		if(currentRequestMappingRootPath)
 			url = currentRequestMappingRootPath+"/"+url;
 		if(!errorCallback) errorCallback = defaultErrorCallback;
-		$.posty(url, data, successCallback, errorCallback);
+		$.posty(url, data, changeTypeSuccessCallback, errorCallback);
 	}
 	
-	$.idel = function(url, data, successCallback, errorCallback) {
+	$.idel = function(url, data, successCallback, errorCallback,isChangeResponseJsonItemType) {
+		
 		if(currentRequestMappingRootPath)
 			url = currentRequestMappingRootPath+"/"+url;
 		if(!errorCallback) errorCallback = defaultErrorCallback;
 		$.del(url, data, successCallback, errorCallback);
+	}
+	
+	function createResponseSuccessCallback(successCallback,isChangeResponseJsonItemType){
+		var changeTypeSuccessCallback = successCallback;
+		if(isChangeResponseJsonItemType==true){
+			changeTypeSuccessCallback = function(responseData){
+				changeResponseJsonItemType(responseData.obj);
+				if(successCallback) successCallback(responseData);
+			}
+		}
+		return changeTypeSuccessCallback;
 	}
 
 	function defaultErrorCallback(errorMessage){

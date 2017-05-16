@@ -2,58 +2,9 @@ var defaultVueBindTableColumnsData={};//table 列数据 data
 var defaultVueBindPageTotalData = 0;//记录总数
 var defaultVueBindPageCurrentData = 1;//当前页数
 var defaultVueBindPageSizeData = 4;//每一页显示条数
-
-var vueBindButtonUpdateMethodCallback;//table 行 修改按钮 成功回调
-var vueBindButtonDeleteMethodCallback;//table 行 修改按钮 成功回调
-
 var defaultVueBindTableDataDataName = 'defaultVueBindTableDataData';
 
 var loadPageableDataUrl;//加载分页业务数据用的URL
-
-//table 行 修改按钮 成功回调 需要可重写
-vueBindButtonUpdateMethodCallback = function (data,index,vueBindTableDataDataName){
-	
-	getVueObject()['defaultVueBindFormUpdateData'] = data.obj;
-	getVueObject()['defaultVueBindModalUpdateData'] = true;
-	currentAction = actions.update;
-}
-
-//table 行 删除按钮  需要可重写
-vueBindButtonDeleteMethodCallback = function (index,vueBindTableDataDataName){
-	getVueObject().defaultVueBindModalDelMessageData = "是否继续删除此条记录?";
-	getVueObject().defaultVueTableDelRowIdsData = ''+getVueObject()[vueBindTableDataDataName][index].id;
-	getVueObject().defaultVueBindModalDelData = true;// 显示删除界面
-	currentAction = actions.del;
-}
-
-/**
- * table row 修改按钮
- * @param index 索引
- * @param vueBindTableDataDataName index所在data的名称
- * @returns
- */
-function vueBindButtonUpdateMethod(index,vueBindTableDataDataName) {
-	var _self = this;
-	
-	$.iposty('single', {'id':_self[vueBindTableDataDataName][index].id}, 
-		function(data){
-			vueBindButtonUpdateMethodCallback(data,index,vueBindTableDataDataName);
-		},
-		function(errorMessage){
-			toastError(errorMessage);
-		}
-	);
-}
-
-/**
- * table row 删除按钮
- * @param index 索引
- * @param vueBindTableDataDataName index所在data的名称
- * @returns
- */
-function vueBindButtonDeleteMethod (index,vueBindTableDataDataName) {
-	vueBindButtonDeleteMethodCallback(index,vueBindTableDataDataName);
-}
 
 /**
  * 获取table check data ids

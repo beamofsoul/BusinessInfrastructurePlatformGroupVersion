@@ -105,3 +105,23 @@ function getTimeDifference(pastTime, currentTime) {
 		return diffHour + '小时';
 	}
 }
+
+/**
+ * 转换后台返回的Json属性类型，以适配页面控件
+ * @param data
+ * @returns
+ */
+function changeResponseJsonItemType(data){
+	var value;
+	var itemType;
+	for(var key in data){
+		value = data[key];
+		itemType = typeof value;
+		if(itemType=='number'){
+			value = String(value);
+		}else if(itemType=='boolean'){
+			value = String(boolean);
+		}
+	}
+}
+	 
