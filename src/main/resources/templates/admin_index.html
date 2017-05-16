@@ -2,6 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 	<head>
 		<link rel="stylesheet" type="text/css" th:href="@{/static/iview/iview.css}" />
+		<link rel="stylesheet" type="text/css" th:href="@{/static/iview/iview-custom.css}" />
 		<link rel="stylesheet" type="text/css" th:href="@{/static/css/business/admin-index.css}" />
 	</head>
 	<body>
@@ -21,15 +22,16 @@
 	        </Row>
 	    </div>
 
-		<script th:src="@{/static/HOTKEYS/js/hotkeys.min.js}"></script>
-		<script th:src="@{/static/js/utils/hotkeys-utils.js}"></script>
 
- 		<script th:src="@{/static/js/utils/project-path-utils.js}"></script>
+		<script th:src="@{/static/HOTKEYS/js/hotkeys.min.js}"></script>
 		<script th:src="@{/static/iview/jquery.min.js}"></script>
 		<script th:src="@{/static/iview/vue.min.js}"></script>
 		<script th:src="@{/static/iview/iview.min.js}"></script>
-		<script th:src="@{/static/js/business/admin-index.js}"></script>
-		
+		<script th:src="@{/static/js/utils/format-utils.js}"></script>
+ 		<script th:src="@{/static/js/utils/common-utils.js}"></script>
+		<script th:src="@{/static/js/utils/hotkey-utils.js}"></script>
 		<script th:src="@{/static/js/utils/ajax-utils.js}"></script>
+		
+		<script th:src="@{/static/js/business/admin-index.js}"></script>
 	</body>
 </html>
