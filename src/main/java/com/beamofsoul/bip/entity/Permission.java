@@ -102,6 +102,7 @@ public class Permission extends BaseAbstractRelationalEntity {
 	@Override
 	public String toString() {
 		return "Permission [id=" + id + ", name=" + name + ", action=" + action + ", url=" + url + ", resourceType="
-				+ resourceType + ", parentId=" + parentId + ", available=" + available + "]";
+				+ resourceType + ", parentId=" + parentId + ", group=" + group + ", sort=" + sort + ", available="
+				+ available + "]";
 	}
 }
