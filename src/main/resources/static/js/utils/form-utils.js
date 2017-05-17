@@ -72,8 +72,12 @@ function vueBindButtonHeadAddSubmitMethod () {
 
 // 默认的初始化updateform逻辑
 initUpdateForm = function (obj){
-	var formatObj = formatDataValue2String(obj);
-	getVueObject()[updataFormName] = formatObj;
+	var updateForm = getVueObject()[updataFormName];
+	//mapping 值映射
+	mergeObjectSameAttribute(updateForm,obj);
+	//格式化返回json属性类型
+	updateForm = formatCopyObject2String(updateForm);
+	
 	getVueObject()[updataFormModalName] = true;
 	currentAction = actions.update;
 }

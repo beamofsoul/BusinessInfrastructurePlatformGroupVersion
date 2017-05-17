@@ -107,34 +107,56 @@ function getTimeDifference(pastTime, currentTime) {
 }
 
 /**
- * 转换后台返回的Json属性类型，以适配页面控件
- * @param data
- * @returns
+ * 转换data中 number boolean 数据类型为string ，返回一个新的结果对象
+ * @param data 要转换的json对象
+ * @returns 新的转换后的json对象
  */
-function formatDataValue2String(data){
+function formatCopyObject2String(data){
 	var copyObj = Object.assign({}, data);
-	formatDataValueRecursive(copyObj);
+	formatObject2String(copyObj);
 	return copyObj;
 }
 
 /**
- * 转换后台返回的Json属性类型，以适配页面控件
- * @param data
- * @returns
+ * 在原有data中 转换data中 number boolean 数据类型为string
+ * @param data 要转换的json对象
  */
-function formatDataValueRecursive(data){
+function formatObject2String(data){
 	var copyObj = data;
 	var value;
 	var itemType;
 	for(var key in copyObj){
 		value = copyObj[key];
 		itemType = typeof value;
-		
 		if(itemType == 'object'){
-			formatDataValueRecursive(value);
+			formatObject2String(value);
 		}else if(itemType=='number'||itemType=='boolean'){
 			copyObj[key] = String(value);
 		}
 	}
 }
+
+/**
+ * 合并两个json ，以target属性为主 将sources对应的属性值覆盖掉target中同名属性值
+ * @param target 包含属性的对象
+ * @param sources 包含值的对象
+ * @returns
+ */
+function mergeObjectSameAttribute(target,sources){
+	var value;
+	var itemType;
+	for(var key in target){
+		value = target[key];
+		itemType = typeof value;
+		if(itemType == 'object'){
+			if(sources[key])
+				mergeObjectSameAttribute(target[key],sources[key]);
+		}else{
+			target[key] = sources[key];
+		}
+	}
+}
+
+
+
 	 
