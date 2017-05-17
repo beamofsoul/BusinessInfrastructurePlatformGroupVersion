@@ -76,7 +76,7 @@ initUpdateForm = function (obj){
 	//mapping 值映射
 	mergeObjectSameAttribute(updateForm,obj);
 	//格式化返回json属性类型
-	updateForm = formatCopyObject2String(updateForm);
+	formatObject2String(updateForm);
 	
 	getVueObject()[updataFormModalName] = true;
 	currentAction = actions.update;
@@ -149,12 +149,12 @@ function vueBindButtonHeadDeleteMethod(){
 	var _self = this;
 	var checkData  = _self[tableCheckDataName];
 	
-	if(checkData.length!=1){
+	if(checkData.length == 0){
 		toastInfo('至少选中1条记录!');
 		return;
 	}
 	if (deleteBefore) deleteBefore(getVueTableCheckedDataIds(checkData));
-	this.defaultVueBindModalDelMessageData = "即将删除"+vueTableCheckedDataLength+"条记录,是否继续删除?";
+	this.defaultVueBindModalDelMessageData = "即将删除"+ checkData.length +"条记录,是否继续删除?";
 	this.defaultVueTableDelRowIdsData = getVueTableCheckedDataIds(checkData);//将要删除的id 赋值给data
 	currentAction = actions.del;
 	

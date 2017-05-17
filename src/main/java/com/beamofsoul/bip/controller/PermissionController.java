@@ -103,7 +103,7 @@ public class PermissionController extends BaseAbstractController {
 	
 	@RequestMapping(value = "/checkPermissionNameUnique", method = RequestMethod.POST)
 	@ResponseBody
-	public JSONObject checkRoleNameUnique(@RequestBody Map<String, Object> map) {
+	public JSONObject checkPermissionNameUnique(@RequestBody Map<String, Object> map) {
 		String permissionName = map.get("data").toString();
 		Long permissionId = map.containsKey("id") ? Long.valueOf(map.get("id").toString()) : null;
 		return newInstance("isUnique", permissionService.checkPermissionNameUnique(permissionName, permissionId));
@@ -111,8 +111,8 @@ public class PermissionController extends BaseAbstractController {
 	
 	@RequestMapping(value = "/isUsedPermissions", method = RequestMethod.POST)
 	@ResponseBody
-	public JSONObject isUsedRoles(@RequestBody String permissionIds) {
-		return newInstance("isUsed", permissionService.isUsedPermissions(permissionIds));
+	public JSONObject isUsedPermissions(@RequestBody String ids) {
+		return newInstance("isUsed", permissionService.isUsedPermissions(CommonConvertUtils.convertToLongArray(ids)));
 	}
 	
 	@RequestMapping(value = "/hasPermission", method = RequestMethod.POST)

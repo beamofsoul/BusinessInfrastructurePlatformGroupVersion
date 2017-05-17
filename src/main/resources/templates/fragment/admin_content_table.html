@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<body>
+		<!-- 数据表格 -->
+		<i-table border="true" :context="self" :columns="defaultVueBindTableColumnsData" :data="defaultVueBindTableDataData" v-on:on-selection-change="vueBindTableCheckedDataMethod($event,'defaultVueTableCheckedData')" ></i-table>
+		
+		<!-- 分页标签 -->
+		<div style="margin: 10px;overflow: hidden">
+	        <div style="float: right;">
+	            <Page show-total="true" :page-size="defaultVueBindPageSizeData" :total="defaultVueBindPageTotalData" :current="defaultVueBindPageCurrentData" v-on:on-change="vueBindPageOnChangeMethod($event)"></Page>
+	        </div>
+	    </div>
+	</body>
+</html>

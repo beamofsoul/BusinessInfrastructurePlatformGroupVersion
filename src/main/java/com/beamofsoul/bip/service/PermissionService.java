@@ -27,6 +27,6 @@ public interface PermissionService {
 	Permission findById(Long id);
 
 	boolean checkPermissionNameUnique(String permissionName, Long permissionId);
-	boolean isUsedPermissions(String permissionIds);
+	boolean isUsedPermissions(Long... permissionId);
 
 }

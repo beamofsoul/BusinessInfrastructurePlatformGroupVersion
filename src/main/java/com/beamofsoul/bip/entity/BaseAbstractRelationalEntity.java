@@ -38,6 +38,7 @@ public class BaseAbstractRelationalEntity extends BaseAbstractEntity {
 	}
 	
 	private void setter(Long countOfChildren) {
+		if (countOfChildren == null) countOfChildren = 0L;
 		this.countOfChildren = countOfChildren;
 		this.isParent = countOfChildren > 0;
 	}

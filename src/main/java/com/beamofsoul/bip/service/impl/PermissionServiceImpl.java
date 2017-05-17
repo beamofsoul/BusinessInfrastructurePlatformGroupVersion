@@ -1,9 +1,13 @@
 package com.beamofsoul.bip.service.impl;
 
+import static com.beamofsoul.bip.management.util.BooleanExpressionUtils.addExpression;
+import static com.beamofsoul.bip.management.util.BooleanExpressionUtils.like;
+import static com.beamofsoul.bip.management.util.BooleanExpressionUtils.toBooleanValue;
+import static com.beamofsoul.bip.management.util.BooleanExpressionUtils.toLongValue;
+
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;
@@ -57,20 +61,13 @@ public class PermissionServiceImpl extends BaseAbstractServiceImpl implements Pe
 	@CacheEvictBasedCollection(key="#p0")
 	@Transactional
 	public long delete(@NonNull Long[] ids) {
-		try {
-			if (ids.length > 0) {
-				long count = permissionRepository.deleteByIds(ids);
-				if (count > 0) 
-					RolePermissionsMapping.refill(rolePermissionService.
-							findAllRolePermissionMapping());
-				return count;
-			} else {
-				throw new Exception("failed to delete permissions because zero-length of permission ids");
-			}
-		} catch (Exception e) {
-			logger.error("permission ids must be not zero-length when deleting...", e);
+		long count = 0L;
+		if (!isUsedPermissions(ids)) {
+			count = permissionRepository.deleteByIds(ids);
+			if (count > 0) RolePermissionsMapping.refill
+				(rolePermissionService.findAllRolePermissionMapping());
 		}
-		return 0;
+		return count;
 	}
 
 	@Override
@@ -113,7 +110,34 @@ public class PermissionServiceImpl extends BaseAbstractServiceImpl implements Pe
 	
 	@Override
 	public BooleanExpression onSearch(JSONObject content) {
-		return new QPermission("Permission").name.like("%"+content.getString("name")+"%");
+		QPermission permission = new QPermission("Permission");
+		BooleanExpression exp = null;
+		
+		String name = content.getString("name");
+		exp = addExpression(name, exp, permission.name.like(like(name)));
+		
+		String id = content.getString("id");
+		exp = addExpression(id, exp, permission.id.eq(toLongValue(id)));
+		
+		String url = content.getString("url");
+		exp = addExpression(url, exp, permission.url.like(like(url)));
+		
+		String action = content.getString("action");
+		exp = addExpression(action, exp, permission.action.like(like(action)));
+		
+		String group = content.getString("group");
+		exp = addExpression(group, exp, permission.group.like(like(group)));
+		
+		String parentId = content.getString("parentId");
+		exp = addExpression(parentId, exp, permission.parentId.eq(toLongValue(parentId)));
+		
+		String resourceType = content.getString("resourceType");
+		exp = addExpression(resourceType, exp, permission.resourceType.eq(resourceType));
+		
+		String available = content.getString("available");
+		exp = addExpression(available, exp, permission.available.eq(toBooleanValue(available)));
+		
+		return exp;
 	}
 	
 	@Override
@@ -143,14 +167,13 @@ public class PermissionServiceImpl extends BaseAbstractServiceImpl implements Pe
 	}
 
 	@Override
-	public boolean isUsedPermissions(String permissionIds) {
+	public boolean isUsedPermissions(Long... permissionId) {
 		boolean isUsed = false;
-		if (StringUtils.isNotBlank(permissionIds)) {
-			String[] idsStr = permissionIds.split(",");
+		if (permissionId != null) {
 			try {
 				Predicate predicate = null;
-				for (String idStr : idsStr) {
-					predicate = QPermission.permission.id.eq(Long.valueOf(idStr));
+				for (Long id : permissionId) {
+					predicate = QPermission.permission.id.eq(id);
 					//判断是否被者角色权限表使用
 					if (CollectionUtils.isNotBlank(rolePermissionRepository.findByPredicate(predicate))) {
 						isUsed = true;
