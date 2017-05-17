@@ -1,9 +1,7 @@
 var vueElementSelector = '.layout';
-var vueData = {spanLeft: 3, spanRight: 21};
+var vueData = {spanLeft: 3, spanRight: 21, breadcrumb: [{href: '#', content: '首页内容'}]};
 var vueComputed = {iconSize: getIconSize};
 var vueMethods = {toggleClick: toggleMenu, contentClick: loadContent};
-
-var generateBreadcrumbItem;
 
 function getIconSize() {
 	return this.spanLeft === 3 ? 18 : 24;
@@ -18,7 +16,13 @@ function setGridScale(left,element) {
 	element.spanRight = 24 - left;
 }
 
+function initBreadcrumbContent(name) {
+	if (name === 'adminIndexContent') vueObject.breadcrumb = [{href: '#', content: '首页内容'}];
+	if (name.indexOf('permission/') == 0) vueObject.breadcrumb = [{href: '#', content: '权限管理'}];
+}
+
 function loadContent(name) {
+	initBreadcrumbContent(name);
 	initCurrentRequestMappingRootPath(name);//设置当前点击path所属的requestMapping 模块名
 	if (name.indexOf('logout') != -1) $(window).attr('location',name);
 	else $('.layout-content-main').load(name);
@@ -30,20 +34,6 @@ function initializeOptions() {
 
 var vueObject = new Vue(initializeOptions());
 
-function initialzeBreadcrumb() {
-	var content = [];
-	content.push('<span>');
-	content.push('<a class="ivu-breadcrumb-item-link" href="javascript:loadContent(\'adminIndexContent\')">首页</a>');
-	content.push('<span class="ivu-breadcrumb-item-separator">/</span>');
-	content.push('</span>');
-	if (generateBreadcrumbItem) content.push(generateBreadcrumbItem());
-	else alert('no generateBreadcrumbItem found...')
-	return $('.layout-breadcrumb .ivu-breadcrumb').html(content.join(''));
-}
-
-$(function() {
-	loadContent('adminIndexContent');
-	setTimeout(function(){initialzeBreadcrumb()}, 1000);
-});
+loadContent('adminIndexContent');
 
 

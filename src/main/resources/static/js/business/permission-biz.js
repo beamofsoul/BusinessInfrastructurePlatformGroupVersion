@@ -1,7 +1,3 @@
-generateBreadcrumbItem = function() {
-	return '<span><span class="ivu-breadcrumb-item-link">权限管理</span></span>';
-}
-
 //销毁上一个content页面遗留vueContentObject对象实例
 if (vueContentObject) getVueObject().$destroy();
 
@@ -55,3 +51,4 @@ setVueBindFormRulesData({
 });
 
 var vueContentObject = new Vue(initializeContentOptions());
+

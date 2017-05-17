@@ -2,7 +2,14 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<body>
 		<div class="layout-breadcrumb">
-			<Breadcrumb></Breadcrumb>
+			<Breadcrumb>
+				<Breadcrumb-item href="javascript:loadContent('adminIndexContent')">
+		        	<Icon type="ios-home-outline"></Icon>&nbsp;首页
+		        </Breadcrumb-item>
+		        <Breadcrumb-item v-for="item in breadcrumb" :href="item.href">
+		        	&nbsp;{{item.content}}
+		        </Breadcrumb-item>
+			</Breadcrumb>
 		</div>
 	</body>
 </html>
