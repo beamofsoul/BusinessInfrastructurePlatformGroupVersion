@@ -1,3 +1,93 @@
+var beforeVueContentCreate = function(){};// new Vue() 之前提供默认执行的方法
+var beforeVueContentCreateCustom = function(){};// new Vue() 之前可追加方法
+// new Vue()生命周期  beforeCreate（创建前）,created（创建后）,beforeMount(载入前),mounted（载入后）,beforeUpdate（更新前）,updated（更新后）,beforeDestroy（销毁前）,destroyed（销毁后）
+var vueContentBeforeCreate = function(){};
+var vueContentCreated = function(){};
+var vueContentBeforeMount = function(){};
+var vueContentMounted = function(){};
+var vueContentBeforeUpdate = function(){};
+var vueContentUpdated = function(){};
+var vueContentBeforeDestroy = function(){};
+var vueContentDestroyed = function(){};
+
+var vueContentMethods = {};
+var vueContentData = function() {};
+
+var vueContentElementSelector = '#contentContainer';
+
+var customVueContentData = {};//自定义 vue data
+
+vueContentData = function() {
+	var defaultVueContentData = {
+		
+		vueTableColumns: vueTableColumns,//defaultVueBindTableColumnsData : defaultVueBindTableColumnsData,
+		vueTableData: vueTableData,//defaultVueBindTableDataData :[],
+		vueCheckedTableRowIds: vueCheckedTableRowIds,//defaultVueTableDelRowIdsData:'',
+		vueCheckedTableRow: vueCheckedTableRow,//defaultVueTableCheckedData: [],
+		vueTotalNumber: vueTotalNumber,//defaultVueBindPageTotalData: defaultVueBindPageTotalData,
+		vueCurrentPage: vueCurrentPage,//defaultVueBindPageCurrentData: defaultVueBindPageCurrentData,
+		vuePageSize: vuePageSize,//defaultVueBindPageSizeData: defaultVueBindPageSizeData,
+		
+		vueQueryFormVisible: vueQueryFormVisible,//defaultVueBindCollapseQueryFormData: defaultVueBindCollapseQueryFormData,
+		vueAddModalVisible: vueAddModalVisible,//defaultVueBindModalAddData: defaultVueBindModalAddData,
+		vueUpdateModalVisible: vueUpdateModalVisible,//defaultVueBindModalUpdateData: defaultVueBindModalUpdateData,
+		vueDeleteModalVisible: vueDeleteModalVisible,//defaultVueBindModalDelData: defaultVueBindModalDelData,
+		vueDeleteLoadingVisible: vueDeleteLoadingVisible,//defaultVueBindModalDelLoadingData: defaultVueBindModalDelLoadingData,
+		vueDeleteMessage: vueDeleteMessage,//defaultVueBindModalDelMessageData: defaultVueBindModalDelMessageData,
+        
+		vueAddForm :vueAddForm,//defaultVueBindFormAddData :defaultVueBindFormAddData,
+		vueUpdateForm: vueUpdateForm,//defaultVueBindFormUpdateData: defaultVueBindFormUpdateData,
+		vueQueryForm: vueQueryForm,//defaultVueBindFormQueryData: defaultVueBindFormQueryData,
+		
+        vueAddFormRules:vueAddFormRules,//defaultVueBindFormRulesAddData:defaultVueBindFormRulesAddData,
+        vueUpdateFormRules:vueUpdateFormRules,//defaultVueBindFormRulesUpdateData:defaultVueBindFormRulesUpdateData,
+        
+        self: this
+	}
+	return Object.assign({},customVueContentData,defaultVueContentData); 
+}
+
+vueContentMethods = {
+		
+	getCheckedTableRow:getCheckedTableRow,//vueBindTableCheckedDataMethod:vueBindTableCheckedDataMethod,
+	doLoadPage:doLoadPage,//vueTableLoadPageMethod:vueTableLoadPageMethod,
+	doPageTurning:doPageTurning,//vueBindPageOnChangeMethod:vueBindPageOnChangeMethod,
+	
+	rowUpdateButton:rowUpdateButton,//vueBindButtonUpdateMethod:vueBindButtonUpdateMethod,
+	rowDeleteButton:rowDeleteButton,//vueBindButtonDeleteMethod:vueBindButtonDeleteMethod,
+	
+	doAddButton:doAddButton,//vueBindButtonHeadAddMethod:vueBindButtonHeadAddMethod,
+	doUpdateButton:doUpdateButton,//	vueBindButtonHeadUpdateMethod:vueBindButtonHeadUpdateMethod,
+	doDeleteButton:doDeleteButton,//vueBindButtonHeadDeleteMethod:vueBindButtonHeadDeleteMethod,
+	
+	submitAddForm:submitAddForm,//vueBindButtonHeadAddSubmitMethod:vueBindButtonHeadAddSubmitMethod,
+	submitUpdateForm:submitUpdateForm,//vueBindButtonHeadUpdateSubmitMethod:vueBindButtonHeadUpdateSubmitMethod,
+	submitDeleteForm:submitDeleteForm,//vueBindButtonHeadDeleteSubmitMethod:vueBindButtonHeadDeleteSubmitMethod
+	submitQueryForm:submitQueryForm//vueBindButtonClickQueryMethod:vueBindButtonClickQueryMethod,
+}
+
+beforeVueContentCreate = function (){
+	
+	if(tableColumnsName&&tableColumnsKey) {
+		createTableColumns(tableColumnsName,tableColumnsKey,tableButtonsOnEachRow);//根据用户定义的数据 设置table columns data
+		vueContentMounted =function () {this.doLoadPage()};//设置 vue 生命周期 Mounted 时 调用table读取页数据
+	}
+	
+	if(queryFormName&&queryFormItemName&&queryFormItemKey&&queryFormItemType&&defaultQueryFormDomId){
+		//根据用户定义的数据 生成query form 放到指定 dom id
+		createFormTemplate(queryFormName,queryFormItemName,queryFormItemKey,queryFormItemType,defaultQueryFormDomId);
+		//设置 query
+		createQueryForm(createQueryFormData(queryFormItemKey));
+	}
+	
+}
+
+function initializeContentOptions() {
+	if(beforeVueContentCreate) beforeVueContentCreate();
+	if(beforeVueContentCreateCustom) beforeVueContentCreateCustom();
+	return {el: vueContentElementSelector, data: vueContentData,methods: vueContentMethods, beforeCreate: vueContentBeforeCreate, created: vueContentCreated, beforeMount: vueContentBeforeMount, mounted: vueContentMounted, beforeUpdate: vueContentBeforeUpdate, updated: vueContentUpdated, beforeDestroy: vueContentBeforeDestroy, destroyed: vueContentDestroyed};
+}
+/////////////////////////////////////////////////////////////////////////////////////
 /**
  * 获取 vue object
  * @param refName
@@ -16,21 +106,6 @@ function getVueRefObject(refName) {
 	return getVueObject().$refs[refName];
 }
 
-/**
- * vue 生命周期 
- * @param beforeCreateFunction
- * @returns
- */
-function setVueContentBeforeCreateFunction (beforeCreateFunction){
-	vueContentBeforeCreate = beforeCreateFunction;
-}
-
-function setVueContentCreatedFunction (createdFunction){
-	vueContentCreated = createdFunction;
-}
-function setVueContentMountedFunction (mountedFunction){
-	vueContentMounted = mountedFunction;
-}
 
 /**
  * 全局显示吐司消息
@@ -75,138 +150,3 @@ function toast(content, type, duration, onClose){
 	}
 }
 
-//////////////////////////////////////////////////////////////////
-var beforeNewVueDefaultFunction = function(){};// new Vue() 之前  默认方法 加载默认的控件用
-var beforeNewVueFunction = function(){};// new Vue() 之前  自定义方法 可覆盖默认方法中的方法
-// vue 生命周期 beforeCreate（创建前）,created（创建后）,beforeMount(载入前),mounted（载入后）,beforeUpdate（更新前）,updated（更新后）,beforeDestroy（销毁前）,destroyed（销毁后）
-var vueContentBeforeCreate = function(){};
-var vueContentCreated = function(){};
-var vueContentBeforeMount = function(){};
-var vueContentMounted = function(){};
-var vueContentBeforeUpdate = function(){};
-var vueContentUpdated = function(){};
-var vueContentBeforeDestroy = function(){};
-var vueContentDestroyed = function(){};
-
-var vueContentMethods = {};
-var vueContentData = function() {};
-
-var vueContentElementSelector = '#contentContainer';
-
-var customVueContentData = {};//自定义 vue data
-vueContentData = function() {
-	var defaultVueContentData = {
-	    	
-			vueAddModalVisible: vueAddModalVisible,//defaultVueBindModalAddData: defaultVueBindModalAddData,
-			vueUpdateModalVisible: vueUpdateModalVisible,//defaultVueBindModalUpdateData: defaultVueBindModalUpdateData,
-			vueDeleteModalVisible: vueDeleteModalVisible,//defaultVueBindModalDelData: defaultVueBindModalDelData,
-			
-			vueDeleteLoadingVisible: vueDeleteLoadingVisible,//defaultVueBindModalDelLoadingData: defaultVueBindModalDelLoadingData,
-			vueDeleteMessage: vueDeleteMessage,//defaultVueBindModalDelMessageData: defaultVueBindModalDelMessageData,
-			vueCheckedTableRowIds: vueCheckedTableRowIds,//defaultVueTableDelRowIdsData:'',
-			
-			vueTableColumns: vueTableColumns,//defaultVueBindTableColumnsData : defaultVueBindTableColumnsData,
-			vueTableData: vueTableData,//defaultVueBindTableDataData :[],
-//			vueCheckedTableRow: defaultVueTableCheckedData,
-//			vueTotalNumber: defaultVueBindPageTotalData,
-//			vueCurrentPage: defaultVueBindPageCurrentData,
-//			vuePageSize: defaultVueBindPageSizeData,
-//	        
-//			vueAddForm :defaultVueBindFormAddData,
-//			vueUpdateForm: defaultVueBindFormUpdateData,
-//			vueQueryForm: defaultVueBindFormQueryData,
-//			vueQueryFormVisible: defaultVueBindCollapseQueryFormData,
-//			
-//	        vueAddFormRules:defaultVueBindFormRulesAddData,
-//	        vueUpdateFormRules:defaultVueBindFormRulesUpdateData,
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			defaultVueTableCheckedData: [],
-			defaultVueBindPageTotalData: defaultVueBindPageTotalData,
-			defaultVueBindPageCurrentData: defaultVueBindPageCurrentData,
-			defaultVueBindPageSizeData: defaultVueBindPageSizeData,
-	        
-			defaultVueBindFormAddData :defaultVueBindFormAddData,
-			defaultVueBindFormUpdateData: defaultVueBindFormUpdateData,
-			defaultVueBindFormQueryData: defaultVueBindFormQueryData,
-			defaultVueBindCollapseQueryFormData: defaultVueBindCollapseQueryFormData,
-			
-	        defaultVueBindFormRulesAddData:defaultVueBindFormRulesAddData,
-	        defaultVueBindFormRulesUpdateData:defaultVueBindFormRulesUpdateData,
-	        
-	        self: this
-		}
-	return Object.assign({},customVueContentData,defaultVueContentData); 
-}
-
-vueContentMethods = {
-		
-	vueBindTableCheckedDataMethod:vueBindTableCheckedDataMethod,
-	vueTableLoadPageMethod:vueTableLoadPageMethod,
-	vueBindPageOnChangeMethod:vueBindPageOnChangeMethod,
-	vueBindButtonClickQueryMethod:vueBindButtonClickQueryMethod,
-	
-	vueBindButtonUpdateMethod:vueBindButtonUpdateMethod,
-	vueBindButtonDeleteMethod:vueBindButtonDeleteMethod,
-	
-	vueBindButtonHeadAddMethod:vueBindButtonHeadAddMethod,
-	vueBindButtonHeadAddSubmitMethod:vueBindButtonHeadAddSubmitMethod,
-	
-	vueBindButtonHeadUpdateMethod:vueBindButtonHeadUpdateMethod,
-	vueBindButtonHeadUpdateSubmitMethod:vueBindButtonHeadUpdateSubmitMethod,
-	
-	vueBindButtonHeadDeleteMethod:vueBindButtonHeadDeleteMethod,
-	vueBindButtonHeadDeleteSubmitMethod:vueBindButtonHeadDeleteSubmitMethod
-	
-//		getCheckedTableRow:vueBindTableCheckedDataMethod,
-//		doLoadPage:vueTableLoadPageMethod,
-//		doPageTurning:vueBindPageOnChangeMethod,
-//		
-//		rowUpdateButton:vueBindButtonUpdateMethod,
-//		rowDeleteButton:vueBindButtonDeleteMethod,
-//		
-//		doAddButton:vueBindButtonHeadAddMethod,
-//		doUpdateButton:vueBindButtonHeadUpdateMethod,
-//		doDeleteButton:vueBindButtonHeadDeleteMethod,
-//		
-//		submitAddForm:vueBindButtonHeadAddSubmitMethod,
-//		submitUpdateForm:vueBindButtonHeadUpdateSubmitMethod,
-//		submitDeleteForm:vueBindButtonHeadDeleteSubmitMethod,
-//		submitQueryForm:vueBindButtonClickQueryMethod
-
-}
-
-beforeNewVueDefaultFunction = function (){
-	
-	if(tableColumnsName&&tableColumnsKey) {
-		//根据用户定义的数据 设置table columns data
-		setVueTableColumnsData(tableColumnsName,tableColumnsKey,tableButtonsOnEachRow);
-		//设置 vue 生命周期 Mounted 时 调用table读取页数据
-		setVueContentMountedFunction(function () {this.vueTableLoadPageMethod()});
-	}
-	
-	if(defaultVueBindFormQueryDataName&&queryFormItemName&&queryFormItemKey&&queryFormItemType&&defaultQueryFormDomId){
-		//根据用户定义的数据 生成query form 放到指定 dom id
-		setVueFormTemplate(defaultVueBindFormQueryDataName,queryFormItemName,queryFormItemKey,queryFormItemType,defaultQueryFormDomId);
-		//设置 query
-		setVueBindFormQueryData(createVueBindFormQueryData(queryFormItemKey));
-	}
-	
-}
-
-//计算可能会用到 貌似在这也能返回data var vueComputedData ={} computed:vueComputedData 
-		
-// new Vue() 构造参数
-function initializeContentOptions() {
-	if(beforeNewVueDefaultFunction) beforeNewVueDefaultFunction();//new vue 前 默认的方法
-	if(beforeNewVueFunction) beforeNewVueFunction();//new vue 前 自定义方法 可在此中 覆盖上面的beforeNewVueDefaultFunction中方法
-	return {el: vueContentElementSelector, data: vueContentData,methods: vueContentMethods, beforeCreate: vueContentBeforeCreate, created: vueContentCreated, beforeMount: vueContentBeforeMount, mounted: vueContentMounted, beforeUpdate: vueContentBeforeUpdate, updated: vueContentUpdated, beforeDestroy: vueContentBeforeDestroy, destroyed: vueContentDestroyed};
-}

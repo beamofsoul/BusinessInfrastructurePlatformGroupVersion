@@ -10,7 +10,7 @@
 	            <p>{{vueDeleteMessage}} </p>
 	        </div>
 	        <div slot="footer">
-	        	<i-button type="error"  :loading="vueDeleteLoadingVisible" v-on:click="vueBindButtonHeadDeleteSubmitMethod">删除</i-button>
+	        	<i-button type="error"  :loading="vueDeleteLoadingVisible" v-on:click="submitDeleteForm">删除</i-button>
 	        	<i-button type="primary"  v-on:click="vueDeleteModalVisible = false">取消</i-button>
 	        </div>
 	    </Modal>
