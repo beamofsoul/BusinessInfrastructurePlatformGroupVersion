@@ -72,7 +72,8 @@ function vueBindButtonHeadAddSubmitMethod () {
 
 // 默认的初始化updateform逻辑
 initUpdateForm = function (obj){
-	getVueObject()[updataFormName] = obj;
+	var formatObj = formatDataValue2String(obj);
+	getVueObject()[updataFormName] = formatObj;
 	getVueObject()[updataFormModalName] = true;
 	currentAction = actions.update;
 }
@@ -115,7 +116,7 @@ var getSingleData = function(idData, successCallbackBefore,successCallback, erro
 					result = true;
 				}
 			},
-			errorCallback,true
+			errorCallback
 		);
 	return result;
 }
@@ -281,21 +282,13 @@ function vueFormRulesCommonValidate (rule,value,callback) {
  * @param data
  * @param callback
  * @param errorCallback
- * @param vueBindTableDataDataName
- * @param vueBindPageTotalDataName
- * @param vueBindPageSizeDataName
- * @param vueBindPageCurrentDataName
- * @param vueTableCheckedDataName
- * @param vueBindFormQueryDataName
- * @returns
  */
-function submitForm(currentAction,data, callback,errorCallback,vueBindTableDataDataName,vueBindPageTotalDataName,vueBindPageSizeDataName,vueBindPageCurrentDataName,vueTableCheckedDataName,vueBindFormQueryDataName) {
+function submitForm(currentAction,data, callback,errorCallback) {
 	
 	// 包装请求后 回调函数.data 请求成功后 后台返回的值
 	var successCallback = function(data){
-		//
-//		fresh4NewData(data,function(){callback();});
-		fresh4NewData(data,function(){callback();},vueBindTableDataDataName,vueBindPageTotalDataName,vueBindPageSizeDataName,vueBindPageCurrentDataName,vueTableCheckedDataName,vueBindFormQueryDataName);
+		fresh4NewData(data,function(){callback();});
+//		fresh4NewData(data,function(){callback();},vueBindTableDataDataName,vueBindPageTotalDataName,vueBindPageSizeDataName,vueBindPageCurrentDataName,vueTableCheckedDataName,vueBindFormQueryDataName);
 	}
     if(currentAction.key == actions.del.key) $.idel(currentAction.url,data,successCallback,errorCallback);
 	else $.iposty(currentAction.url, data, successCallback,errorCallback);
@@ -306,17 +299,11 @@ function submitForm(currentAction,data, callback,errorCallback,vueBindTableDataD
  * @param currentAction
  * @param successCallback
  * @param errorCallback
- * @param vueBindTableDataDataName
- * @param vueBindPageTotalDataName
- * @param vueBindPageSizeDataName
- * @param vueBindPageCurrentDataName
- * @param vueTableCheckedDataName
- * @param vueBindFormQueryDataName
  * @returns
  */
-function submitFormValidate(currentAction,successCallback,errorCallback,vueBindTableDataDataName,vueBindPageTotalDataName,vueBindPageSizeDataName,vueBindPageCurrentDataName,vueTableCheckedDataName,vueBindFormQueryDataName){
+function submitFormValidate(currentAction,successCallback,errorCallback){
 	getVueRefObject(getCurrentVueFormDataName()).validate((valid) => {
-		if (valid) submitForm(currentAction,getCurrentVueFormData(),successCallback,errorCallback,vueBindTableDataDataName,vueBindPageTotalDataName,vueBindPageSizeDataName,vueBindPageCurrentDataName,vueTableCheckedDataName,vueBindFormQueryDataName);
+		if (valid) submitForm(currentAction,getCurrentVueFormData(),successCallback,errorCallback);
 		else toastError('表单验证失败!');
 	})
 };
@@ -462,11 +449,6 @@ function setVueBindFormModelData(vueBindFormModelDataValue,vueBindFormModelData)
  * @param vueBindFormRulesData vue data object
  * @returns
  */
-function setVueBindFormRulesData(vueBindFormRulesDataValue,vueBindFormRulesData){
-	if(!vueBindFormRulesData) {
+function setVueBindFormRulesData(vueBindFormRulesDataValue){
 		defaultVueBindFormRulesAddData = defaultVueBindFormRulesUpdateData = vueBindFormRulesDataValue;
-	} else {
-		// 此处 可修改为 vueBindFormRulesData数组 循环赋值
-		vueBindFormRulesData = vueBindFormRulesDataValue;
-	}
 }

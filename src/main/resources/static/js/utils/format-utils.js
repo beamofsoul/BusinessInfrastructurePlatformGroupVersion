@@ -111,16 +111,29 @@ function getTimeDifference(pastTime, currentTime) {
  * @param data
  * @returns
  */
-function changeResponseJsonItemType(data){
+function formatDataValue2String(data){
+	var copyObj = Object.assign({}, data);
+	formatDataValueRecursive(copyObj);
+	return copyObj;
+}
+
+/**
+ * 转换后台返回的Json属性类型，以适配页面控件
+ * @param data
+ * @returns
+ */
+function formatDataValueRecursive(data){
+	var copyObj = data;
 	var value;
 	var itemType;
-	for(var key in data){
-		value = data[key];
+	for(var key in copyObj){
+		value = copyObj[key];
 		itemType = typeof value;
-		if(itemType=='number'){
-			value = String(value);
-		}else if(itemType=='boolean'){
-			value = String(boolean);
+		
+		if(itemType == 'object'){
+			formatDataValueRecursive(value);
+		}else if(itemType=='number'||itemType=='boolean'){
+			copyObj[key] = String(value);
 		}
 	}
 }

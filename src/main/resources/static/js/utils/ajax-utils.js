@@ -75,34 +75,20 @@ $(function() {
 		});
 	}
 	
-	$.iposty = function(url, data, successCallback, errorCallback, isChangeResponseJsonItemType) {
-		var changeTypeSuccessCallback = createResponseSuccessCallback(successCallback,isChangeResponseJsonItemType);
-		
+	$.iposty = function(url, data, successCallback, errorCallback) {
 		if(currentRequestMappingRootPath)
 			url = currentRequestMappingRootPath+"/"+url;
 		if(!errorCallback) errorCallback = defaultErrorCallback;
-		$.posty(url, data, changeTypeSuccessCallback, errorCallback);
+		$.posty(url, data, successCallback, errorCallback);
 	}
 	
-	$.idel = function(url, data, successCallback, errorCallback,isChangeResponseJsonItemType) {
-		
+	$.idel = function(url, data, successCallback, errorCallback) {
 		if(currentRequestMappingRootPath)
 			url = currentRequestMappingRootPath+"/"+url;
 		if(!errorCallback) errorCallback = defaultErrorCallback;
 		$.del(url, data, successCallback, errorCallback);
 	}
 	
-	function createResponseSuccessCallback(successCallback,isChangeResponseJsonItemType){
-		var changeTypeSuccessCallback = successCallback;
-		if(isChangeResponseJsonItemType==true){
-			changeTypeSuccessCallback = function(responseData){
-				changeResponseJsonItemType(responseData.obj);
-				if(successCallback) successCallback(responseData);
-			}
-		}
-		return changeTypeSuccessCallback;
-	}
-
 	function defaultErrorCallback(errorMessage){
 		toastError(errorMessage);
 	}
