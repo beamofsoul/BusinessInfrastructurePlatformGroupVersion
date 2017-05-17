@@ -61,7 +61,7 @@
 			</div>
 			
 			<!-- 数据表格 -->
-			<i-table border="true" :context="self" :columns="defaultVueBindTableColumnsData" :data="defaultVueBindTableDataData" v-on:on-sort-change="vueBindTableSortMethod" v-on:on-selection-change="vueBindTableCheckedDataMethod($event,'defaultVueTableCheckedData')" ></i-table>
+			<i-table border="true" :context="self" :columns="vueTableColumns" :data="vueTableData" v-on:on-sort-change="vueBindTableSortMethod" v-on:on-selection-change="vueBindTableCheckedDataMethod($event,'defaultVueTableCheckedData')" ></i-table>
 			
 			<!-- 分页标签 -->
 			<div style="margin: 10px;overflow: hidden">
@@ -73,7 +73,7 @@
 			<!-- 新增用户 -->
 	    	<Modal
 		    	width="600"
-		        v-model="defaultVueBindModalAddData"
+		        v-model="vueAddModalVisible"
 		      	:styles="{top: '80px'}"
 		        title="增加用户">
 	       	
@@ -107,29 +107,29 @@
 			    <div slot="footer">
 			     	<i-button type="primary"  v-on:click="vueBindButtonHeadAddSubmitMethod()">提交</i-button>
 		            <i-button type="primary"  v-on:click="resetVueFormData('defaultVueBindFormAddData')"  style="margin-left: 8px">重置</i-button>
-		            <i-button type="primary"  v-on:click="defaultVueBindModalAddData = false"  style="margin-left: 8px">取消</i-button>
+		            <i-button type="primary"  v-on:click="vueAddModalVisible = false"  style="margin-left: 8px">取消</i-button>
 		        </div>
 	    	</Modal>
 	    	
 	    	<!-- 删除 -->
-		    <Modal v-model="defaultVueBindModalDelData" width="360">
+		    <Modal v-model="vueDeleteModalVisible" width="360">
 		        <p slot="header" style="color:#f60;text-align:center">
 		            <Icon type="information-circled"></Icon>
 		            <span>删除确认</span>
 		        </p>
 		        <div style="text-align:center">
-		            <p>{{defaultVueBindModalDelMessageData}} </p>
+		            <p>{{vueDeleteMessage}} </p>
 		        </div>
 		        <div slot="footer">
-		        	<i-button type="error"  :loading="defaultVueBindModalDelLoadingData" v-on:click="vueBindButtonHeadDeleteSubmitMethod">删除</i-button>
-		        	<i-button type="primary"  v-on:click="defaultVueBindModalDelData = false">取消</i-button>
+		        	<i-button type="error"  :loading="vueDeleteLoadingVisible" v-on:click="vueBindButtonHeadDeleteSubmitMethod">删除</i-button>
+		        	<i-button type="primary"  v-on:click="vueDeleteModalVisible = false">取消</i-button>
 		        </div>
 		    </Modal>
 		    
 		    <!-- 修改 -->
 	    	<Modal
 		    	width="600"
-		        v-model="defaultVueBindModalUpdateData"
+		        v-model="vueUpdateModalVisible"
 		      	:styles="{top: '50px'}"
 		        title="修改用户">
 	       	
@@ -162,7 +162,7 @@
 		    	<!-- 自定义 modal 底部按钮 -->
 			    <div slot="footer">
 			     	<i-button type="primary"  v-on:click="vueBindButtonHeadUpdateSubmitMethod()">提交</i-button>
-		            <i-button type="primary"  v-on:click="defaultVueBindModalUpdateData = false"  style="margin-left: 8px">取消</i-button>
+		            <i-button type="primary"  v-on:click="vueUpdateModalVisible = false"  style="margin-left: 8px">取消</i-button>
 		        </div>
 	    	</Modal>
 	    	

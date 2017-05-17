@@ -97,35 +97,58 @@ var customVueContentData = {};//自定义 vue data
 vueContentData = function() {
 	var defaultVueContentData = {
 	    	
-		defaultVueBindModalAddData: defaultVueBindModalAddData,
-		defaultVueBindModalUpdateData: defaultVueBindModalUpdateData,
-		defaultVueBindModalDelData: defaultVueBindModalDelData,
-		
-		defaultVueBindModalDelLoadingData: defaultVueBindModalDelLoadingData,
-		defaultVueBindModalDelMessageData: defaultVueBindModalDelMessageData,
-		defaultVueTableDelRowIdsData:'',
-		
-		defaultVueBindTableColumnsData : defaultVueBindTableColumnsData,
-		defaultVueBindTableDataData :[],
-		defaultVueTableCheckedData: [],
-		defaultVueBindPageTotalData: defaultVueBindPageTotalData,
-		defaultVueBindPageCurrentData: defaultVueBindPageCurrentData,
-		defaultVueBindPageSizeData: defaultVueBindPageSizeData,
-        
-		defaultVueBindFormAddData :defaultVueBindFormAddData,
-		defaultVueBindFormUpdateData: defaultVueBindFormUpdateData,
-		defaultVueBindFormQueryData: defaultVueBindFormQueryData,
-		defaultVueBindCollapseQueryFormData: defaultVueBindCollapseQueryFormData,
-		
-        defaultVueBindFormRulesAddData:defaultVueBindFormRulesAddData,
-        defaultVueBindFormRulesUpdateData:defaultVueBindFormRulesUpdateData,
-        
-        self: this
-	}
+			vueAddModalVisible: vueAddModalVisible,//defaultVueBindModalAddData: defaultVueBindModalAddData,
+			vueUpdateModalVisible: vueUpdateModalVisible,//defaultVueBindModalUpdateData: defaultVueBindModalUpdateData,
+			vueDeleteModalVisible: vueDeleteModalVisible,//defaultVueBindModalDelData: defaultVueBindModalDelData,
+			
+			vueDeleteLoadingVisible: vueDeleteLoadingVisible,//defaultVueBindModalDelLoadingData: defaultVueBindModalDelLoadingData,
+			vueDeleteMessage: vueDeleteMessage,//defaultVueBindModalDelMessageData: defaultVueBindModalDelMessageData,
+			vueCheckedTableRowIds: vueCheckedTableRowIds,//defaultVueTableDelRowIdsData:'',
+			
+			vueTableColumns: vueTableColumns,//defaultVueBindTableColumnsData : defaultVueBindTableColumnsData,
+			vueTableData: vueTableData,//defaultVueBindTableDataData :[],
+//			vueCheckedTableRow: defaultVueTableCheckedData,
+//			vueTotalNumber: defaultVueBindPageTotalData,
+//			vueCurrentPage: defaultVueBindPageCurrentData,
+//			vuePageSize: defaultVueBindPageSizeData,
+//	        
+//			vueAddForm :defaultVueBindFormAddData,
+//			vueUpdateForm: defaultVueBindFormUpdateData,
+//			vueQueryForm: defaultVueBindFormQueryData,
+//			vueQueryFormVisible: defaultVueBindCollapseQueryFormData,
+//			
+//	        vueAddFormRules:defaultVueBindFormRulesAddData,
+//	        vueUpdateFormRules:defaultVueBindFormRulesUpdateData,
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			defaultVueTableCheckedData: [],
+			defaultVueBindPageTotalData: defaultVueBindPageTotalData,
+			defaultVueBindPageCurrentData: defaultVueBindPageCurrentData,
+			defaultVueBindPageSizeData: defaultVueBindPageSizeData,
+	        
+			defaultVueBindFormAddData :defaultVueBindFormAddData,
+			defaultVueBindFormUpdateData: defaultVueBindFormUpdateData,
+			defaultVueBindFormQueryData: defaultVueBindFormQueryData,
+			defaultVueBindCollapseQueryFormData: defaultVueBindCollapseQueryFormData,
+			
+	        defaultVueBindFormRulesAddData:defaultVueBindFormRulesAddData,
+	        defaultVueBindFormRulesUpdateData:defaultVueBindFormRulesUpdateData,
+	        
+	        self: this
+		}
 	return Object.assign({},customVueContentData,defaultVueContentData); 
 }
 
 vueContentMethods = {
+		
 	vueBindTableCheckedDataMethod:vueBindTableCheckedDataMethod,
 	vueTableLoadPageMethod:vueTableLoadPageMethod,
 	vueBindPageOnChangeMethod:vueBindPageOnChangeMethod,
@@ -142,6 +165,22 @@ vueContentMethods = {
 	
 	vueBindButtonHeadDeleteMethod:vueBindButtonHeadDeleteMethod,
 	vueBindButtonHeadDeleteSubmitMethod:vueBindButtonHeadDeleteSubmitMethod
+	
+//		getCheckedTableRow:vueBindTableCheckedDataMethod,
+//		doLoadPage:vueTableLoadPageMethod,
+//		doPageTurning:vueBindPageOnChangeMethod,
+//		
+//		rowUpdateButton:vueBindButtonUpdateMethod,
+//		rowDeleteButton:vueBindButtonDeleteMethod,
+//		
+//		doAddButton:vueBindButtonHeadAddMethod,
+//		doUpdateButton:vueBindButtonHeadUpdateMethod,
+//		doDeleteButton:vueBindButtonHeadDeleteMethod,
+//		
+//		submitAddForm:vueBindButtonHeadAddSubmitMethod,
+//		submitUpdateForm:vueBindButtonHeadUpdateSubmitMethod,
+//		submitDeleteForm:vueBindButtonHeadDeleteSubmitMethod,
+//		submitQueryForm:vueBindButtonClickQueryMethod
 
 }
 

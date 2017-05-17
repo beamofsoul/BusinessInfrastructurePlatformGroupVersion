@@ -1,10 +1,12 @@
-var defaultVueBindTableColumnsData={};//table 列数据 data
+var vueTableColumns={};//table 列数据 data
 var defaultVueBindPageTotalData = 0;//记录总数
 var defaultVueBindPageCurrentData = 1;//当前页数
 var defaultVueBindPageSizeData = 4;//每一页显示条数
-var defaultVueBindTableDataDataName = 'defaultVueBindTableDataData';
+var defaultVueBindTableDataDataName = 'vueTableData';
 
 var loadPageableDataUrl;//加载分页业务数据用的URL
+var vueCheckedTableRowIds = '';
+var vueTableData=[];
 
 /**
  * 获取table check data ids
@@ -193,6 +195,6 @@ function vueBindTableCheckedDataMethod(selection,vueTableCheckedDataName){
 function setVueTableColumnsData(tableColumnsName,tableColumnsKey,tableButtonsOnEachRow,vueBindTableColumnsData,vueBindTableDataDataName){
 	if(!vueBindTableDataDataName) vueBindTableDataDataName = defaultVueBindTableDataDataName;
 	var vueTableColumnsDataResult = createVueTableColumnsData(tableColumnsName,tableColumnsKey,tableButtonsOnEachRow,vueBindTableDataDataName);
-	if(!vueBindTableColumnsData) defaultVueBindTableColumnsData = vueTableColumnsDataResult;
+	if(!vueBindTableColumnsData) vueTableColumns = vueTableColumnsDataResult;
 	vueBindTableColumnsData = vueTableColumnsDataResult;
 }

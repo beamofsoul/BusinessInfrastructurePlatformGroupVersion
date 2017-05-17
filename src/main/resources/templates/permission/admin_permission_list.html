@@ -22,7 +22,7 @@
 			<!-- 新增 -->
 	    	<Modal
 		    	width="600"
-		        v-model="defaultVueBindModalAddData"
+		        v-model="vueAddModalVisible"
 		      	:styles="{top: '80px'}"
 		        title="增加权限">
 	       	
@@ -62,14 +62,14 @@
 			    <div slot="footer">
 			     	<i-button type="primary"  v-on:click="vueBindButtonHeadAddSubmitMethod()">提交</i-button>
 		            <i-button type="primary"  v-on:click="resetVueFormData('defaultVueBindFormAddData')"  style="margin-left: 8px">重置</i-button>
-		            <i-button type="primary"  v-on:click="defaultVueBindModalAddData = false"  style="margin-left: 8px">取消</i-button>
+		            <i-button type="primary"  v-on:click="vueAddModalVisible = false"  style="margin-left: 8px">取消</i-button>
 		        </div>
 	    	</Modal>
 	    	
 		    <!-- 修改 -->
 	    	<Modal
 		    	width="600"
-		        v-model="defaultVueBindModalUpdateData"
+		        v-model="vueUpdateModalVisible"
 		      	:styles="{top: '50px'}"
 		        title="修改权限">
 	       	
@@ -108,7 +108,7 @@
 		    	<!-- 自定义 modal 底部按钮 -->
 			    <div slot="footer">
 			     	<i-button type="primary"  v-on:click="vueBindButtonHeadUpdateSubmitMethod()">提交</i-button>
-		            <i-button type="primary"  v-on:click="defaultVueBindModalUpdateData = false"  style="margin-left: 8px">取消</i-button>
+		            <i-button type="primary"  v-on:click="vueUpdateModalVisible = false"  style="margin-left: 8px">取消</i-button>
 		        </div>
 	    	</Modal>
 	    	

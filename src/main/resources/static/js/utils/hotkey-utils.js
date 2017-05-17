@@ -36,11 +36,11 @@ $(document).ready(function(){
 	//伸出与收缩queryForm
 	hotkey('space+q', function() {getVueRefObject('defaultVueBindCollapseQueryFormData').value = String(parseInt(getVueRefObject('defaultVueBindCollapseQueryFormData').value) * -1)});
 	//弹出与关闭addForm
-	hotkey('space+a', function() {if(!vueContentObject.defaultVueBindModalAddData) vueContentObject.vueBindButtonHeadAddMethod(); else vueContentObject.defaultVueBindModalAddData = false});
+	hotkey('space+a', function() {if(!vueContentObject.vueAddModalVisible) vueContentObject.vueBindButtonHeadAddMethod(); else vueContentObject.defaultVueBindModalAddData = false});
 	//弹出addForm后，进行自动提交表单
-	hotkey('space+s', function() {if(vueContentObject.defaultVueBindModalAddData) vueContentObject.vueBindButtonHeadAddSubmitMethod()});
+	hotkey('space+s', function() {if(vueContentObject.vueAddModalVisible) vueContentObject.vueBindButtonHeadAddSubmitMethod()});
 	//弹出addForm后，进行表单重置
-	hotkey('space+r', function() {if(vueContentObject.defaultVueBindModalAddData) resetVueFormData('defaultVueBindFormAddData')});
+	hotkey('space+r', function() {if(vueContentObject.vueAddModalVisible) resetVueFormData('defaultVueBindFormAddData')});
 	//回归页面顶部
 	hotkey('space+b', function() {$('.ivu-back-top').click()});
 	//数据表格上一页

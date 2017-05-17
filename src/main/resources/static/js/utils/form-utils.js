@@ -8,12 +8,12 @@ var defaultVueBindFormRulesUpdateData;
 var vueBindFormQueryDataName = 'defaultVueBindFormQueryData';
 var defaultVueBindFormQueryDataName = 'defaultVueBindFormQueryData';
 
-var defaultVueBindModalAddData = false;//添加form 对话框 显示状态
-var defaultVueBindModalUpdateData = false;//修改form 对话框 显示状态
-var defaultVueBindModalDelData = false;//删除 对话框 显示状态
+var vueAddModalVisible = false;//添加form 对话框 显示状态
+var vueUpdateModalVisible = false;//修改form 对话框 显示状态
+var vueDeleteModalVisible = false;//删除 对话框 显示状态
 
-var defaultVueBindModalDelLoadingData = false;//删除form 对话框 按钮状态
-var defaultVueBindModalDelMessageData = '';
+var vueDeleteLoadingVisible = false;//删除form 对话框 按钮状态
+var vueDeleteMessage = '';
 
 var currentAction = null;// 当前用户操作的行为 - add、update、delete 等
 
@@ -39,7 +39,7 @@ var deleteBefore;   //执行删除后台方法之前需要执行的方法
 
 var defaultVueBindFormUpdateData;
 var updataFormName = 'defaultVueBindFormUpdateData';
-var updataFormModalName = 'defaultVueBindModalUpdateData';
+var updataFormModalName = 'vueUpdateModalVisible';
 var tableCheckDataName = 'defaultVueTableCheckedData';
 
 var addFormName = 'defaultVueBindFormAddData';
@@ -53,7 +53,7 @@ function vueBindButtonHeadAddMethod (){
 	
 	resetVueFormData(addFormName);
 	currentAction = actions.add;
-	this.defaultVueBindModalAddData = true;
+	this.vueAddModalVisible = true;
 	
 	if (initAddForm) initAddForm();
 }
@@ -64,7 +64,7 @@ function vueBindButtonHeadAddSubmitMethod () {
 	var _self = this;
 	submitFormValidate(currentAction,function(data){
 		toastSuccess('提交成功!');
-		_self.defaultVueBindModalAddData = false;		
+		_self.vueAddModalVisible = false;		
 		resetVueFormData(addFormName);
 	});
 }
@@ -154,11 +154,11 @@ function vueBindButtonHeadDeleteMethod(){
 		return;
 	}
 	if (deleteBefore) deleteBefore(getVueTableCheckedDataIds(checkData));
-	this.defaultVueBindModalDelMessageData = "即将删除"+ checkData.length +"条记录,是否继续删除?";
-	this.defaultVueTableDelRowIdsData = getVueTableCheckedDataIds(checkData);//将要删除的id 赋值给data
+	this.vueDeleteMessage = "即将删除"+ checkData.length +"条记录,是否继续删除?";
+	this.vueCheckedTableRowIds = getVueTableCheckedDataIds(checkData);//将要删除的id 赋值给data
 	currentAction = actions.del;
 	
-	this.defaultVueBindModalDelData = true;
+	this.vueDeleteModalVisible = true;
 }
 
 /**
@@ -171,9 +171,9 @@ function vueBindButtonDeleteMethod (index,vueBindTableDataDataName) {
 	if (beforeDelete) beforeDelete();
 	if (deleteBefore) deleteBefore(''+getVueObject()[vueBindTableDataDataName][index].id);
 
-	getVueObject().defaultVueBindModalDelMessageData = "是否继续删除此条记录?";
-	getVueObject().defaultVueTableDelRowIdsData = ''+getVueObject()[vueBindTableDataDataName][index].id;
-	getVueObject().defaultVueBindModalDelData = true;// 显示删除界面
+	getVueObject().vueDeleteMessage = "是否继续删除此条记录?";
+	getVueObject().vueCheckedTableRowIds = ''+getVueObject()[vueBindTableDataDataName][index].id;
+	getVueObject().vueDeleteModalVisible = true;// 显示删除界面
 	currentAction = actions.del;
 }
 
@@ -183,15 +183,15 @@ function vueBindButtonDeleteMethod (index,vueBindTableDataDataName) {
 function vueBindButtonHeadDeleteSubmitMethod (){
 	var _self = this;
 	_self.modalDelSubmitLoading = true;
-	submitForm(currentAction,_self.defaultVueTableDelRowIdsData,
+	submitForm(currentAction,_self.vueCheckedTableRowIds,
 		function(data){
 			toastSuccess('删除成功');
-			_self.defaultVueBindModalDelLoadingData = false;
-			_self.defaultVueBindModalDelData = false;
+			_self.vueDeleteLoadingVisible = false;
+			_self.vueDeleteModalVisible = false;
 		},
 		function(errorMessage){
 			toastError(errorMessage);
-			_self.defaultVueBindModalDelLoadingData = false;
+			_self.vueDeleteLoadingVisible = false;
 		}
 	);
 }

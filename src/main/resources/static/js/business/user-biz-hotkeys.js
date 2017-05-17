@@ -3,7 +3,7 @@ $(document).ready(function(){
 	//伸出与收缩queryForm
 	hotkey('space+q', function() {getVueRefObject('defaultVueBindCollapseQueryFormData').value = String(parseInt(getVueRefObject('defaultVueBindCollapseQueryFormData').value) * -1)});
 	//弹出与关闭addForm
-	hotkey('space+a', function() {if(!vueContentObject.defaultVueBindModalAddData) vueContentObject.vueBindButtonHeadAddMethod(); else vueContentObject.defaultVueBindModalAddData = false});
+	hotkey('space+a', function() {if(!vueContentObject.vueAddModalVisible) vueContentObject.vueBindButtonHeadAddMethod(); else vueContentObject.vueAddModalVisible = false});
 	//回归页面顶部
 	hotkey('space+b', function() {$('.ivu-back-top').click()});
 	//数据表格上一页
