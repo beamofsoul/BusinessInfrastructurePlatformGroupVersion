@@ -1,17 +1,17 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<body>
-		<Modal v-model="defaultVueBindModalDelData" width="360">
+		<Modal v-model="vueDeleteModalVisible" width="360">
 	        <p slot="header" style="color:#f60;text-align:center">
 	            <Icon type="information-circled"></Icon>
 	            <span>删除确认</span>
 	        </p>
 	        <div style="text-align:center">
-	            <p>{{defaultVueBindModalDelMessageData}} </p>
+	            <p>{{vueDeleteMessage}} </p>
 	        </div>
 	        <div slot="footer">
-	        	<i-button type="error"  :loading="defaultVueBindModalDelLoadingData" v-on:click="vueBindButtonHeadDeleteSubmitMethod">删除</i-button>
-	        	<i-button type="primary"  v-on:click="defaultVueBindModalDelData = false">取消</i-button>
+	        	<i-button type="error"  :loading="vueDeleteLoadingVisible" v-on:click="vueBindButtonHeadDeleteSubmitMethod">删除</i-button>
+	        	<i-button type="primary"  v-on:click="vueDeleteModalVisible = false">取消</i-button>
 	        </div>
 	    </Modal>
 	</body>
