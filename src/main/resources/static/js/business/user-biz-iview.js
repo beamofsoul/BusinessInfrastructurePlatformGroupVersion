@@ -43,14 +43,14 @@ vueContentBeforeCreate = function(){
 	customVueContentData = {
 		statusDataSelect : [{value: '1',label: '启用'},{value: '0',label: '禁用'}],
 		defaultList: [
-		    {
-		        'name': 'a42bdcc1178e62b4694c830f028db5c0',
-		        'url': 'https://o5wwk8baw.qnssl.com/a42bdcc1178e62b4694c830f028db5c0/avatar'
-		    },
-		    {
-		        'name': 'bc7521e033abdd1e92222d733590f104',
-		        'url': 'https://o5wwk8baw.qnssl.com/bc7521e033abdd1e92222d733590f104/avatar'
-		    }
+//			 {
+//			        'name': '1',
+//			        'url': 'https://o5wwk8baw.qnssl.com/bc7521e033abdd1e92222d733590f104/avatar'
+//			    },
+//			    {
+//			        'name': '2',
+//			        'url': 'https://o5wwk8baw.qnssl.com/bc7521e033abdd1e92222d733590f104/avatar'
+//			    }
 		],
 		imgName : '',
 		imgvisible : false,
@@ -78,21 +78,40 @@ vueContentMethods.handleFormatError = function(file) {
         title: '文件格式不正确',
         desc: '文件 ' + file.name + ' 格式不正确，请上传 jpg 或 png 格式的图片。'
     });
+    
+    return false;
 },
 vueContentMethods.handleMaxSize = function(file) {
     this.$Notice.warning({
         title: '超出文件大小限制',
         desc: '文件 ' + file.name + ' 太大，不能超过 2M。'
     });
+    
 },
-vueContentMethods.handleBeforeUpload = function() {
-    const check = this.uploadList.length < 5;
-    if (!check) {
-        this.$Notice.warning({
-            title: '最多只能上传 5 张图片。'
-        });
-    }
-    return check;
+vueContentMethods.handleBeforeUpload = function(file) {
+	
+	  const check = this.uploadList.length < 5;
+	  if (!check) {
+	      this.$Notice.warning({
+	          title: '最多只能上传 5 张图片。'
+	      });
+	      return false;
+	  }
+	
+	console.log('1------------handleBeforeUpload'); 
+	console.log(file);
+	
+	var fr = new FileReader();
+	fr.onload = function(e) {
+		getVueObject().uploadList.push({
+	        'name': file.name,
+	        'url': e.target.result
+	    });
+	};
+	fr.readAsDataURL(file);
+	return true;
+	
+
 }
 
 //////////////////////////////new vue 前自定义方法 ////////////////////////////////
