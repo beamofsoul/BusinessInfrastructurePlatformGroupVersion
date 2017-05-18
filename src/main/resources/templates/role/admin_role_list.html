@@ -8,7 +8,7 @@
   <body>
     <div id="contentContainer" width="100%" height="100%" style="margin:15px">
       <!-- 综合查询 form -->
-      <Collapse>
+      <Collapse >
         <Panel name="1">综合查询
           <p slot="content" id="queryFormDomId"></p>
         </Panel>
@@ -30,7 +30,7 @@
       <!-- 分页标签 -->
       <div style="margin:10px;overflow:hidden">
         <div style="float:right">
-          <Page show-total="true" :page-size="vuePageSize" :total="vueTotalNumber" :current="vueCurrentPage" v-on:on-change="doPageTurning($event)"></Page>
+          <Page show-total="true" :page-size="vuePageSize" :total="vueRecordTotal" :current="vueCurrentPage" v-on:on-change="doPageTurning($event)"></Page>
         </div>
       </div>
 
@@ -59,10 +59,10 @@
           <span>删除确认</span>
         </p>
         <div style="text-align:center">
-          <p>{{defaultVueBindModalDelMessageData}} </p>
+          <p>{{vueDeleteMessage}} </p>
         </div>
         <div slot="footer">
-          <i-button type="error" :loading="vueDeleteLoadingVisible" v-on:click="submitDeleteForm">删除</i-button>
+          <i-button type="error" :loading="vueDeleteProgressVisible" v-on:click="submitDeleteForm">删除</i-button>
           <i-button type="primary" v-on:click="vueDeleteModalVisible=false">取消</i-button>
         </div>
       </Modal>
