@@ -103,6 +103,7 @@
 					    </Radio-group>
 			        </Form-item>
 			    </i-form>
+			    
 		    	<!-- 自定义 modal 底部按钮 -->
 			    <div slot="footer">
 			     	<i-button type="primary"  v-on:click="submitAddForm()">提交</i-button>
@@ -159,6 +160,51 @@
 					    </Radio-group>
 			        </Form-item>
 			    </i-form>
+			    
+			     <!-- 上传图片 -->
+		    	<!-- <div class="demo-upload-list" v-for="item in uploadList">
+			        <template v-if="item.status === 'finished'">
+			            <img :src="item.url"/>
+			            <div class="demo-upload-list-cover">
+			                <Icon type="ios-eye-outline" v-on:click.native="handleView(item.name)"></Icon>
+			                <Icon type="ios-trash-outline" v-on:click.native="handleRemove(item)"></Icon>
+			            </div>
+			        </template>
+			        <template v-else="">
+			            <Progress v-if="item.showProgress" :percent="item.percentage" hide-info="true"></Progress>
+			        </template>
+			    </div> -->
+			    <div class="demo-upload-list" v-for="item in uploadList">
+			            <img :src="item.url"/>
+			            <div class="demo-upload-list-cover">
+			                <Icon type="ios-eye-outline" v-on:click.native="handleView(item.name)"></Icon>
+			                <Icon type="ios-trash-outline" v-on:click.native="handleRemove(item.name)"></Icon>
+			            </div>
+			      
+			    </div>
+			    
+			   <Upload
+			        ref="upload"
+			        :show-upload-list="false"
+			        :default-file-list="defaultList"
+			        :on-success="handleSuccess"
+			        :format="['jpg','jpeg','png']"
+			        :max-size="2048"
+			        :on-format-error="handleFormatError"
+			        :on-exceeded-size="handleMaxSize"
+			        :before-upload="handleBeforeUpload"
+			        type="drag"
+			        action="user/updatePhoto"
+			        style="display: inline-block;width:58px;">
+			        <div style="width: 58px;height:58px;line-height: 58px;">
+			            <Icon type="camera" size="20"></Icon>
+			        </div>
+			    </Upload>
+			    <Modal title="查看图片"  v-model="imgvisible">
+			        <img :src="imgName" style="width: 100%" />
+			    </Modal>
+			    <!-- 上传图片 end-->
+			    
 		    	<!-- 自定义 modal 底部按钮 -->
 			    <div slot="footer">
 			     	<i-button type="primary"  v-on:click="submitUpdateForm()">提交</i-button>
@@ -166,40 +212,7 @@
 		        </div>
 	    	</Modal>
 	    	
-	    	<!-- 上传图片 -->
-	    	<div class="demo-upload-list" v-for="item in uploadList">
-		        <template v-if="item.status === 'finished'">
-		            <img :src="item.url"/>
-		            <div class="demo-upload-list-cover">
-		                <Icon type="ios-eye-outline" v-on:click.native="handleView(item.name)"></Icon>
-		                <Icon type="ios-trash-outline" v-on:click.native="handleRemove(item)"></Icon>
-		            </div>
-		        </template>
-		        <template v-else="">
-		            <Progress v-if="item.showProgress" :percent="item.percentage" hide-info="true"></Progress>
-		        </template>
-		    </div>
-		    
-		   <Upload
-		        ref="upload"
-		        :show-upload-list="false"
-		        :default-file-list="defaultList"
-		        :on-success="handleSuccess"
-		        :format="['jpg','jpeg','png']"
-		        :max-size="2048"
-		        :on-format-error="handleFormatError"
-		        :on-exceeded-size="handleMaxSize"
-		        :before-upload="handleBeforeUpload"
-		        type="drag"
-		        action="user/updatePhoto"
-		        style="display: inline-block;width:58px;">
-		        <div style="width: 58px;height:58px;line-height: 58px;">
-		            <Icon type="camera" size="20"></Icon>
-		        </div>
-		    </Upload>
-		    <Modal title="查看图片"  v-model="imgvisible">
-		        <img :src="'https://o5wwk8baw.qnssl.com/' + imgName + '/large'" style="width: 100%" />
-		    </Modal>
+	    	
 	    	
 	    	<Back-top></Back-top>
 		</div>
