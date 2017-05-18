@@ -72,7 +72,7 @@ function submitAddForm () {
 initUpdateForm = function (obj){
 	var updateForm = getVueObject().vueUpdateForm;
 	//mapping 值映射
-	mergeObjectSameAttribute(updateForm,obj);
+	copyPropertiesValue(updateForm,obj);
 	//格式化返回json属性类型
 	formatObject2String(updateForm);
 	

@@ -137,22 +137,22 @@ function formatObject2String(data){
 }
 
 /**
- * 合并两个json ，以target属性为主 将sources对应的属性值覆盖掉target中同名属性值
- * @param target 包含属性的对象
- * @param sources 包含值的对象
+ * 拷贝一个对象中的属性值到另一个对象 ，以target属性为主 将sources对应的属性值覆盖掉target中同名属性值
+ * @param sources 包含属性的对象
+ * @param target 包含值的对象
  * @returns
  */
-function mergeObjectSameAttribute(target,sources){
+function copyPropertiesValue(sources,target){
 	var value;
 	var itemType;
-	for(var key in target){
-		value = target[key];
+	for(var key in sources){
+		value = sources[key];
 		itemType = typeof value;
 		if(itemType == 'object'){
-			if(sources[key])
-				mergeObjectSameAttribute(target[key],sources[key]);
+			if(target[key])
+				copyPropertiesValue(sources[key],target[key]);
 		}else{
-			target[key] = sources[key];
+			sources[key] = target[key];
 		}
 	}
 }
