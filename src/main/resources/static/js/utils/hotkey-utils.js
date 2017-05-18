@@ -50,5 +50,5 @@ $(document).ready(function(){
 	//数据表格第一页
 	hotkey('space+,', function() {vueContentObject.vueCurrentPage = 1;vueContentObject.doPageTurning(1)});
 	//数据表格最后一页
-	hotkey('space+.', function() {var pageFinal = Math.ceil(vueContentObject.vueTotalNumber / vueContentObject.vuePageSize);vueContentObject.vueCurrentPage = pageFinal;vueContentObject.doPageTurning(pageFinal)});
+	hotkey('space+.', function() {var pageFinal = Math.ceil(vueContentObject.vueRecordTotal / vueContentObject.vuePageSize);vueContentObject.vueCurrentPage = pageFinal;vueContentObject.doPageTurning(pageFinal)});
 });

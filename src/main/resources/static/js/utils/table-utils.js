@@ -3,7 +3,7 @@ var tableColumnsKey;
 var tableButtonsOnEachRow;
 
 var currentTableDataName = 'vueTableData';
-var currentTotalNumberName = 'vueTotalNumber';
+var currentRecordTotalName = 'vueRecordTotal';
 var	currentPageSizeName = 'vuePageSize';
 var	currentCurrentPageName = 'vueCurrentPage';
 var currentCheckedTableRowName = 'vueCheckedTableRow';
@@ -15,7 +15,7 @@ var vueTableColumns={};//table 列数据 data
 var vueTableData=[];//table data
 var vueCheckedTableRow=[];//checked data
 var vueCheckedTableRowIds = '';//checked ids
-var vueTotalNumber = 0;//记录总数
+var vueRecordTotal = 0;//记录总数
 var vueCurrentPage = 1;//当前页数
 var vuePageSize = 4;//每一页显示条数
 
@@ -77,7 +77,7 @@ function doLoadPage () {
 	$.iposty(loadPageableDataUrl, {page: (_self[currentCurrentPageName]-1) , size: _self[currentPageSizeName],condition:formatQueryFormData(_self[currentQueryFormName])}, 
 			function(data){
 				_self[currentTableDataName] = formatTableData(data);// 分页数据
-				_self[currentTotalNumberName] = data.pageableData.totalElements;// 总记录数
+				_self[currentRecordTotalName] = data.pageableData.totalElements;// 总记录数
 				setTimeout(msg, 120);//销毁加载提示
 			},
 			function(errorMessage){

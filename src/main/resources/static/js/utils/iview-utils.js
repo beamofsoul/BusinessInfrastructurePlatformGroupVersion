@@ -20,27 +20,27 @@ var customVueContentData = {};//自定义 vue data
 vueContentData = function() {
 	var defaultVueContentData = {
 		
-		vueTableColumns: vueTableColumns,//defaultVueBindTableColumnsData : defaultVueBindTableColumnsData,
-		vueTableData: vueTableData,//defaultVueBindTableDataData :[],
-		vueCheckedTableRowIds: vueCheckedTableRowIds,//defaultVueTableDelRowIdsData:'',
-		vueCheckedTableRow: vueCheckedTableRow,//defaultVueTableCheckedData: [],
-		vueTotalNumber: vueTotalNumber,//defaultVueBindPageTotalData: defaultVueBindPageTotalData,
-		vueCurrentPage: vueCurrentPage,//defaultVueBindPageCurrentData: defaultVueBindPageCurrentData,
-		vuePageSize: vuePageSize,//defaultVueBindPageSizeData: defaultVueBindPageSizeData,
+		vueTableColumns: vueTableColumns,
+		vueTableData: vueTableData,
+		vueCheckedTableRowIds: vueCheckedTableRowIds,
+		vueCheckedTableRow: vueCheckedTableRow,
+		vueRecordTotal: vueRecordTotal,
+		vueCurrentPage: vueCurrentPage,
+		vuePageSize: vuePageSize,
 		
-		vueQueryFormVisible: vueQueryFormVisible,//defaultVueBindCollapseQueryFormData: defaultVueBindCollapseQueryFormData,
-		vueAddModalVisible: vueAddModalVisible,//defaultVueBindModalAddData: defaultVueBindModalAddData,
-		vueUpdateModalVisible: vueUpdateModalVisible,//defaultVueBindModalUpdateData: defaultVueBindModalUpdateData,
-		vueDeleteModalVisible: vueDeleteModalVisible,//defaultVueBindModalDelData: defaultVueBindModalDelData,
-		vueDeleteLoadingVisible: vueDeleteLoadingVisible,//defaultVueBindModalDelLoadingData: defaultVueBindModalDelLoadingData,
-		vueDeleteMessage: vueDeleteMessage,//defaultVueBindModalDelMessageData: defaultVueBindModalDelMessageData,
+		vueQueryFormVisible: vueQueryFormVisible,
+		vueAddModalVisible: vueAddModalVisible,
+		vueUpdateModalVisible: vueUpdateModalVisible,
+		vueDeleteModalVisible: vueDeleteModalVisible,
+		vueDeleteProgressVisible: vueDeleteProgressVisible,
+		vueDeleteMessage: vueDeleteMessage,
         
-		vueAddForm :vueAddForm,//defaultVueBindFormAddData :defaultVueBindFormAddData,
-		vueUpdateForm: vueUpdateForm,//defaultVueBindFormUpdateData: defaultVueBindFormUpdateData,
-		vueQueryForm: vueQueryForm,//defaultVueBindFormQueryData: defaultVueBindFormQueryData,
+		vueAddForm :vueAddForm,
+		vueUpdateForm: vueUpdateForm,
+		vueQueryForm: vueQueryForm,
 		
-        vueAddFormRules:vueAddFormRules,//defaultVueBindFormRulesAddData:defaultVueBindFormRulesAddData,
-        vueUpdateFormRules:vueUpdateFormRules,//defaultVueBindFormRulesUpdateData:defaultVueBindFormRulesUpdateData,
+        vueAddFormRules:vueAddFormRules,
+        vueUpdateFormRules:vueUpdateFormRules,
         
         self: this
 	}
@@ -49,21 +49,21 @@ vueContentData = function() {
 
 vueContentMethods = {
 		
-	getCheckedTableRow:getCheckedTableRow,//vueBindTableCheckedDataMethod:vueBindTableCheckedDataMethod,
-	doLoadPage:doLoadPage,//vueTableLoadPageMethod:vueTableLoadPageMethod,
-	doPageTurning:doPageTurning,//vueBindPageOnChangeMethod:vueBindPageOnChangeMethod,
+	getCheckedTableRow:getCheckedTableRow,
+	doLoadPage:doLoadPage,
+	doPageTurning:doPageTurning,
 	
-	rowUpdateButton:rowUpdateButton,//vueBindButtonUpdateMethod:vueBindButtonUpdateMethod,
-	rowDeleteButton:rowDeleteButton,//vueBindButtonDeleteMethod:vueBindButtonDeleteMethod,
+	rowUpdateButton:rowUpdateButton,
+	rowDeleteButton:rowDeleteButton,
 	
-	doAddButton:doAddButton,//vueBindButtonHeadAddMethod:vueBindButtonHeadAddMethod,
-	doUpdateButton:doUpdateButton,//	vueBindButtonHeadUpdateMethod:vueBindButtonHeadUpdateMethod,
-	doDeleteButton:doDeleteButton,//vueBindButtonHeadDeleteMethod:vueBindButtonHeadDeleteMethod,
+	doAddButton:doAddButton,
+	doUpdateButton:doUpdateButton,
+	doDeleteButton:doDeleteButton,
 	
-	submitAddForm:submitAddForm,//vueBindButtonHeadAddSubmitMethod:vueBindButtonHeadAddSubmitMethod,
-	submitUpdateForm:submitUpdateForm,//vueBindButtonHeadUpdateSubmitMethod:vueBindButtonHeadUpdateSubmitMethod,
-	submitDeleteForm:submitDeleteForm,//vueBindButtonHeadDeleteSubmitMethod:vueBindButtonHeadDeleteSubmitMethod
-	submitQueryForm:submitQueryForm//vueBindButtonClickQueryMethod:vueBindButtonClickQueryMethod,
+	submitAddForm:submitAddForm,
+	submitUpdateForm:submitUpdateForm,
+	submitDeleteForm:submitDeleteForm,
+	submitQueryForm:submitQueryForm
 }
 
 beforeVueContentCreate = function (){
@@ -73,9 +73,9 @@ beforeVueContentCreate = function (){
 		vueContentMounted =function () {this.doLoadPage()};//设置 vue 生命周期 Mounted 时 调用table读取页数据
 	}
 	
-	if(queryFormName&&queryFormItemName&&queryFormItemKey&&queryFormItemType&&defaultQueryFormDomId){
+	if(queryFormItemName&&queryFormItemKey&&queryFormItemType&&defaultQueryFormDomId){
 		//根据用户定义的数据 生成query form 放到指定 dom id
-		createFormTemplate(queryFormName,queryFormItemName,queryFormItemKey,queryFormItemType,defaultQueryFormDomId);
+		createFormTemplate('vueQueryForm',queryFormItemName,queryFormItemKey,queryFormItemType,defaultQueryFormDomId);
 		//设置 query
 		createQueryForm(createQueryFormData(queryFormItemKey));
 	}

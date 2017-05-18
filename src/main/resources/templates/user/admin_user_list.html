@@ -66,7 +66,7 @@
 			<!-- 分页标签 -->
 			<div style="margin: 10px;overflow: hidden">
 		        <div style="float: right;">
-		            <Page show-total="true" :page-size="vuePageSize" :total="vueTotalNumber" :current="vueCurrentPage" v-on:on-change="doPageTurning($event)"></Page>
+		            <Page show-total="true" :page-size="vuePageSize" :total="vueRecordTotal" :current="vueCurrentPage" v-on:on-change="doPageTurning($event)"></Page>
 		        </div>
 		    </div>
 			
@@ -121,7 +121,7 @@
 		            <p>{{vueDeleteMessage}} </p>
 		        </div>
 		        <div slot="footer">
-		        	<i-button type="error"  :loading="vueDeleteLoadingVisible" v-on:click="submitDeleteForm">删除</i-button>
+		        	<i-button type="error"  :loading="vueDeleteProgressVisible" v-on:click="submitDeleteForm">删除</i-button>
 		        	<i-button type="primary"  v-on:click="vueDeleteModalVisible = false">取消</i-button>
 		        </div>
 		    </Modal>

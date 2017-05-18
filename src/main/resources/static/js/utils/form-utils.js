@@ -6,10 +6,6 @@ var vueAddForm;
 var vueUpdateForm;
 var vueQueryForm;
 
-var addFormName = 'vueAddForm';
-var updataFormName = 'vueUpdateForm';
-var queryFormName = 'vueQueryForm';
-
 var vueAddFormRules;
 var vueUpdateFormRules;
 
@@ -17,7 +13,8 @@ var vueAddModalVisible = false;//添加form 对话框 显示状态
 var vueUpdateModalVisible = false;//修改form 对话框 显示状态
 var vueDeleteModalVisible = false;//删除 对话框 显示状态
 
-var vueDeleteLoadingVisible = false;//删除form 对话框 按钮状态
+var vueDeleteProgressVisible = false;//删除form 对话框 按钮状态
+
 var vueDeleteMessage = '';
 
 var currentAction = null;// 当前用户操作的行为 - add、update、delete 等
@@ -31,15 +28,15 @@ var defaultQueryFormDomId = 'queryFormDomId';//默认的 query form 页面 dom i
 
 var initAddForm;    //初始化添加页面表单业务数据的方法
 var initUpdateForm; //初始化更新页面表单业务数据的方法
-var initCopyForm;   //初始化复制页面表单业务数据的方法
+//var initCopyForm;   //初始化复制页面表单业务数据的方法
 
 var beforeAdd;      //执行进入添加按钮单击事件方法首先需要执行的方法
 var beforeUpdate;   //执行进入修改按钮单击事件方法首先需要执行的方法
 var beforeDelete;   //执行进入删除按钮单击事件方法首先需要执行的方法
-var beforeCopy;     //执行进入复制按钮单击事件方法首先需要执行的方法
+//var beforeCopy;     //执行进入复制按钮单击事件方法首先需要执行的方法
 
 var updateBefore;   //执行修改后台方法之前需要执行的方法
-var copyBefore;     //执行复制后台方法之前需要执行的方法
+//var copyBefore;     //执行复制后台方法之前需要执行的方法
 var deleteBefore;   //执行删除后台方法之前需要执行的方法
 
 /********************  添加按钮  *********************/
@@ -49,7 +46,7 @@ var deleteBefore;   //执行删除后台方法之前需要执行的方法
 function doAddButton (){
 	if(beforeAdd) beforeAdd();
 	
-	resetForm(addFormName);
+	resetForm('vueAddForm');
 	currentAction = actions.add;
 	this.vueAddModalVisible = true;
 	
@@ -63,7 +60,7 @@ function submitAddForm () {
 	submitFormValidate(currentAction,function(data){
 		toastSuccess('提交成功!');
 		_self.vueAddModalVisible = false;		
-		resetForm(addFormName);
+		resetForm('vueAddForm');
 	});
 }
 /********************  修改按钮  *********************/
@@ -91,7 +88,7 @@ function doUpdateButton(){
 		return;
 	}
 	currentAction = actions.update;
-	resetForm(updataFormName);
+	resetForm('vueUpdateForm');
 	getSingleData(getCheckedTableRowIds(checkdata),updateBefore,function(data){initUpdateForm(data);});
 }
 /**
@@ -131,7 +128,7 @@ function submitUpdateForm(){
 	submitFormValidate(currentAction,function(data){
 		toastSuccess('更新成功!');
 		_self.vueUpdateModalVisible = false;
-		resetForm(updataFormName);
+		resetForm('vueUpdateForm');
 	});
 }
 
@@ -181,16 +178,16 @@ function rowDeleteButton (index,tableDataName) {
  */
 function submitDeleteForm (){
 	var _self = this;
-	_self.vueDeleteLoadingVisible = true;
+	_self.vueDeleteProgressVisible = true;
 	submitForm(currentAction,_self[currentCheckedTableRowIdsName],
 		function(data){
 			toastSuccess('删除成功');
-			_self.vueDeleteLoadingVisible = false;
+			_self.vueDeleteProgressVisible = false;
 			_self.vueDeleteModalVisible = false;
 		},
 		function(errorMessage){
 			toastError(errorMessage);
-			_self.vueDeleteLoadingVisible = false;
+			_self.vueDeleteProgressVisible = false;
 		}
 	);
 }
@@ -216,7 +213,7 @@ function getCurrentForm() {
  * @returns
  */ 
 function getCurrentFormName() {
-	return (!currentAction || !vueContentObject) ? null : currentAction.key == actions.add.key ? addFormName : updataFormName;
+	return (!currentAction || !vueContentObject) ? null : currentAction.key == actions.add.key ? 'vueAddForm' : 'vueUpdateForm';
 }
 
 /**
