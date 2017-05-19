@@ -143,11 +143,9 @@ function formatObject2String(data){
  * @returns
  */
 function copyPropertiesValue(sources,target){
-	var value;
 	var itemType;
 	for(var key in sources){
-		value = sources[key];
-		itemType = typeof value;
+		itemType = typeof sources[key];
 		if(itemType == 'object'){
 			if(target[key])
 				copyPropertiesValue(sources[key],target[key]);
@@ -156,6 +154,38 @@ function copyPropertiesValue(sources,target){
 		}
 	}
 }
+
+/**
+ * 将对象属性值为对象，并且此值对象中所有属性值为空的，删除 （例 ：将 {id:1,parent:{id:null,type:null}}  变为 {id:1,parent:null} ）
+ * @param sources 包含属性的对象
+ * @param target 包含值的对象
+ * @returns
+ */
+function clearNullProperties(obj){
+	var copyObj = Object.assign({}, obj);
+	
+	var value;
+	var itemType;
+	for(var key in copyObj){
+		value = copyObj[key];
+		itemType = typeof value;
+		if(itemType == 'object'){
+			var isNull = true;
+			for(var i in value){
+				if(value[i]!=null && value[i]!=''){
+					isNull = false;
+					break;
+				} 
+			}
+			if(isNull){
+				copyObj[key] = null;
+			}
+		}
+	}
+	return copyObj;
+}
+
+
 
 
 

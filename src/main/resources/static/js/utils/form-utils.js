@@ -295,7 +295,17 @@ function getCurrentFormName() {
  * @returns
  */
 function resetForm(formName) {
+//	console.log('测试 resetForm   '+formName);
+//	console.log(JSON.stringify(vueAddForm));
+//	vueAddForm.id=0;
+//	vueAddForm.idasdasdf=0;
+//	console.log(JSON.stringify(vueAddForm));
+//	vueAddForm.idasdasdf=2;
+//	console.log(JSON.stringify(vueAddForm));
+
   getVueRefObject(formName).resetFields();
+//  console.log(JSON.stringify(vueAddForm));
+
 }
 
 
@@ -359,10 +369,13 @@ function submitForm(currentAction, data, callback, errorCallback) {
       callback();
     });
   };
+  // 复制一份data，将属性的值为对象的 ，对象中 属性值全部为空的 。做附空值
+  var copyData = clearNullProperties(data);
+  
   if (currentAction.key === actions.del.key)
-    $.idel(currentAction.url, data, successCallback, errorCallback);
+    $.idel(currentAction.url, copyData, successCallback, errorCallback);
   else
-    $.iposty(currentAction.url, data, successCallback, errorCallback);
+    $.iposty(currentAction.url, copyData, successCallback, errorCallback);
 }
 
 /**
