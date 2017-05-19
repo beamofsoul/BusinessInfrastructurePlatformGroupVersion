@@ -23,7 +23,7 @@ parseValuesOnTableEachRow = function (obj) {
 }
 
 //设置add update vue form data obj
-setFormDataObject({id:-1,username: '',password: '',repassword: '',nickname: '',phone: '',email: '',status: '1'});
+setFormDataObject({id:-1,username: '',password: '',repassword: '',nickname: '',phone: '',email: '',status: '1',photo: '',photoString: ''});
 
 //综合查询 form
 var queryFormItemName = ['ID','昵称','用户名','密码','邮箱地址','电话号码','状态','注册日期','数字'];
@@ -42,76 +42,75 @@ setFormRulesObject({
 vueContentBeforeCreate = function(){
 	customVueContentData = {
 		statusDataSelect : [{value: '1',label: '启用'},{value: '0',label: '禁用'}],
-		defaultList: [
-//			 {
-//			        'name': '1',
-//			        'url': 'https://o5wwk8baw.qnssl.com/bc7521e033abdd1e92222d733590f104/avatar'
-//			    },
-//			    {
-//			        'name': '2',
-//			        'url': 'https://o5wwk8baw.qnssl.com/bc7521e033abdd1e92222d733590f104/avatar'
-//			    }
-		],
 		imgName : '',
 		imgvisible : false,
 		uploadList : []
 	}
 };
-
 ////////////////////////////// 自定义 vue  methods ////////////////////////////////
+//查询头像图片
 vueContentMethods.handleView = function(name) {
-	this.imgName = name;
+	this.imgName = '';
+	for(var i in getVueObject().uploadList){
+		if(getVueObject().uploadList[i].name == name)
+			this.imgName = getVueObject().uploadList[i].url;
+	}
 	this.imgvisible = true;
 }
-vueContentMethods.handleRemove = function(file) {
-    // 从 upload 实例删除数据
-    const fileList = this.$refs.upload.fileList;
-    this.$refs.upload.fileList.splice(fileList.indexOf(file), 1);
-},
-vueContentMethods.handleSuccess = function(res, file) {
-    // 因为上传过程为实例，这里模拟添加 url
-    file.url = 'https://o5wwk8baw.qnssl.com/7eb99afb9d5f317c912f08b5212fd69a/avatar';
-    file.name = '7eb99afb9d5f317c912f08b5212fd69a';
-},
-vueContentMethods.handleFormatError = function(file) {
-    this.$Notice.warning({
-        title: '文件格式不正确',
-        desc: '文件 ' + file.name + ' 格式不正确，请上传 jpg 或 png 格式的图片。'
-    });
-    
-    return false;
-},
-vueContentMethods.handleMaxSize = function(file) {
-    this.$Notice.warning({
-        title: '超出文件大小限制',
-        desc: '文件 ' + file.name + ' 太大，不能超过 2M。'
-    });
-    
-},
+//删除头像图片
+vueContentMethods.handleRemove = function(name) {
+	for(var i in getVueObject().uploadList){
+		if(getVueObject().uploadList[i].name == name){
+			getVueObject().uploadList.splice(getVueObject().uploadList[i],1);
+			getVueObject().vueAddForm.photo = null;
+		}
+	}
+}
+function handleFormatError(file) {
+	toastError('图片格式不正确');
+}
+function handleMaxSize(file) {
+	toastError('超出文件大小限制,不能超过 2M');
+}
 vueContentMethods.handleBeforeUpload = function(file) {
+	const check = this.uploadList.length < 1;
+	if (!check) {
+		toastError('头像只能上传 1 张图片。');
+	    return false;
+	}
 	
-	  const check = this.uploadList.length < 5;
-	  if (!check) {
-	      this.$Notice.warning({
-	          title: '最多只能上传 5 张图片。'
-	      });
-	      return false;
-	  }
 	
-	console.log('1------------handleBeforeUpload'); 
-	console.log(file);
-	
+	// check format
+	var uploadComponent = this.$refs.upload;
+    if (uploadComponent.format.length) {
+        const _file_format = file.name.split('.').pop().toLocaleLowerCase();
+       
+        const checked = uploadComponent.format.some(item => item.toLocaleLowerCase() === _file_format);
+        if (!checked) {
+        	handleFormatError(file);
+            return false;
+        }
+    }
+
+    // check maxSize
+    if (uploadComponent.maxSize) {
+        if (file.size > uploadComponent.maxSize * 1024) {
+        	handleMaxSize(file, uploadComponent.fileList);
+            return false;
+        }
+    }
+    // 读取选择图片数据
 	var fr = new FileReader();
 	fr.onload = function(e) {
 		getVueObject().uploadList.push({
 	        'name': file.name,
 	        'url': e.target.result
-	    });
+		});
+		//设置addFrom data
+		getVueObject().vueAddForm.photo = e.target.result;
 	};
 	fr.readAsDataURL(file);
-	return true;
-	
-
+	return false;
 }
 
 //////////////////////////////new vue 前自定义方法 ////////////////////////////////
@@ -119,5 +118,33 @@ beforeVueContentCreateCustom = function(){
 	vueContentMounted = function () {this.doLoadPage();this.uploadList = this.$refs.upload.fileList;};
 }
 
+////////////////////////////// 覆盖 流程方法 实现个性化/////////////////////////////////
+beforeAdd = function(){
+	getVueObject().uploadList = [];
+}
+updateBefore = function(obj){
+	getVueObject().uploadList = [];
+	
+	if(obj.photo&&obj.photoString){
+		getVueObject().uploadList.push({
+			'name': obj.photo,
+			'url': obj.photoString
+		});
+		getVueObject().vueAddForm.photo = obj.photoString;
+	}
+	else{
+		getVueObject().vueAddForm.photo = null;
+	}
+	return true;
+}
+//submitUpdateBefore  = function(obj){
+//	
+//	if(obj.photo&&obj.photoString){
+//		  getVueObject().uploadList.push({
+//		      'name': obj.photo,
+//		      'url': obj.photoString
+//			});
+//		}
+//}
 var vueContentObject = new Vue(initializeContentOptions());
 
