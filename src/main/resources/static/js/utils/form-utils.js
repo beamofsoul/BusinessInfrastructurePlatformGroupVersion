@@ -406,18 +406,23 @@ function formatQueryFormData(vueBindFormQueryData) {
 function createTableQueryFrom(queryFormName, queryFormItemName, queryFormItemKey, queryFormItemType) {
   var icolSpan = 24 / queryFromRowItemNum - 1;//24栅格
   var totalRow = parseInt(queryFormItemKey.length / queryFromRowItemNum);
-  if (queryFormItemKey.length % queryFromRowItemNum !== 0)
-    totalRow++;
+  
+  if (queryFormItemKey.length % queryFromRowItemNum !== 0) totalRow++;
 
   var itemIndex = 0;
   var queryForm = '<i-form ref="' + queryFormName + '" :model="' + queryFormName + '"  :show-message="false" label-position="left" :label-width="' + queryFormItemWidth + '" >';
   //行
   for (var rowIndex = 0; rowIndex < totalRow; rowIndex++) {
+	  
     queryForm += '<Row type="flex" justify="space-between" >';
     //项
     for (var rowItemIndex = 0; rowItemIndex < queryFromRowItemNum; rowItemIndex++) {
-      if (itemIndex === queryFormItemKey.length)
-        break;
+    
+      if (itemIndex === queryFormItemKey.length){
+    	  queryForm += '<i-col span="' + icolSpan + '"></i-col>';
+    	  itemIndex++;
+    	  continue;
+      }
       queryForm += '<i-col span="' + icolSpan + '">';
 
       var itemTypeArray = queryFormItemType[itemIndex].split('#');
@@ -456,6 +461,7 @@ function createTableQueryFrom(queryFormName, queryFormItemName, queryFormItemKey
 
       queryForm += '</i-col>';
       itemIndex++;
+
     }
     queryForm += '</Row>';
   }
