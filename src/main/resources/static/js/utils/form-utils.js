@@ -43,6 +43,12 @@ var updateBefore;   //执行修改后台方法之前需要执行的方法
 var deleteBefore;   //执行删除后台方法之前需要执行的方法
 var copyBefore;     //执行复制后台方法之前需要执行的方法
 
+var submitAddAfter;      //执行进入添加按钮单击事件方法首先需要执行的方法
+var submitUpdateAfter;   //执行进入修改按钮单击事件方法首先需要执行的方法
+var submitDeleteAfter;   //执行进入删除按钮单击事件方法首先需要执行的方法
+var submitCopyAfter;     //执行进入复制按钮单击事件方法首先需要执行的方法
+
+
 /********************  添加按钮  *********************/
 /**
  * 添加
@@ -67,6 +73,7 @@ function submitAddForm() {
     toastSuccess('提交成功!');
     _self.vueAddModalVisible = false;
     resetForm('vueAddForm');
+    if(submitAddAfter)submitAddAfter();
   });
 }
 /********************  修改按钮  *********************/
@@ -142,6 +149,7 @@ function submitUpdateForm() {
     toastSuccess('更新成功!');
     _self.vueUpdateModalVisible = false;
     resetForm('vueUpdateForm');
+    if(submitUpdateAfter) submitUpdateAfter();
   });
 }
 
@@ -201,6 +209,7 @@ function submitDeleteForm() {
         toastSuccess('删除成功');
         _self.vueDeleteProgressVisible = false;
         _self.vueDeleteModalVisible = false;
+        if(submitDeleteAfter)submitDeleteAfter();
       },
       function (errorMessage) {
         toastError(errorMessage);
@@ -239,6 +248,7 @@ function submitCopyForm() {
     toastSuccess('提交成功!');
     _self.vueCopyModalVisible = false;
     resetForm('vueCopyForm');
+    if(submitCopyAfter)submitCopyAfter();
   });
 }
 
