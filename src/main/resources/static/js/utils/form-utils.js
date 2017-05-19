@@ -408,21 +408,29 @@ function createTableQueryFrom(queryFormName, queryFormItemName, queryFormItemKey
   var totalRow = parseInt(queryFormItemKey.length / queryFromRowItemNum);
   
   if (queryFormItemKey.length % queryFromRowItemNum !== 0) totalRow++;
-
+//  console.log('24格 每个控件占几格 '+icolSpan)
+//  console.log('总共多少行 '+totalRow)
+//  console.log('总共多少个控件 '+queryFormItemKey.length)
   var itemIndex = 0;
   var queryForm = '<i-form ref="' + queryFormName + '" :model="' + queryFormName + '"  :show-message="false" label-position="left" :label-width="' + queryFormItemWidth + '" >';
   //行
   for (var rowIndex = 0; rowIndex < totalRow; rowIndex++) {
-	  
+//	  console.log('生成第几行 '+rowIndex)
     queryForm += '<Row type="flex" justify="space-between" >';
     //项
     for (var rowItemIndex = 0; rowItemIndex < queryFromRowItemNum; rowItemIndex++) {
-    
-      if (itemIndex === queryFormItemKey.length){
+//    	console.log('生成这行第几个控件 '+rowItemIndex)
+//    	console.log('---------生成总共控件的第几个 '+(itemIndex+1))
+//    	console.log('queryFormItemKey.length '+queryFormItemKey.length);
+    	
+      if (itemIndex >= queryFormItemKey.length){
+//    	  console.log('生成总共控件的第几个aaaaaa '+itemIndex)
     	  queryForm += '<i-col span="' + icolSpan + '"></i-col>';
     	  itemIndex++;
     	  continue;
       }
+      
+      
       queryForm += '<i-col span="' + icolSpan + '">';
 
       var itemTypeArray = queryFormItemType[itemIndex].split('#');
@@ -461,7 +469,6 @@ function createTableQueryFrom(queryFormName, queryFormItemName, queryFormItemKey
 
       queryForm += '</i-col>';
       itemIndex++;
-
     }
     queryForm += '</Row>';
   }
