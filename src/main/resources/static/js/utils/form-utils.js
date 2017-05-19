@@ -39,14 +39,20 @@ var beforeUpdate;   //执行进入修改按钮单击事件方法首先需要执�
 var beforeDelete;   //执行进入删除按钮单击事件方法首先需要执行的方法
 var beforeCopy;     //执行进入复制按钮单击事件方法首先需要执行的方法
 
+var addBefore;		//执行修改后台方法之前需要执行的方法
 var updateBefore;   //执行修改后台方法之前需要执行的方法
 var deleteBefore;   //执行删除后台方法之前需要执行的方法
 var copyBefore;     //执行复制后台方法之前需要执行的方法
 
-var submitAddAfter;      //执行进入添加按钮单击事件方法首先需要执行的方法
-var submitUpdateAfter;   //执行进入修改按钮单击事件方法首先需要执行的方法
-var submitDeleteAfter;   //执行进入删除按钮单击事件方法首先需要执行的方法
-var submitCopyAfter;     //执行进入复制按钮单击事件方法首先需要执行的方法
+var submitAddAfter;      //提交后执行的自定义方法
+var submitUpdateAfter;   //提交后执行的自定义方法
+var submitDeleteAfter;   //提交后执行的自定义方法
+var submitCopyAfter;     //提交后执行的自定义方法
+
+var submitAddBefore;      //提交前执行的自定义方法
+var submitUpdateBefore;   //提交前执行的自定义方法
+var submitDeleteBefore;   //提交前执行的自定义方法
+var submitCopyBefore;     //提交前执行的自定义方法
 
 
 /********************  添加按钮  *********************/
@@ -63,12 +69,16 @@ function doAddButton() {
 
   if (initAddForm)
     initAddForm();
+  
+  if(addBefore)
+	  addBefore();
 }
 /**
  * 添加提交
  */
 function submitAddForm() {
   var _self = this;
+  if(submitAddBefore) submitAddBefore(_self.vueAddForm);
   submitFormValidate(currentAction, function (data) {
     toastSuccess('提交成功!');
     _self.vueAddModalVisible = false;
@@ -145,6 +155,7 @@ var getSingleData = function (idData, successCallbackBefore, successCallback, er
  */
 function submitUpdateForm() {
   var _self = this;
+  if(submitUpdateBefore) submitUpdateBefore(_self.vueUpdateForm);
   submitFormValidate(currentAction, function (data) {
     toastSuccess('更新成功!');
     _self.vueUpdateModalVisible = false;
@@ -203,6 +214,7 @@ function rowDeleteButton(index, tableDataName) {
  */
 function submitDeleteForm() {
   var _self = this;
+  if(submitDeleteBefore) submitDeleteBefore(_self[currentCheckedTableRowIdsName]);
   _self.vueDeleteProgressVisible = true;
   submitForm(currentAction, _self[currentCheckedTableRowIdsName],
       function (data) {
