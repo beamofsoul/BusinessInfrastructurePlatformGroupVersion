@@ -7716,13 +7716,18 @@ var _emitter = __webpack_require__(3);
 
 var _emitter2 = _interopRequireDefault(_emitter);
 
+var _locale = __webpack_require__(5);
+
+var _locale2 = _interopRequireDefault(_locale);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var prefixCls = 'ivu-cascader';
+var selectPrefixCls = 'ivu-select';
 
 exports.default = {
     name: 'Cascader',
-    mixins: [_emitter2.default],
+    mixins: [_emitter2.default, _locale2.default],
     components: { iInput: _input2.default, Drop: _dropdown2.default, Icon: _icon2.default, Caspanel: _caspanel2.default },
     directives: { clickoutside: _clickoutside2.default },
     props: {
@@ -7747,8 +7752,7 @@ exports.default = {
             default: true
         },
         placeholder: {
-            type: String,
-            default: '请选择'
+            type: String
         },
         size: {
             validator: function validator(value) {
@@ -7771,16 +7775,28 @@ exports.default = {
             default: function _default(label) {
                 return label.join(' / ');
             }
+        },
+        loadData: {
+            type: Function
+        },
+        filterable: {
+            type: Boolean,
+            default: false
+        },
+        notFoundText: {
+            type: String
         }
     },
     data: function data() {
         return {
             prefixCls: prefixCls,
+            selectPrefixCls: selectPrefixCls,
             visible: false,
             selected: [],
             tmpSelected: [],
             updatingValue: false,
-            currentValue: this.value
+            currentValue: this.value,
+            query: ''
         };
     },
 
@@ -7788,7 +7804,7 @@ exports.default = {
         classes: function classes() {
             var _ref;
 
-            return ['' + prefixCls, (_ref = {}, (0, _defineProperty3.default)(_ref, prefixCls + '-show-clear', this.showCloseIcon), (0, _defineProperty3.default)(_ref, prefixCls + '-visible', this.visible), (0, _defineProperty3.default)(_ref, prefixCls + '-disabled', this.disabled), _ref)];
+            return ['' + prefixCls, (_ref = {}, (0, _defineProperty3.default)(_ref, prefixCls + '-show-clear', this.showCloseIcon), (0, _defineProperty3.default)(_ref, prefixCls + '-size-' + this.size, !!this.size), (0, _defineProperty3.default)(_ref, prefixCls + '-visible', this.visible), (0, _defineProperty3.default)(_ref, prefixCls + '-disabled', this.disabled), (0, _defineProperty3.default)(_ref, prefixCls + '-not-found', this.filterable && this.query !== '' && !this.querySelections.length), _ref)];
         },
         showCloseIcon: function showCloseIcon() {
             return this.currentValue && this.currentValue.length && this.clearable && !this.disabled;
@@ -7800,6 +7816,60 @@ exports.default = {
             }
 
             return this.renderFormat(label, this.selected);
+        },
+        displayInputRender: function displayInputRender() {
+            return this.filterable ? '' : this.displayRender;
+        },
+        localePlaceholder: function localePlaceholder() {
+            if (this.placeholder === undefined) {
+                return this.t('i.select.placeholder');
+            } else {
+                return this.placeholder;
+            }
+        },
+        inputPlaceholder: function inputPlaceholder() {
+            return this.filterable && this.currentValue.length ? null : this.localePlaceholder;
+        },
+        localeNotFoundText: function localeNotFoundText() {
+            if (this.notFoundText === undefined) {
+                return this.t('i.select.noMatch');
+            } else {
+                return this.notFoundText;
+            }
+        },
+        querySelections: function querySelections() {
+            var _this = this;
+
+            var selections = [];
+            function getSelections(arr, label, value) {
+                for (var i = 0; i < arr.length; i++) {
+                    var item = arr[i];
+                    item.__label = label ? label + ' / ' + item.label : item.label;
+                    item.__value = value ? value + ',' + item.value : item.value;
+
+                    if (item.children && item.children.length) {
+                        getSelections(item.children, item.__label, item.__value);
+                        delete item.__label;
+                        delete item.__value;
+                    } else {
+                        selections.push({
+                            label: item.__label,
+                            value: item.__value,
+                            display: item.__label,
+                            item: item,
+                            disabled: !!item.disabled
+                        });
+                    }
+                }
+            }
+            getSelections(this.data);
+            selections = selections.filter(function (item) {
+                return item.label.indexOf(_this.query) > -1;
+            }).map(function (item) {
+                item.display = item.display.replace(new RegExp(_this.query, 'g'), '<span>' + _this.query + '</span>');
+                return item;
+            });
+            return selections;
         }
     },
     methods: {
@@ -7818,7 +7888,7 @@ exports.default = {
         toggleOpen: function toggleOpen() {
             if (this.disabled) return false;
             if (this.visible) {
-                this.handleClose();
+                if (!this.filterable) this.handleClose();
             } else {
                 this.onFocus();
             }
@@ -7842,47 +7912,66 @@ exports.default = {
             }
         },
         emitValue: function emitValue(val, oldVal) {
-            var _this = this;
+            var _this2 = this;
 
             if ((0, _stringify2.default)(val) !== oldVal) {
                 this.$emit('on-change', this.currentValue, JSON.parse((0, _stringify2.default)(this.selected)));
                 this.$nextTick(function () {
-                    _this.dispatch('FormItem', 'on-form-change', {
-                        value: _this.currentValue,
-                        selected: JSON.parse((0, _stringify2.default)(_this.selected))
+                    _this2.dispatch('FormItem', 'on-form-change', {
+                        value: _this2.currentValue,
+                        selected: JSON.parse((0, _stringify2.default)(_this2.selected))
                     });
                 });
             }
+        },
+        handleInput: function handleInput(event) {
+            this.query = event.target.value;
+        },
+        handleSelectItem: function handleSelectItem(index) {
+            var item = this.querySelections[index];
+
+            if (item.item.disabled) return false;
+            this.query = '';
+            this.$refs.input.currentValue = '';
+            var oldVal = (0, _stringify2.default)(this.currentValue);
+            this.currentValue = item.value.split(',');
+            this.emitValue(this.currentValue, oldVal);
+            this.handleClose();
+        },
+        handleFocus: function handleFocus() {
+            this.$refs.input.focus();
         }
     },
-    mounted: function mounted() {
-        var _this2 = this;
+    created: function created() {
+        var _this3 = this;
 
-        this.updateSelected(true);
         this.$on('on-result-change', function (params) {
             var lastValue = params.lastValue;
             var changeOnSelect = params.changeOnSelect;
             var fromInit = params.fromInit;
 
             if (lastValue || changeOnSelect) {
-                var oldVal = (0, _stringify2.default)(_this2.currentValue);
-                _this2.selected = _this2.tmpSelected;
+                var oldVal = (0, _stringify2.default)(_this3.currentValue);
+                _this3.selected = _this3.tmpSelected;
 
                 var newVal = [];
-                _this2.selected.forEach(function (item) {
+                _this3.selected.forEach(function (item) {
                     newVal.push(item.value);
                 });
 
                 if (!fromInit) {
-                    _this2.updatingValue = true;
-                    _this2.currentValue = newVal;
-                    _this2.emitValue(_this2.currentValue, oldVal);
+                    _this3.updatingValue = true;
+                    _this3.currentValue = newVal;
+                    _this3.emitValue(_this3.currentValue, oldVal);
                 }
             }
             if (lastValue && !fromInit) {
-                _this2.handleClose();
+                _this3.handleClose();
             }
         });
+    },
+    mounted: function mounted() {
+        this.updateSelected(true);
     },
 
     watch: {
@@ -7890,6 +7979,11 @@ exports.default = {
             if (val) {
                 if (this.currentValue.length) {
                     this.updateSelected();
+                }
+            } else {
+                if (this.filterable) {
+                    this.query = '';
+                    this.$refs.input.currentValue = '';
                 }
             }
             this.$emit('on-visible-change', val);
@@ -7906,12 +8000,16 @@ exports.default = {
             }
             this.updateSelected(true);
         },
-        data: function data() {
-            var _this3 = this;
 
-            this.$nextTick(function () {
-                return _this3.updateSelected();
-            });
+        data: {
+            deep: true,
+            handler: function handler() {
+                var _this4 = this;
+
+                this.$nextTick(function () {
+                    return _this4.updateSelected();
+                });
+            }
         }
     }
 };
@@ -7945,6 +8043,12 @@ exports.default = {
             var _ref;
 
             return [this.prefixCls + '-menu-item', (_ref = {}, (0, _defineProperty3.default)(_ref, this.prefixCls + '-menu-item-active', this.tmpItem.value === this.data.value), (0, _defineProperty3.default)(_ref, this.prefixCls + '-menu-item-disabled', this.data.disabled), _ref)];
+        },
+        showArrow: function showArrow() {
+            return this.data.children && this.data.children.length || 'loading' in this.data && !this.data.loading;
+        },
+        showLoading: function showLoading() {
+            return 'loading' in this.data && this.data.loading;
         }
     }
 };
@@ -7975,6 +8079,8 @@ var _casitem2 = _interopRequireDefault(_casitem);
 var _emitter = __webpack_require__(3);
 
 var _emitter2 = _interopRequireDefault(_emitter);
+
+var _assist = __webpack_require__(2);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -8017,17 +8123,27 @@ exports.default = {
             this.handleTriggerItem(item);
         },
         handleTriggerItem: function handleTriggerItem(item) {
+            var _this = this;
+
             var fromInit = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
 
             if (item.disabled) return;
 
+            if (item.loading !== undefined && !item.children.length) {
+                var cascader = (0, _assist.findComponentUpward)(this, 'Cascader');
+                if (cascader && cascader.loadData) {
+                    cascader.loadData(item, function () {
+                        _this.handleTriggerItem(item);
+                    });
+                    return;
+                }
+            }
+
             var backItem = this.getBaseItem(item);
             this.tmpItem = backItem;
             this.emitUpdate([backItem]);
-
             if (item.children && item.children.length) {
                 this.sublist = item.children;
-
                 this.dispatch('Cascader', 'on-result-change', {
                     lastValue: false,
                     changeOnSelect: this.changeOnSelect,
@@ -8035,7 +8151,6 @@ exports.default = {
                 });
             } else {
                 this.sublist = [];
-
                 this.dispatch('Cascader', 'on-result-change', {
                     lastValue: true,
                     changeOnSelect: this.changeOnSelect,
@@ -8064,18 +8179,18 @@ exports.default = {
         }
     },
     mounted: function mounted() {
-        var _this = this;
+        var _this2 = this;
 
         this.$on('on-find-selected', function (params) {
             var val = params.value;
             var value = [].concat((0, _toConsumableArray3.default)(val));
             for (var i = 0; i < value.length; i++) {
-                for (var j = 0; j < _this.data.length; j++) {
-                    if (value[i] === _this.data[j].value) {
-                        _this.handleTriggerItem(_this.data[j], true);
+                for (var j = 0; j < _this2.data.length; j++) {
+                    if (value[i] === _this2.data[j].value) {
+                        _this2.handleTriggerItem(_this2.data[j], true);
                         value.splice(0, 1);
-                        _this.$nextTick(function () {
-                            _this.broadcast('Caspanel', 'on-find-selected', {
+                        _this2.$nextTick(function () {
+                            _this2.broadcast('Caspanel', 'on-find-selected', {
                                 value: value
                             });
                         });
@@ -8085,8 +8200,8 @@ exports.default = {
             }
         });
         this.$on('on-clear', function () {
-            _this.sublist = [];
-            _this.tmpItem = {};
+            _this2.sublist = [];
+            _this2.tmpItem = {};
         });
     }
 };
@@ -9492,7 +9607,7 @@ exports.default = {
             if (this[direction + 'CurrentView'] === 'year') {
                 this.$refs[direction + 'YearTable'].nextTenYear();
             } else if (this[direction + 'CurrentView'] === 'month') {
-                this[direction + 'TableYear']--;
+                this[direction + 'TableYear']++;
             } else {
                 var date = this.date;
                 date.setFullYear(date.getFullYear() + 1);
@@ -11526,6 +11641,13 @@ exports.default = {
         disabled: {
             type: Boolean,
             default: false
+        },
+        autofocus: {
+            type: Boolean,
+            default: false
+        },
+        name: {
+            type: String
         }
     },
     data: function data() {
@@ -11774,6 +11896,10 @@ exports.default = {
         number: {
             type: Boolean,
             default: false
+        },
+        autofocus: {
+            type: Boolean,
+            default: false
         }
     },
     data: function data() {
@@ -11850,6 +11976,13 @@ exports.default = {
             var maxRows = autosize.maxRows;
 
             this.textareaStyles = (0, _calcTextareaHeight2.default)(this.$refs.textarea, minRows, maxRows);
+        },
+        focus: function focus() {
+            if (this.type === 'textarea') {
+                this.$refs.textarea.focus();
+            } else {
+                this.$refs.input.focus();
+            }
         }
     },
     watch: {
@@ -13912,6 +14045,20 @@ exports.default = {
         filterMethod: {
             type: Function
         },
+        remote: {
+            type: Boolean,
+            default: false
+        },
+        remoteMethod: {
+            type: Function
+        },
+        loading: {
+            type: Boolean,
+            default: false
+        },
+        loadingText: {
+            type: String
+        },
         size: {
             validator: function validator(value) {
                 return (0, _assist.oneOf)(value, ['small', 'large', 'default']);
@@ -13942,6 +14089,7 @@ exports.default = {
             selectedMultiple: [],
             focusIndex: 0,
             query: '',
+            selectToChangeQuery: false,
             inputLength: 20,
             notFound: false,
             slotChangeDuration: false,
@@ -14000,8 +14148,25 @@ exports.default = {
                 return this.notFoundText;
             }
         },
+        localeLoadingText: function localeLoadingText() {
+            if (this.loadingText === undefined) {
+                return this.t('i.select.loading');
+            } else {
+                return this.loadingText;
+            }
+        },
         transitionName: function transitionName() {
             return this.placement === 'bottom' ? 'slide-up' : 'slide-down';
+        },
+        dropVisible: function dropVisible() {
+            var status = true;
+            var options = this.$slots.default || [];
+            if (!this.loading && this.remote && this.query === '' && !options.length) status = false;
+            return this.visible && status;
+        },
+        notFountShow: function notFountShow() {
+            var options = this.$slots.default || [];
+            return this.notFound && !this.remote || this.remote && !this.loading && !options.length;
         }
     },
     methods: {
@@ -14009,7 +14174,6 @@ exports.default = {
             if (this.disabled) {
                 return false;
             }
-
             this.visible = !this.visible;
         },
         hideMenu: function hideMenu() {
@@ -14063,8 +14227,10 @@ exports.default = {
             this.options = options;
 
             if (init) {
-                this.updateSingleSelected(true, slot);
-                this.updateMultipleSelected(true, slot);
+                if (!this.remote) {
+                    this.updateSingleSelected(true, slot);
+                    this.updateMultipleSelected(true, slot);
+                }
             }
         },
         updateSingleSelected: function updateSingleSelected() {
@@ -14109,7 +14275,7 @@ exports.default = {
             var slot = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
 
             if (this.multiple && Array.isArray(this.model)) {
-                var selected = [];
+                var selected = this.remote ? this.selectedMultiple : [];
 
                 for (var i = 0; i < this.model.length; i++) {
                     var model = this.model[i];
@@ -14126,7 +14292,16 @@ exports.default = {
                     }
                 }
 
-                this.selectedMultiple = selected;
+                var selectedArray = [];
+                var selectedObject = {};
+                selected.forEach(function (item) {
+                    if (!selectedObject[item.value]) {
+                        selectedArray.push(item);
+                        selectedObject[item.value] = 1;
+                    }
+                });
+
+                this.selectedMultiple = this.remote ? selectedArray : selected;
 
                 if (slot) {
                     var selectedModel = [];
@@ -14148,6 +14323,14 @@ exports.default = {
             if (this.disabled) {
                 return false;
             }
+
+            if (this.remote) {
+                var tag = this.model[index];
+                this.selectedMultiple = this.selectedMultiple.filter(function (item) {
+                    return item.value !== tag;
+                });
+            }
+
             this.model.splice(index, 1);
 
             if (this.filterable && this.visible) {
@@ -14324,6 +14507,12 @@ exports.default = {
                                 _this3.query = child.label === undefined ? child.searchLabel : child.label;
                             }
                         });
+
+                        if (_this3.remote) {
+                            _this3.$nextTick(function () {
+                                _this3.query = model;
+                            });
+                        }
                     } else {
                         _this3.query = '';
                     }
@@ -14384,18 +14573,30 @@ exports.default = {
         document.addEventListener('keydown', this.handleKeydown);
 
         this.$on('append', function () {
-            _this5.modelToQuery();
-            _this5.$nextTick(function () {
-                _this5.broadcastQuery('');
-            });
+            if (!_this5.remote) {
+                _this5.modelToQuery();
+                _this5.$nextTick(function () {
+                    _this5.broadcastQuery('');
+                });
+            } else {
+                _this5.findChild(function (child) {
+                    child.selected = _this5.multiple ? _this5.model.indexOf(child.value) > -1 : _this5.model === child.value;
+                });
+            }
             _this5.slotChange();
             _this5.updateOptions(true, true);
         });
         this.$on('remove', function () {
-            _this5.modelToQuery();
-            _this5.$nextTick(function () {
-                _this5.broadcastQuery('');
-            });
+            if (!_this5.remote) {
+                _this5.modelToQuery();
+                _this5.$nextTick(function () {
+                    _this5.broadcastQuery('');
+                });
+            } else {
+                _this5.findChild(function (child) {
+                    child.selected = _this5.multiple ? _this5.model.indexOf(child.value) > -1 : _this5.model === child.value;
+                });
+            }
             _this5.slotChange();
             _this5.updateOptions(true, true);
         });
@@ -14414,6 +14615,7 @@ exports.default = {
                     }
 
                     if (_this5.filterable) {
+                        if (_this5.query !== '') _this5.selectToChangeQuery = true;
                         _this5.query = '';
                         _this5.$refs.input.focus();
                     }
@@ -14423,6 +14625,7 @@ exports.default = {
                     if (_this5.filterable) {
                         _this5.findChild(function (child) {
                             if (child.value === value) {
+                                if (_this5.query !== '') _this5.selectToChangeQuery = true;
                                 _this5.query = child.label === undefined ? child.searchLabel : child.label;
                             }
                         });
@@ -14463,6 +14666,11 @@ exports.default = {
                     } else {
                         this.$refs.input.select();
                     }
+                    if (this.remote) {
+                        this.findChild(function (child) {
+                            child.selected = _this6.multiple ? _this6.model.indexOf(child.value) > -1 : _this6.model === child.value;
+                        });
+                    }
                 }
                 this.broadcast('Drop', 'on-update-popper');
             } else {
@@ -14479,20 +14687,33 @@ exports.default = {
         query: function query(val) {
             var _this7 = this;
 
-            this.$emit('on-query-change', val);
-
-            this.broadcastQuery(val);
-
-            var is_hidden = true;
-
-            this.$nextTick(function () {
-                _this7.findChild(function (child) {
-                    if (!child.hidden) {
-                        is_hidden = false;
-                    }
+            if (this.remote && this.remoteMethod) {
+                if (!this.selectToChangeQuery) {
+                    this.$emit('on-query-change', val);
+                    this.remoteMethod(val);
+                }
+                this.focusIndex = 0;
+                this.findChild(function (child) {
+                    child.isFocus = false;
                 });
-                _this7.notFound = is_hidden;
-            });
+            } else {
+                if (!this.selectToChangeQuery) {
+                    this.$emit('on-query-change', val);
+                }
+                this.broadcastQuery(val);
+
+                var is_hidden = true;
+
+                this.$nextTick(function () {
+                    _this7.findChild(function (child) {
+                        if (!child.hidden) {
+                            is_hidden = false;
+                        }
+                    });
+                    _this7.notFound = is_hidden;
+                });
+            }
+            this.selectToChangeQuery = false;
             this.broadcast('Drop', 'on-update-popper');
         }
     }
@@ -15339,42 +15560,69 @@ exports.default = {
     },
     methods: {
         compile: function compile() {
+            var _this = this;
+
             if (this.column.render) {
-                var $parent = this.context;
-                var template = this.column.render(this.row, this.column, this.index);
-                var cell = document.createElement('div');
-                cell.innerHTML = template;
+                var isRealRender = false;
+                try {
+                    this.column.render(this.row, this.column, this.index);
+                } catch (err) {
+                    isRealRender = true;
+                }
 
-                this.$el.innerHTML = '';
-                var methods = {};
-                (0, _keys2.default)($parent).forEach(function (key) {
-                    var func = $parent[key];
-                    if (typeof func === 'function' && (func.name === 'boundFn' || func.name === 'n')) {
-                        methods[key] = func;
+                if (isRealRender) {
+                    var component = new _vue2.default({
+                        functional: true,
+                        render: function render(h) {
+                            return _this.column.render(h, {
+                                row: _this.row,
+                                column: _this.column,
+                                index: _this.index
+                            });
+                        }
+                    });
+                    var Cell = component.$mount();
+                    this.$refs.cell.appendChild(Cell.$el);
+                } else {
+                    var $parent = this.context;
+                    var template = this.column.render(this.row, this.column, this.index);
+                    var cell = document.createElement('div');
+                    cell.innerHTML = template;
+
+                    this.$el.innerHTML = '';
+                    var methods = {};
+                    (0, _keys2.default)($parent).forEach(function (key) {
+                        var func = $parent[key];
+                        if (typeof func === 'function' && (func.name === 'boundFn' || func.name === 'n')) {
+                            methods[key] = func;
+                        }
+                    });
+                    var res = _vue2.default.compile(cell.outerHTML);
+
+                    var components = {};
+                    (0, _getOwnPropertyNames2.default)($parent.$options.components).forEach(function (item) {
+                        components[item] = $parent.$options.components[item];
+                    });
+
+                    var _component = new _vue2.default({
+                        render: res.render,
+                        staticRenderFns: res.staticRenderFns,
+                        methods: methods,
+                        data: function data() {
+                            return $parent._data;
+                        },
+
+                        components: components
+                    });
+                    if ($parent.$store != undefined) {
+                        _component.$store = $parent.$store;
                     }
-                });
-                var res = _vue2.default.compile(cell.outerHTML);
+                    _component.row = this.row;
+                    _component.column = this.column;
 
-                var components = {};
-                (0, _getOwnPropertyNames2.default)($parent.$options.components).forEach(function (item) {
-                    components[item] = $parent.$options.components[item];
-                });
-
-                var component = new _vue2.default({
-                    render: res.render,
-                    staticRenderFns: res.staticRenderFns,
-                    methods: methods,
-                    data: function data() {
-                        return $parent._data;
-                    },
-
-                    components: components
-                });
-                component.row = this.row;
-                component.column = this.column;
-
-                var Cell = component.$mount();
-                this.$refs.cell.appendChild(Cell.$el);
+                    var _Cell = _component.$mount();
+                    this.$refs.cell.appendChild(_Cell.$el);
+                }
             }
         },
         destroy: function destroy() {},
@@ -15394,10 +15642,10 @@ exports.default = {
         }
     },
     mounted: function mounted() {
-        var _this = this;
+        var _this2 = this;
 
         this.$nextTick(function () {
-            _this.compile();
+            _this2.compile();
         });
     },
     beforeDestroy: function beforeDestroy() {
@@ -19226,12 +19474,12 @@ module.exports = { render: function render() {
           _vm.clearSingleSelect($event);
         }
       }
-    }), _vm._v(" "), _c('Icon', {
+    }), _vm._v(" "), !_vm.remote ? _c('Icon', {
       class: [_vm.prefixCls + '-arrow'],
       attrs: {
         "type": "arrow-down-b"
       }
-    })], 2), _vm._v(" "), _c('transition', {
+    }) : _vm._e()], 2), _vm._v(" "), _c('transition', {
       attrs: {
         "name": _vm.transitionName
       }
@@ -19239,8 +19487,8 @@ module.exports = { render: function render() {
       directives: [{
         name: "show",
         rawName: "v-show",
-        value: _vm.visible,
-        expression: "visible"
+        value: _vm.dropVisible,
+        expression: "dropVisible"
       }],
       ref: "dropdown",
       attrs: {
@@ -19250,20 +19498,27 @@ module.exports = { render: function render() {
       directives: [{
         name: "show",
         rawName: "v-show",
-        value: _vm.notFound,
-        expression: "notFound"
+        value: _vm.notFountShow,
+        expression: "notFountShow"
       }],
       class: [_vm.prefixCls + '-not-found']
     }, [_c('li', [_vm._v(_vm._s(_vm.localeNotFoundText))])]), _vm._v(" "), _c('ul', {
       directives: [{
         name: "show",
         rawName: "v-show",
-        value: !_vm.notFound,
-        expression: "!notFound"
+        value: !_vm.notFound && !_vm.remote || _vm.remote && !_vm.loading && !_vm.notFound,
+        expression: "(!notFound && !remote) || (remote && !loading && !notFound)"
       }],
-      ref: "options",
       class: [_vm.prefixCls + '-dropdown-list']
-    }, [_vm._t("default")], 2)])], 1)], 1);
+    }, [_vm._t("default")], 2), _vm._v(" "), _c('ul', {
+      directives: [{
+        name: "show",
+        rawName: "v-show",
+        value: _vm.loading,
+        expression: "loading"
+      }],
+      class: [_vm.prefixCls + '-loading']
+    }, [_vm._v(_vm._s(_vm.localeLoadingText))])])], 1)], 1);
   }, staticRenderFns: [] };
 
 /***/ }),
@@ -19320,6 +19575,7 @@ module.exports = { render: function render() {
       staticClass: "ivu-icon ivu-icon-load-c ivu-load-loop",
       class: [_vm.prefixCls + '-icon', _vm.prefixCls + '-icon-validate']
     }) : _vm._e()]), _vm._v(" "), _c('input', {
+      ref: "input",
       class: _vm.inputClasses,
       attrs: {
         "type": _vm.type,
@@ -19328,7 +19584,8 @@ module.exports = { render: function render() {
         "maxlength": _vm.maxlength,
         "readonly": _vm.readonly,
         "name": _vm.name,
-        "number": _vm.number
+        "number": _vm.number,
+        "autofocus": _vm.autofocus
       },
       domProps: {
         "value": _vm.currentValue
@@ -20861,7 +21118,9 @@ module.exports = { render: function render() {
       class: _vm.inputClasses,
       attrs: {
         "disabled": _vm.disabled,
-        "autocomplete": "off"
+        "autocomplete": "off",
+        "autofocus": _vm.autofocus,
+        "name": _vm.name
       },
       domProps: {
         "value": _vm.value
@@ -21118,8 +21377,10 @@ module.exports = { render: function render() {
     var _vm = this;var _h = _vm.$createElement;var _c = _vm._self._c || _h;
     return _c('li', {
       class: _vm.classes
-    }, [_vm._v(_vm._s(_vm.data.label)), _vm.data.children && _vm.data.children.length ? _c('i', {
+    }, [_vm._v("\n    " + _vm._s(_vm.data.label) + "\n    "), _vm.showArrow ? _c('i', {
       staticClass: "ivu-icon ivu-icon-ios-arrow-right"
+    }) : _vm._e(), _vm._v(" "), _vm.showLoading ? _c('i', {
+      staticClass: "ivu-icon ivu-icon-load-c ivu-load-loop"
     }) : _vm._e()]);
   }, staticRenderFns: [] };
 
@@ -21146,19 +21407,29 @@ module.exports = { render: function render() {
         "click": _vm.toggleOpen
       }
     }, [_vm._t("default", [_c('i-input', {
+      ref: "input",
       attrs: {
-        "readonly": "",
+        "readonly": !_vm.filterable,
         "disabled": _vm.disabled,
+        "value": _vm.displayInputRender,
         "size": _vm.size,
-        "placeholder": _vm.placeholder
+        "placeholder": _vm.inputPlaceholder
       },
-      model: {
-        value: _vm.displayRender,
-        callback: function callback($$v) {
-          _vm.displayRender = $$v;
-        }
+      on: {
+        "on-change": _vm.handleInput
       }
-    }), _vm._v(" "), _c('Icon', {
+    }), _vm._v(" "), _c('div', {
+      directives: [{
+        name: "show",
+        rawName: "v-show",
+        value: _vm.filterable && _vm.query === '',
+        expression: "filterable && query === ''"
+      }],
+      class: [_vm.prefixCls + '-label'],
+      on: {
+        "click": _vm.handleFocus
+      }
+    }, [_vm._v(_vm._s(_vm.displayRender))]), _vm._v(" "), _c('Icon', {
       directives: [{
         name: "show",
         rawName: "v-show",
@@ -21192,6 +21463,12 @@ module.exports = { render: function render() {
         expression: "visible"
       }]
     }, [_c('div', [_c('Caspanel', {
+      directives: [{
+        name: "show",
+        rawName: "v-show",
+        value: !_vm.filterable || _vm.filterable && _vm.query === '',
+        expression: "!filterable || (filterable && query === '')"
+      }],
       ref: "caspanel",
       attrs: {
         "prefix-cls": _vm.prefixCls,
@@ -21200,7 +21477,38 @@ module.exports = { render: function render() {
         "change-on-select": _vm.changeOnSelect,
         "trigger": _vm.trigger
       }
-    })], 1)])], 1)], 1);
+    }), _vm._v(" "), _c('div', {
+      directives: [{
+        name: "show",
+        rawName: "v-show",
+        value: _vm.filterable && _vm.query !== '' && _vm.querySelections.length,
+        expression: "filterable && query !== '' && querySelections.length"
+      }],
+      class: [_vm.prefixCls + '-dropdown']
+    }, [_c('ul', {
+      class: [_vm.selectPrefixCls + '-dropdown-list']
+    }, _vm._l(_vm.querySelections, function (item, index) {
+      return _c('li', {
+        class: [_vm.selectPrefixCls + '-item', (_obj = {}, _obj[_vm.selectPrefixCls + '-item-disabled'] = item.disabled, _obj)],
+        domProps: {
+          "innerHTML": _vm._s(item.display)
+        },
+        on: {
+          "click": function click($event) {
+            _vm.handleSelectItem(index);
+          }
+        }
+      });
+      var _obj;
+    }))]), _vm._v(" "), _c('ul', {
+      directives: [{
+        name: "show",
+        rawName: "v-show",
+        value: _vm.filterable && _vm.query !== '' && !_vm.querySelections.length,
+        expression: "filterable && query !== '' && !querySelections.length"
+      }],
+      class: [_vm.prefixCls + '-not-found-tip']
+    }, [_c('li', [_vm._v(_vm._s(_vm.localeNotFoundText))])])], 1)])], 1)], 1);
   }, staticRenderFns: [] };
 
 /***/ }),
@@ -22693,7 +23001,8 @@ exports.default = {
     i: {
         select: {
             placeholder: '请选择',
-            noMatch: '无匹配数据'
+            noMatch: '无匹配数据',
+            loading: '加载中'
         },
         table: {
             noDataText: '暂无数据',
