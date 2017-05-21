@@ -9,13 +9,13 @@
 		        	<Tree ref="tree" :data="treeData" v-on:on-toggle-expand="toggleExpand" v-on:on-select-change="selectChange" v-on:on-check-change="checkChange" show-checkbox="true"></Tree>
 				</i-col>
 		        <i-col span="18">
-		        	<!-- 综合查询 form -->
+		        	<!-- 综合查询 form-->
 					<Collapse ref="vueQueryFormVisible" v-model="vueQueryFormVisible" accordion="true">
 				        <Panel name="1">
 				           	 综合查询
 				            <p slot="content"  id="queryFormDomId"></p>
 				        </Panel>
-				    </Collapse>
+				    </Collapse> 
 					
 					<!-- 按钮 -->
 				 	<div style="margin-bottom: 10px;margin-top: 20px;">

@@ -13,12 +13,15 @@ import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.alibaba.fastjson.JSONObject;
 import com.beamofsoul.bip.entity.Organization;
 import com.beamofsoul.bip.entity.Permission;
+import com.beamofsoul.bip.entity.query.QOrganization;
 import com.beamofsoul.bip.entity.query.QPermission;
 import com.beamofsoul.bip.management.cache.CacheableBasedPageableCollection;
 import com.beamofsoul.bip.repository.OrganizationRepository;
@@ -64,6 +67,22 @@ public class OrganizationServiceImpl extends BaseAbstractServiceImpl implements 
 	@Transactional(readOnly = true)
 	public List<Organization> findAll() {
 		return organizationRepository.findAll();
+	}
+	
+	@Override
+	public List<Organization> findRelationalAll(Predicate predicate) {
+		List<Organization> children = organizationRepository.findByPredicateAndSort(predicate, new Sort(Direction.ASC, "sort"));
+		loadRelationalInformation(children);
+		return children;
+	}
+	private void loadRelationalInformation(List<Organization> organizations) {
+		organizations.stream().forEach(e -> {
+			e.setCountOfChildren(organizationRepository.count(QOrganization.organization.parentId.eq(e.getId())));
+		});
+	}
+	@Override
+	public BooleanExpression onRelationalSearch(JSONObject content) {
+		return new QPermission("Organization").parentId.eq(content.getLongValue("parentId"));
 	}
 
 	@Override

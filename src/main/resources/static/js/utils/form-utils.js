@@ -15,9 +15,9 @@ var vueAddFormName = 'vueAddForm';
 var vueUpdateFormName = 'vueUpdateForm';
 var vueCopyFormName = 'vueCopyForm';
 
-var vueAddFormRules;
-var vueUpdateFormRules;
-var vueCopyFormRules;
+var vueAddFormRules={};
+var vueUpdateFormRules={};
+var vueCopyFormRules={};
 
 var vueAddModalVisible = false; //添加form 对话框 显示状态
 var vueUpdateModalVisible = false;  //修改form 对话框 显示状态

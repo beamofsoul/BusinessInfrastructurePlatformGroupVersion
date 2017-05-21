@@ -53,6 +53,15 @@ public class OrganizationController extends BaseAbstractController {
 					organizationService.onSearch(formatAndParseObject(condition.toString()))));
 	}
 	
+	@PreAuthorize("authenticated and hasPermission('organization','organization:list')")
+	@RequestMapping(value = "children", method = RequestMethod.POST, produces = PRODUCES_APPLICATION_JSON)
+	@ResponseBody
+	public JSONObject getChildrenData(@RequestBody Map<String, Object> map) {
+		Object condition = map.get("condition");
+		return newInstance("children",organizationService.findRelationalAll(condition == null ? null : 
+			organizationService.onRelationalSearch(formatAndParseObject(condition.toString()))));
+	}
+	
 	@RequestMapping(value = "single", method = RequestMethod.POST, produces = PRODUCES_APPLICATION_JSON)
 	@ResponseBody
 	public JSONObject getSingleJSONObject(@RequestBody Map<String, Object> map) {

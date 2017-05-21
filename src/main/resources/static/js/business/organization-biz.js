@@ -22,6 +22,7 @@ parseValuesOnTableEachRow = function (obj) {
 //设置add update vue form data obj
 setFormDataObject({id:null,name: '',descirption: '',sort: 1,parentId: null,available: true});
 ////综合查询 form
+hasQueryFrom = false;
 //queryFormItemName = ['ID','昵称','用户名','密码','邮箱地址','电话号码','状态','注册日期','数字'];
 //queryFormItemKey = ['id','nickname','username','password','email','phone','status','createDate','number'];
 //queryFormItemType = ['string','string','string','string','string','string','select#statusDataSelect','date','10<number<20'];
@@ -50,9 +51,9 @@ vueContentBeforeCreate = function(){
 ////////////////////////////// 覆盖 流程方法 实现个性化/////////////////////////////////
 
 //////////////////tree///////////////////
-loadTreeRootUrl = 'permission/single';
+loadTreeRootUrl = 'organization/single';
 loadTreeRootDataFunction = function() {return {id: 1}}
-loadTreeNodeUrl = 'permission/children';
+loadTreeNodeUrl = 'organization/children';
 
 vueContentMethods.toggleExpand = toggleExpand;
 vueContentMethods.selectChange = selectChange;
