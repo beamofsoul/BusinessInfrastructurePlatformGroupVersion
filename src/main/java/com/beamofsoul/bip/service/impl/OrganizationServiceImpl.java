@@ -10,6 +10,7 @@ import java.util.List;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -39,6 +40,8 @@ public class OrganizationServiceImpl extends BaseAbstractServiceImpl implements 
 		return organizationRepository.save(organization);
 	}
 
+	@Transactional
+	@CachePut(key="#organization.id")
 	@Override
 	public Organization update(Organization organization) {
 		Organization originalOrganization = organizationRepository.findOne(organization.getId());
