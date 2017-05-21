@@ -432,7 +432,7 @@ function createTableQueryForm(queryFormName, queryFormItemName, queryFormItemKey
 	var queryForm = '<i-form ref="' + queryFormName + '" :model="' + queryFormName + '"  :show-message="false" label-position="left" :label-width="' + queryFormItemWidth + '" >';
 	//行
 	for (var rowIndex = 0; rowIndex < totalRow; rowIndex++) {
-		console.log('生成第几行 '+rowIndex)
+//		console.log('生成第几行 '+rowIndex)
 		queryForm += '<Row type="flex" justify="space-between" >';
 		//项
 		for (var rowItemIndex = 0; rowItemIndex < queryFromRowItemNum; rowItemIndex++) {
