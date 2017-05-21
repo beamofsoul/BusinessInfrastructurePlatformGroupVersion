@@ -1,17 +1,20 @@
 package com.beamofsoul.bip.entity;
 
-import javax.persistence.CascadeType;
+import java.util.HashMap;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 /**
@@ -24,47 +27,53 @@ import lombok.Setter;
 @Setter
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode(callSuper=false)
 
 @Entity
 @Table(name = "T_ORGANIZATION")
-public class Organization extends BaseAbstractEntity {
+public class Organization extends BaseAbstractRelationalEntity {
 
 	private static final long serialVersionUID = -3698064755378429720L;
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	@Column
+	@Column(name = "id")
 	protected Long id;
 	/**
 	 * 组织机构名称
 	 */
-	@Column
+	@Column(name = "name")
 	private String name;
 	/**
 	 * 组织机构描述
 	 */
-	@Column
+	@Column(name = "descirption")
 	private String descirption;
 	/**
 	 * 排序
 	 */
-	@Column
+	@Column(name = "sort")
 	private Integer sort;
 	/**
 	 * 上级组织机构
 	 */
-	@ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "PARENT_ID")
-	private Organization parent;
+	@Column(name = "parentId")
+	private Long parentId;
+//	@ManyToOne(cascade = CascadeType.ALL)
+//    @JoinColumn(name = "PARENT_ID")
+//	private Organization parent;
 	/**
 	 * 是否可用
 	 */
-	@Column
-	private Boolean available;
+//	@Column
+//	private Boolean available;
+	@Column(name = "available")
+	private Boolean available = Boolean.FALSE;
 
 	@Override
 	public String toString() {
 		return "Organization [id=" + id + ", name=" + name + ", descirption=" + descirption + ", sort=" + sort
-				+ ", parent=" + parent + ", available=" + available + "]";
+				+ ", parentId=" + parentId + ", available=" + available + "]";
 	}
 }

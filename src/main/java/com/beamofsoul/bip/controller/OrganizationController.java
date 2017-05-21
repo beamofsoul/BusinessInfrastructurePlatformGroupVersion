@@ -1,11 +1,13 @@
 package com.beamofsoul.bip.controller;
 
+import static com.beamofsoul.bip.management.util.JSONUtils.formatAndParseObject;
 import static com.beamofsoul.bip.management.util.JSONUtils.newInstance;
 
 import java.util.Map;
 
 import javax.annotation.Resource;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -43,7 +45,12 @@ public class OrganizationController extends BaseAbstractController {
 	@RequestMapping(value = "organizationsByPage", method = RequestMethod.POST, produces = PRODUCES_APPLICATION_JSON)
 	@ResponseBody
 	public JSONObject getPageableOrganizations(@RequestBody Map<String, Object> map) {
-		return newInstance(organizationService.findAll(PageUtils.parsePageable(map)));
+//		return newInstance(organizationService.findAll(PageUtils.parsePageable(map)));
+		Object condition = map.get("condition");
+		Pageable pageable = PageUtils.parsePageable(map);
+		return newInstance(organizationService.findAll(pageable, 
+				condition == null ? null : 
+					organizationService.onSearch(formatAndParseObject(condition.toString()))));
 	}
 	
 	@RequestMapping(value = "single", method = RequestMethod.POST, produces = PRODUCES_APPLICATION_JSON)

@@ -5,8 +5,10 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import com.alibaba.fastjson.JSONObject;
 import com.beamofsoul.bip.entity.Organization;
 import com.querydsl.core.types.Predicate;
+import com.querydsl.core.types.dsl.BooleanExpression;
 
 public interface OrganizationService {
 
@@ -19,4 +21,5 @@ public interface OrganizationService {
 	List<Organization> findAll();
 	Page<Organization> findAll(Pageable pageable);
 	Page<Organization> findAll(Pageable pageable, Predicate predicate);
+	BooleanExpression onSearch(JSONObject content);
 }
