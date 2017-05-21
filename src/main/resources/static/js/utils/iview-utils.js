@@ -70,18 +70,21 @@ vueContentMethods = {
 };
 
 beforeVueContentCreate = function () {
-  if (tableColumnsName && tableColumnsKey) {
-    createTableColumns(tableColumnsName, tableColumnsKey, tableButtonsOnEachRow);//根据用户定义的数据 设置table columns data
-    vueContentMounted = function () {
-      this.doLoadPage()
-    };//设置 vue 生命周期 Mounted 时 调用table读取页数据
+  if(hasTable){
+	  if (tableColumnsName && tableColumnsKey) {
+	    createTableColumns(tableColumnsName, tableColumnsKey, tableButtonsOnEachRow);//根据用户定义的数据 设置table columns data
+	    vueContentMounted = function () {
+	      this.doLoadPage()
+	    };//设置 vue 生命周期 Mounted 时 调用table读取页数据
+	  }
   }
-
-  if (queryFormItemName && queryFormItemKey && queryFormItemType && defaultQueryFormDomId) {
-    //根据用户定义的数据 生成query form 放到指定 dom id
-    createFormTemplate('vueQueryForm', queryFormItemName, queryFormItemKey, queryFormItemType, defaultQueryFormDomId);
-    //设置 query
-    createQueryForm(createQueryFormData(queryFormItemKey));
+  if(hasQueryFrom){
+	  if (queryFormItemName && queryFormItemKey && queryFormItemType && defaultQueryFormDomId) {
+	    //根据用户定义的数据 生成query form 放到指定 dom id
+	    createFormTemplate('vueQueryForm', queryFormItemName, queryFormItemKey, queryFormItemType, defaultQueryFormDomId);
+	    //设置 query
+	    createQueryForm(createQueryFormData(queryFormItemKey));
+	  }
   }
 };
 

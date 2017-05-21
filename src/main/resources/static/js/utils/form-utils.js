@@ -54,6 +54,8 @@ var submitUpdateBefore;   //提交前执行的自定义方法
 var submitDeleteBefore;   //提交前执行的自定义方法
 var submitCopyBefore;     //提交前执行的自定义方法
 
+var hasQueryFrom = true; //是否有queryForm
+
 
 /********************  添加按钮  *********************/
 /**
@@ -90,11 +92,13 @@ function submitAddForm() {
 
 // 默认的初始化updateform逻辑
 initUpdateForm = function (obj) {
-  var updateForm = getVueObject().vueUpdateForm;
-  //mapping 值映射
-  copyPropertiesValue(updateForm, obj);
-  //格式化返回json属性类型
-  formatObject2String(updateForm);
+//  var updateForm = getVueObject().vueUpdateForm;
+  //mapping 值映射 ，为了保证vue data 绑定，如改为 a_b_c 的形式，则不用
+//  copyPropertiesValue(updateForm, obj);
+  //转换对象属性类型 number boolean  为string ,为了适应iview控件，如果控件支持类型，则不用
+//  formatObject2String(updateForm);
+	
+  getVueObject().vueUpdateForm = obj;
 
   getVueObject().vueUpdateModalVisible = true;
   currentAction = actions.update;
@@ -164,6 +168,7 @@ function submitUpdateForm() {
   });
 }
 
+/********************  删除按钮  *********************/
 /**
  * 删除
  * @param vueTableCheckedDataName
@@ -264,7 +269,7 @@ function submitCopyForm() {
   });
 }
 
-
+/********************  综合查询按钮  *********************/
 /**
  * 综合 查询 按钮
  */

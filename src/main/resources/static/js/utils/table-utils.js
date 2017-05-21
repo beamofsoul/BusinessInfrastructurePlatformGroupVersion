@@ -21,6 +21,8 @@ var vuePageSize = 4;//每一页显示条数
 
 var loadPageableDataUrl;//加载分页业务数据用的URL
 
+var hasTable = true; //是否有table
+
 /**
  * 获取checked的ids
  * @param checkedData 选中的值 data
