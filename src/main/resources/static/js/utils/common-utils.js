@@ -10,3 +10,10 @@ var currentRequestMappingRootPath;
 function initCurrentRequestMappingRootPath(currentRequestPath){
 	currentRequestMappingRootPath = (!currentRequestPath) ? null : currentRequestPath.split('/')[0];
 }
+
+var arrayContains = function (array, value) {
+	for (i in array) {
+		if (array[i] == value) return true;
+	}
+	return false;
+}

@@ -8,11 +8,12 @@
 		<hr></hr>
 		<ul>
 			<li>
-				<span style="font-family: cursive;" 
-					th:text="${status eq 403 } ? 'You have no permissions to access the resource that you expect'
-					: ${status eq 404 } ? 'Could not find the page that you want to access'
-					: ${status eq 500 }  ? 'An ${exception } occurred' : 'An unknown exception or error occurred'">
-				</span>
+				<div th:switch="${status}">
+					<span th:case="403">You have no permissions to access the resource that you expect</span>
+					<span th:case="404">Could not find the page that you want to access</span>
+					<span th:case="500">An ${exception } occurred</span>
+					<span th:case="*">An unknown exception or error occurred</span>
+				</div>
 			</li>
 			<li>
 				<span style="font-family: cursive;">

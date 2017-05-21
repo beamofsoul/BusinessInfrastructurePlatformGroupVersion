@@ -107,7 +107,7 @@ function getTimeDifference(pastTime, currentTime) {
 }
 
 /**
- * 将输入对象属性中类型为对象，但其下子属性值全部为null或最小数字(-Number.MAX_VALUE)的值赋值为null
+ * 将输入对象属性中类型为对象，但其下子属性值全部为null或-999999999的值赋值为null
  * @param data 格式化前的数据对象
  * @returns 格式化后的数据对象
  */
@@ -118,7 +118,7 @@ function clearNullStructureObject4JSON(data) {
 	for(var r in data) {
 		var property = data[r];
 		var type = typeof property;
-		if (property !== null && property !== -Number.MAX_VALUE) allNull = false;
+		if (property !== null && property !== -999999999) allNull = false;
 		if (property && type === 'object')
 			data[r] = clearNullStructureObject4JSON(property);
 	}

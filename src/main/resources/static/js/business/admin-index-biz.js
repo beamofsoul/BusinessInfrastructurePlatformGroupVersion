@@ -19,6 +19,7 @@ function setGridScale(left,element) {
 function initBreadcrumbContent(name) {
 	if (name === 'adminIndexContent') vueObject.breadcrumb = [{href: '#', content: '首页内容'}];
 	if (name.indexOf('permission/') == 0) vueObject.breadcrumb = [{href: '#', content: '权限管理'}];
+	if (name.indexOf('department/') == 0) vueObject.breadcrumb = [{href: '#', content: '部门管理'}];
 }
 
 function loadContent(name) {
