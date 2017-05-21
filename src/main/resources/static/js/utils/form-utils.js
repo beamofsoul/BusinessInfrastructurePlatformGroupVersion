@@ -127,6 +127,7 @@ initUpdateForm = function (obj) {
 	currentAction = actions.update;
 	resetForm();
 	copyProperties(obj, getVueObject().vueUpdateForm);
+	if (showUpdateFormBefore) showUpdateFormBefore(getVueObject().vueUpdateForm);
 	getVueObject().vueUpdateModalVisible = true;
 };
 
@@ -223,6 +224,7 @@ initCopyForm = function (obj) {
 	var copyForm = getVueObject().vueCopyForm;
 	copyPropertiesValue(copyForm, obj); //mapping 值映射
 	formatObject2String(copyForm);  //格式化返回json属性类型
+	if (showCopyFOrmBefore) showCopyFormBefore(getVueObject().vueCopyForm);
 	getVueObject().vueCopyModalVisible = true;
 };
 
