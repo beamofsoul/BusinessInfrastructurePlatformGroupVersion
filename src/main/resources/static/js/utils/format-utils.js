@@ -107,6 +107,27 @@ function getTimeDifference(pastTime, currentTime) {
 }
 
 /**
+ * 将输入对象属性中类型为对象，但其下子属性值全部为null或最小数字(-Number.MAX_VALUE)的值赋值为null
+ * @param data 格式化前的数据对象
+ * @returns 格式化后的数据对象
+ */
+function clearNullStructureObject4JSON(data) {
+	if (typeof data === 'string') data = JSON.parse(data);
+	
+	var allNull = true;
+	for(var r in data) {
+		var property = data[r];
+		var type = typeof property;
+		if (property !== null && property !== -Number.MAX_VALUE) allNull = false;
+		if (property && type === 'object')
+			data[r] = clearNullStructureObject4JSON(property);
+	}
+	if (allNull) data = null;
+	
+	return data;
+}
+
+/**
  * 转换data中 number boolean 数据类型为string ，返回一个新的结果对象
  * @param data 要转换的json对象
  * @returns 新的转换后的json对象
@@ -143,14 +164,75 @@ function formatObject2String(data){
  * @returns
  */
 function copyPropertiesValue(sources,target){
+	if (!target) {
+		for(var r in sources) {
+			if (typeof sources[r] != 'object')
+				copyPropertiesValue(sources[r])
+			else
+				sources[r]=null;
+		}
+		return;
+	}
+	
 	var itemType;
 	for(var key in sources){
 		itemType = typeof sources[key];
 		if(itemType == 'object'){
-			if(target[key])
+			if (sources[key]) {
 				copyPropertiesValue(sources[key],target[key]);
+			} else {
+				sources[key] = target[key];
+			}
 		}else{
 			sources[key] = target[key];
+		}
+	}
+}
+
+/**
+ * 将规则的JSON对象转换为无嵌套JSON对象，调用parseUnderlinePropertyValue执行嵌套解析
+ * @param source {a: 1, b: {ba: {baa: 4, bab: 8}, bb: 2}, c: {ca: {caa: {caaa: 7, caab: 20}, cab: {caba: -2}}}};
+ * @param target {a: null, b_ba_baa: null, b_ba_bab: null, b_bb: null, c_ca_caa_caab: null};
+ * @result {"a":1,"b_ba_baa":4,"b_ba_bab":8,"b_bb":2,"c_ca_caa_caab":20}
+ */
+function copyProperties(source, target) {
+	if (source && target) {
+		for(var r in source) {
+			var property = source[r];
+			var type = typeof property;
+			if (type !== 'object') {
+				target[r] = property;
+			} else {
+				for(var singleProperty in target) {
+					if (singleProperty.indexOf('_') != -1) {
+						parseUnderlinePropertyValue(source, target, singleProperty.split('_'), singleProperty);
+					}
+				}
+			}
+		}
+	}
+}
+
+/**
+ * 将规则的JSON对象转换为无嵌套JSON对象，被copyProperties调用使用
+ * @param source {a: 1, b: {ba: {baa: 4, bab: 8}, bb: 2}, c: {ca: {caa: {caaa: 7, caab: 20}, cab: {caba: -2}}}};
+ * @param target {a: null, b_ba_baa: null, b_ba_bab: null, b_bb: null, c_ca_caa_caab: null};
+ * @param structure ['c','ca','caa','caab']
+ * @param singleProperty 'c_ca_caa_caab'
+ * @result {"a":1,"b_ba_baa":4,"b_ba_bab":8,"b_bb":2,"c_ca_caa_caab":20}
+ */
+function parseUnderlinePropertyValue(source, target, structure, singleProperty) {
+	if (structure.length > 1) {
+		var objectProperty = structure[0];
+		var subObject = source[objectProperty];
+		if (subObject) {
+			if (structure.length > 2) {
+				structure.shift();
+				parseUnderlinePropertyValue(subObject, target, structure, singleProperty);
+			}
+			else {
+				target[singleProperty] = subObject[structure[1]];
+			}
 		}
 	}
 }
@@ -159,7 +241,7 @@ function copyPropertiesValue(sources,target){
  * 将对象属性值为对象，并且此值对象中所有属性值为空的，删除 （例 ：将 {id:1,parent:{id:null,type:null}}  变为 {id:1,parent:null} ）
  * @param sources 包含属性的对象
  * @param target 包含值的对象
- * @returns
+ * @returns 格式化后的数据对象
  */
 function clearNullProperties(obj){
 	var copyObj = Object.assign({}, obj);
@@ -184,9 +266,3 @@ function clearNullProperties(obj){
 	}
 	return copyObj;
 }
-
-
-
-
-
-	 
