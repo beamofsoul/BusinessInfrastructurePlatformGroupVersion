@@ -37,4 +37,5 @@
 	<cache name="userCache" maxElementsInMemory="1000" eternal="false" timeToLiveSeconds="3600" timeToIdleSeconds="3600" overflowToDisk="true"/>
 	<cache name="roleCache" maxElementsInMemory="100" eternal="false" timeToLiveSeconds="3600" timeToIdleSeconds="3600" overflowToDisk="true"/>
 	<cache name="permissionCache" maxElementsInMemory="500" eternal="false" timeToLiveSeconds="3600" timeToIdleSeconds="3600" overflowToDisk="true"/>
+	<cache name="organizationCache" maxElementsInMemory="500" eternal="false" timeToLiveSeconds="3600" timeToIdleSeconds="3600" overflowToDisk="true"/>
 </ehcache>
