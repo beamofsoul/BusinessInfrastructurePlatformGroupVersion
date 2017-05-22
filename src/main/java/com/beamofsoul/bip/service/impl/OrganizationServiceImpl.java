@@ -1,7 +1,17 @@
 package com.beamofsoul.bip.service.impl;
 
-import java.util.List;
+import static com.beamofsoul.bip.management.util.BooleanExpressionUtils.addExpression;
+import static com.beamofsoul.bip.management.util.BooleanExpressionUtils.like;
+import static com.beamofsoul.bip.management.util.BooleanExpressionUtils.toBooleanValue;
+import static com.beamofsoul.bip.management.util.BooleanExpressionUtils.toLongValue;
+import static com.beamofsoul.bip.management.util.JSONUtils.formatAndParseObject;
 
+import java.math.BigInteger;
+import java.util.Iterator;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;
@@ -15,9 +25,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.alibaba.fastjson.JSONObject;
 import com.beamofsoul.bip.entity.Organization;
+import com.beamofsoul.bip.entity.Permission;
+import com.beamofsoul.bip.entity.query.QDepartment;
 import com.beamofsoul.bip.entity.query.QOrganization;
 import com.beamofsoul.bip.entity.query.QPermission;
 import com.beamofsoul.bip.management.cache.CacheableBasedPageableCollection;
+import com.beamofsoul.bip.management.util.CommonUtils;
 import com.beamofsoul.bip.repository.OrganizationRepository;
 import com.beamofsoul.bip.service.OrganizationService;
 import com.querydsl.core.types.Predicate;
@@ -96,15 +109,45 @@ public class OrganizationServiceImpl extends BaseAbstractServiceImpl implements 
 	}
 	
 	@Override
-	public BooleanExpression onSearch(JSONObject content) {
+	@Transactional(readOnly = true)
+	public Page<Organization> findAllChildrenOrganizations(Pageable pageable, Object condition) {
+		//根据条件 查询节点下级所有数据
+		if(condition!=null){
+			Object currentId = formatAndParseObject(condition.toString()).get("currentId");
+			List<Long> idsLong = null;
+			if(currentId!=null&&StringUtils.isNotBlank(currentId.toString())){
+				List<BigInteger> result = organizationRepository.findChildrenIds(Long.valueOf(currentId.toString()));
+				idsLong =  result.stream().map(e -> e.longValue()).collect(Collectors.toList());
+			}
+			
+			return organizationRepository.findAll(this.onSearch(formatAndParseObject(condition.toString()),idsLong), pageable);
+			
+		}else{
+			return this.findAll(pageable);
+		}
+		
+	}
+	
+	
+	@Override
+	public BooleanExpression onSearch(JSONObject content,List<Long> idsLong) {
+		
+		
+		
 //		QPermission permission = new QPermission("Permission");
-//		BooleanExpression exp = null;
+		QOrganization organization = QOrganization.organization;
+		BooleanExpression exp = null;
+		
+//		String currentId = content.getString("currentId");
+//		exp = addExpression(currentId, exp, permission.name.like(like(name)));
+		
+		if(idsLong!=null&&idsLong.size()!=0){
+			exp = addExpression(idsLong.toString(), exp, organization.id.in(idsLong));
+		}
+		
 //		
-//		String name = content.getString("name");
-//		exp = addExpression(name, exp, permission.name.like(like(name)));
-//		
-//		String id = content.getString("id");
-//		exp = addExpression(id, exp, permission.id.eq(toLongValue(id)));
+		String id = content.getString("id");
+		exp = addExpression(id, exp, organization.id.eq(toLongValue(id)));
 //		
 //		String url = content.getString("url");
 //		exp = addExpression(url, exp, permission.url.like(like(url)));
@@ -124,12 +167,7 @@ public class OrganizationServiceImpl extends BaseAbstractServiceImpl implements 
 //		String available = content.getString("available");
 //		exp = addExpression(available, exp, permission.available.eq(toBooleanValue(available)));
 //		
-//		return exp;
-		return null;
-	}
-
-	@Override
-	public List<Organization> findAllAvailableOrganizations() {
-		return organizationRepository.findByPredicate(new QOrganization("Organization").available.eq(true));
+		return exp;
+//		return null;
 	}
 }

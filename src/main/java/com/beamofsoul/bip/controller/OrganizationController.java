@@ -46,11 +46,23 @@ public class OrganizationController extends BaseAbstractController {
 	@ResponseBody
 	public JSONObject getPageableOrganizations(@RequestBody Map<String, Object> map) {
 //		return newInstance(organizationService.findAll(PageUtils.parsePageable(map)));
+//		Object condition = map.get("condition");
+//		Pageable pageable = PageUtils.parsePageable(map);
+//		return newInstance(organizationService.findAll(pageable, 
+//				condition == null ? null : 
+//					organizationService.onSearch(formatAndParseObject(condition.toString()))));
+		
 		Object condition = map.get("condition");
 		Pageable pageable = PageUtils.parsePageable(map);
-		return newInstance(organizationService.findAll(pageable, 
-				condition == null ? null : 
-					organizationService.onSearch(formatAndParseObject(condition.toString()))));
+		
+		
+//		return newInstance(organizationService.findAllChildrenOrganizations(pageable, 
+//				condition == null ? null : 
+//					organizationService.onSearch(formatAndParseObject(condition.toString()))));
+//		
+		return newInstance(organizationService.findAllChildrenOrganizations(pageable, 
+				condition ));
+		
 	}
 	
 	@PreAuthorize("authenticated and hasPermission('organization','organization:list')")
@@ -81,11 +93,5 @@ public class OrganizationController extends BaseAbstractController {
 	public JSONObject delete(@RequestBody String ids) {
 		return newInstance("count",organizationService
 				.delete(CommonConvertUtils.convertToLongArray(ids)));
-	}
-	
-	@RequestMapping(value = "/getAllAvailableOrganizations", method = RequestMethod.POST)
-	@ResponseBody
-	public JSONObject getAllAvailableOrganizations() {
-		return newInstance("parents", organizationService.findAllAvailableOrganizations());
 	}
 }

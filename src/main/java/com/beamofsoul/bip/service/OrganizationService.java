@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 
 import com.alibaba.fastjson.JSONObject;
 import com.beamofsoul.bip.entity.Organization;
+import com.beamofsoul.bip.entity.Permission;
 import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.dsl.BooleanExpression;
 
@@ -22,8 +23,8 @@ public interface OrganizationService {
 	List<Organization> findRelationalAll(Predicate predicate);
 	Page<Organization> findAll(Pageable pageable);
 	Page<Organization> findAll(Pageable pageable, Predicate predicate);
-	List<Organization> findAllAvailableOrganizations();
+	Page<Organization> findAllChildrenOrganizations(Pageable pageable, Object condition);
 	
-	BooleanExpression onSearch(JSONObject content);
+	BooleanExpression onSearch(JSONObject content,List<Long> idsLong);
 	BooleanExpression onRelationalSearch(JSONObject content);
 }
