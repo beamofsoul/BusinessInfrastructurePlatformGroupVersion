@@ -78,7 +78,9 @@
 		        title="增加用户">
 	       	
 		       	<i-form ref="vueAddForm" :model="vueAddForm" :rules="vueAddFormRules" :label-width="80">
-		       		
+		       		<Form-item prop="id" v-show="false">
+			            <i-input v-model="vueAddForm.id" ></i-input>
+			        </Form-item>
 			        <Form-item label="姓名" prop="username">
 			            <i-input v-model="vueAddForm.username" placeholder="请输入姓名"></i-input>
 			        </Form-item>
@@ -163,6 +165,9 @@
 		        title="修改用户">
 	       	
 			    <i-form ref="vueUpdateForm" :model="vueUpdateForm" :rules="vueUpdateFormRules" :label-width="80">
+			    	<Form-item prop="id" v-show="false">
+			            <i-input v-model="vueUpdateForm.id" ></i-input>
+			        </Form-item>
 			        <Form-item label="姓名" prop="username">
 			            <i-input v-model="vueUpdateForm.username" disabled="true"  placeholder="请输入姓名"></i-input>
 			        </Form-item>
