@@ -2,6 +2,8 @@
 if (vueContentObject) vueContentObject.$destroy();
 
 //分页取数据url
+//loadPageableDataUrl = 'organizationsByPage';
+//自定义分页取数据url
 loadPageableDataUrl = 'organizationsByPage';
 //table column 显示名
 tableColumnsName = ['','ID','名称','描述','排序','上级机构ID','是否可用','操作'];
@@ -22,10 +24,10 @@ parseValuesOnTableEachRow = function (obj) {
 //设置add update vue form data obj
 setFormDataObject({id:null,name: '',descirption: '',sort: 1,parentId: null,available: true});
 ////综合查询 form
-hasQueryFrom = false;
-//queryFormItemName = ['ID','昵称','用户名','密码','邮箱地址','电话号码','状态','注册日期','数字'];
-//queryFormItemKey = ['id','nickname','username','password','email','phone','status','createDate','number'];
-//queryFormItemType = ['string','string','string','string','string','string','select#statusDataSelect','date','10<number<20'];
+//hasQueryFrom = false;
+queryFormItemName = ['此节点ID下数据'];
+queryFormItemKey = ['currentId'];
+queryFormItemType = ['string'];
 //
 //
 ////form 验证信息 
@@ -52,11 +54,25 @@ vueContentBeforeCreate = function(){
 
 //////////////////tree///////////////////
 loadTreeRootUrl = 'organization/single';
-loadTreeRootDataFunction = function() {return {id: 1}}
+loadTreeRootDataFunction = function() {return {id: 2}}
 loadTreeNodeUrl = 'organization/children';
 
 vueContentMethods.toggleExpand = toggleExpand;
-vueContentMethods.selectChange = selectChange;
+
+vueContentMethods.selectChange = function(node){
+	//取 select 选中节点的 id
+	if(node.length!=0){
+		var selectId = node[0].id;
+		//根据节点加载table数据
+		console.log(currentQueryFormName);
+		console.log(getVueObject()[currentQueryFormName]);
+		getVueObject().doLoadPage();
+		
+	}
+	console.log('selectChange: ' + JSON.stringify(node));
+	
+};
+
 vueContentMethods.checkChange = checkChange;
 vueContentMethods.getCheckedNodes = getCheckedNodes;
 vueContentMethods.getSelectedNodes = getSelectedNodes;
