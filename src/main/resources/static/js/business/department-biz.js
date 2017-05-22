@@ -20,8 +20,8 @@ parseValuesOnTableEachRow = function (obj) {
 		organization: obj.organization ? obj.organization.name : '无',
 		parent: obj.parent ? obj.parent.name : '无',
 		available: obj.available ? '启用' : '弃用',
-		createDate:formatDate(obj.createDate,true),
-		modifyDate:formatDate(obj.modifyDate,true)};
+		createDate:formatDate(obj.createDate),
+		modifyDate:formatDate(obj.modifyDate)};
 }
 
 vueContentBeforeCreate = function() {
