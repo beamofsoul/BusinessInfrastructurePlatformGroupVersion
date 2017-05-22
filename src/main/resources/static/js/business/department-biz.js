@@ -24,7 +24,6 @@ parseValuesOnTableEachRow = function (obj) {
 }
 
 vueContentBeforeCreate = function() {
-	this.parentSelection = '';
 	this.parentDataSelect = getDepartmentList4Parent();
 	this.availableDataSelect = [{value: 'true', label: '启用'},{value: 'false', label: '弃用'}];
 };
