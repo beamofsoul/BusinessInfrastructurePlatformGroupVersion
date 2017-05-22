@@ -84,7 +84,7 @@ public class DepartmentServiceImpl extends BaseAbstractServiceImpl implements De
 	
 	@Override
 	public BooleanExpression onSearch(JSONObject content) {
-		QDepartment department = new QDepartment("Department");
+		QDepartment department = QDepartment.department;
 		BooleanExpression exp = null;
 		
 		String code = content.getString("code");
