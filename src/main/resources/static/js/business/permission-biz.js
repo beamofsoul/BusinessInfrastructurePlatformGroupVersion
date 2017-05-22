@@ -19,7 +19,7 @@ parseValuesOnTableEachRow = function (obj) {
 		url :obj.url,
 		action :obj.action,
 		group :obj.group,
-		parentId :obj.parentId,
+		parentId : obj.parentId == null ? '无' : obj.parentId,
 		resourceType: obj.resourceType === 'menu' ? '菜单' : '按钮',
 		sort: obj.sort,
 		available: obj.available ? '启用' : '弃用',
