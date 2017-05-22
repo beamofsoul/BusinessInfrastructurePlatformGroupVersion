@@ -1,6 +1,5 @@
 package com.beamofsoul.bip.entity;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -62,13 +61,13 @@ public class Department extends BaseAbstractRelationalEntity {
 	/**
 	 * 上级部门
 	 */
-	@ManyToOne(cascade = {CascadeType.PERSIST,CascadeType.REFRESH,CascadeType.REMOVE,CascadeType.DETACH})
+	@ManyToOne
     @JoinColumn(name = "PARENT_ID", nullable = true)
 	private Department parent;
 	/**
 	 * 所属结构
 	 */
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne
 	@JoinColumn(name = "ORGANIZATION_ID", nullable = true)
 	private Organization organization;
 	/**

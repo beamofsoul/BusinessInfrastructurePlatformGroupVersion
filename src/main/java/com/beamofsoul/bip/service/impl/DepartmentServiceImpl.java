@@ -18,11 +18,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.alibaba.fastjson.JSONObject;
 import com.beamofsoul.bip.entity.Department;
-import com.beamofsoul.bip.entity.Organization;
 import com.beamofsoul.bip.entity.query.QDepartment;
 import com.beamofsoul.bip.repository.DepartmentRepository;
 import com.beamofsoul.bip.service.DepartmentService;
-import com.beamofsoul.bip.service.OrganizationService;
 import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.dsl.BooleanExpression;
 
@@ -31,9 +29,6 @@ public class DepartmentServiceImpl extends BaseAbstractServiceImpl implements De
 
 	@Autowired
 	private DepartmentRepository departmentRepository;
-	
-	@Autowired
-	private OrganizationService organizationService;
 
 	@Override
 	public Department create(Department department) {
@@ -43,20 +38,6 @@ public class DepartmentServiceImpl extends BaseAbstractServiceImpl implements De
 	@Override
 	public Department update(Department department) {
 		Department originalDepartment = departmentRepository.findOne(department.getId());
-		Department currentParent = department.getParent();
-		if (currentParent != null) {
-			Department originalParent = originalDepartment.getParent();
-			department.setParent(
-				(originalParent == null || !originalParent.getId().equals(currentParent.getId())) ? 
-					this.findById(currentParent.getId()) : originalParent);
-		}
-		Organization currentOrganization = department.getOrganization();
-		if (currentOrganization != null) {
-			Organization originalOrganization = originalDepartment.getOrganization();
-			department.setOrganization(
-				(originalOrganization == null || !originalOrganization.getId().equals(currentOrganization.getId())) ?
-					organizationService.findById(currentOrganization.getId()) : originalOrganization);
-		}
 		BeanUtils.copyProperties(department, originalDepartment);
 		return departmentRepository.save(originalDepartment);
 	}
