@@ -66,6 +66,12 @@ public class Department extends BaseAbstractRelationalEntity {
     @JoinColumn(name = "PARENT_ID", nullable = true)
 	private Department parent;
 	/**
+	 * 所属结构
+	 */
+	@ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "ORGANIZATION_ID", nullable = true)
+	private Organization organization;
+	/**
 	 * 是否可用
 	 */
 	@Column

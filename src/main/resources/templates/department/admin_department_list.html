@@ -42,6 +42,12 @@
 					<Form-item label="排序" prop="sort">
 						<Input-number :max="9999" :min="1" v-model="vueAddForm.sort" style="width: 100%"></Input-number>
 					</Form-item>
+					<Form-item label="所属机构" prop="organization_id">
+					    <i-select v-if="organizationDataSelect.length > 0" v-model="vueAddForm.organization_id" style="width:100%" placeholder="请选择所属机构">
+					        <i-option v-for="item in organizationDataSelect" :value="item.value" :key="item">{{ item.label }}</i-option>
+					    </i-select>
+					    <i-input v-else="true" value="暂无所属机构可选" disabled="disabled"></i-input>
+					</Form-item>
 					<Form-item label="上级部门" prop="parent_id">
 					    <i-select v-if="parentDataSelect.length > 0" v-model="vueAddForm.parent_id" style="width:100%" placeholder="请选择上级部门">
 					        <i-option v-for="item in parentDataSelect" :value="item.value" :key="item">{{ item.label }}</i-option>
@@ -85,6 +91,12 @@
 					</Form-item>
 					<Form-item label="排序" prop="sort">
 						<Input-number :max="9999" :min="1" v-model="vueUpdateForm.sort" style="width: 100%"></Input-number>
+					</Form-item>
+					<Form-item label="所属机构" prop="organization_id">
+					    <i-select v-if="organizationDataSelect.length > 0" v-model="vueUpdateForm.organization_id" style="width:100%" placeholder="请选择所属机构">
+					        <i-option v-for="item in organizationDataSelect" :value="item.value" :key="item">{{ item.label }}</i-option>
+					    </i-select>
+					    <i-input v-else="true" value="暂无所属机构可选" disabled="disabled"></i-input>
 					</Form-item>
 					<Form-item ref="updateFormParentSelection" label="上级部门" prop="parent_id">
 						<i-select v-if="parentDataSelect.length > 0" v-model="vueUpdateForm.parent_id" style="width:100%" placeholder="请选择上级部门">

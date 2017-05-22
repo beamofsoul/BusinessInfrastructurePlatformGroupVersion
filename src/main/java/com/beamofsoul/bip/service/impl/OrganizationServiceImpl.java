@@ -1,10 +1,5 @@
 package com.beamofsoul.bip.service.impl;
 
-import static com.beamofsoul.bip.management.util.BooleanExpressionUtils.addExpression;
-import static com.beamofsoul.bip.management.util.BooleanExpressionUtils.like;
-import static com.beamofsoul.bip.management.util.BooleanExpressionUtils.toBooleanValue;
-import static com.beamofsoul.bip.management.util.BooleanExpressionUtils.toLongValue;
-
 import java.util.List;
 
 import org.springframework.beans.BeanUtils;
@@ -20,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.alibaba.fastjson.JSONObject;
 import com.beamofsoul.bip.entity.Organization;
-import com.beamofsoul.bip.entity.Permission;
 import com.beamofsoul.bip.entity.query.QOrganization;
 import com.beamofsoul.bip.entity.query.QPermission;
 import com.beamofsoul.bip.management.cache.CacheableBasedPageableCollection;
@@ -132,5 +126,10 @@ public class OrganizationServiceImpl extends BaseAbstractServiceImpl implements 
 //		
 //		return exp;
 		return null;
+	}
+
+	@Override
+	public List<Organization> findAllAvailableOrganizations() {
+		return organizationRepository.findByPredicate(new QOrganization("Organization").available.eq(true));
 	}
 }

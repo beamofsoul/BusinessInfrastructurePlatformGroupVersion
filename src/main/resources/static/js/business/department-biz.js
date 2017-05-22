@@ -5,9 +5,9 @@ vuePageSize = 10;
 //分页取数据url
 loadPageableDataUrl = 'departmentsByPage';
 //table column 显示名
-var tableColumnsName = ['','ID','部门编码','部门名称','部门描述','排序','上级部门','可用状态','注册日期','最后修改日期','操作'];
+var tableColumnsName = ['','ID','部门编码','部门名称','部门描述','排序','所属机构','上级部门','可用状态','注册日期','最后修改日期','操作'];
 //table column 对应data中的属性名   全选 加 'selection' 项 , 操作 加 'operation' 项。
-var tableColumnsKey = ['selection','id','code','name','descirption','sort','parent','available','createDate','modifyDate','operation'];
+var tableColumnsKey = ['selection','id','code','name','descirption','sort','organization','parent','available','createDate','modifyDate','operation'];
 //table 每行需要的按钮 
 var tableButtonsOnEachRow = ['rowUpdateButton#修改','rowDeleteButton#删除'];
 //格式化table行数据格式
@@ -17,6 +17,7 @@ parseValuesOnTableEachRow = function (obj) {
 		name: obj.name,
 		descirption: obj.descirption,
 		sort: obj.sort,
+		organization: obj.organization ? obj.organization.name : '无',
 		parent: obj.parent ? obj.parent.name : '无',
 		available: obj.available ? '启用' : '弃用',
 		createDate:formatDate(obj.createDate,true),
@@ -25,16 +26,17 @@ parseValuesOnTableEachRow = function (obj) {
 
 vueContentBeforeCreate = function() {
 	this.parentDataSelect = getDepartmentList4Parent();
+	this.organizationDataSelect = getOrganizationList();
 	this.availableDataSelect = [{value: 'true', label: '启用'},{value: 'false', label: '弃用'}];
 };
 
 //设置add update vue form data obj
-setFormDataObject({id: -1, code: '', name: '', descirption: '', sort: 1, parent_id: -999999999, available: 'true'});
+setFormDataObject({id: -1, code: '', name: '', descirption: '', sort: 1, organization_id: -999999999, parent_id: -999999999, available: 'true'});
 
 //综合查询 form
-var queryFormItemName = ['ID','部门编码','部门名称','上级部门','可用状态'];
-var queryFormItemKey = ['id','code','name','parent','available'];
-var queryFormItemType = ['string','string','string','string','select#availableDataSelect'];
+var queryFormItemName = ['ID','部门编码','部门名称','所属机构','上级部门','可用状态'];
+var queryFormItemKey = ['id','code','name','organization','parent','available'];
+var queryFormItemType = ['string','string','string','string','string','select#availableDataSelect'];
 
 //form 验证信息 
 setFormRulesObject({
@@ -62,8 +64,26 @@ function getDepartmentList4Parent() {
 	return content;
 }
 
+function getOrganizationList() {
+	//Iview解决resetFields不能清空Select选中项问题之前
+	//https://github.com/iview/iview/issues/970
+	//暂且用Javascript中数字类型最小值在clearNullStructureObject4JSON方法中表示null值进行处理
+	var content = [{value: -999999999, label: '请选择所属机构'}];
+	$.posty('organization/getAllAvailableOrganizations', null, function(data) {
+		data = data.parents;
+		for(var r in data) {
+			var item = {};
+			item.value = data[r].id;
+			item.label = data[r].name;
+			content.push(item);
+		}
+	});
+	return content;
+}
+
 submitAddAfter = submitUpdateAfter = submitDeleteAfter = function() {
 	vueContentObject.parentDataSelect = getDepartmentList4Parent();
+	vueContentObject.organizationDataSelect = getOrganizationList();
 }
 
 showUpdateFormBefore = function(form) {

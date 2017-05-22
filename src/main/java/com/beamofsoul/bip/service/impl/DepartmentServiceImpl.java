@@ -18,9 +18,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.alibaba.fastjson.JSONObject;
 import com.beamofsoul.bip.entity.Department;
+import com.beamofsoul.bip.entity.Organization;
 import com.beamofsoul.bip.entity.query.QDepartment;
 import com.beamofsoul.bip.repository.DepartmentRepository;
 import com.beamofsoul.bip.service.DepartmentService;
+import com.beamofsoul.bip.service.OrganizationService;
 import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.dsl.BooleanExpression;
 
@@ -29,6 +31,9 @@ public class DepartmentServiceImpl extends BaseAbstractServiceImpl implements De
 
 	@Autowired
 	private DepartmentRepository departmentRepository;
+	
+	@Autowired
+	private OrganizationService organizationService;
 
 	@Override
 	public Department create(Department department) {
@@ -38,10 +43,19 @@ public class DepartmentServiceImpl extends BaseAbstractServiceImpl implements De
 	@Override
 	public Department update(Department department) {
 		Department originalDepartment = departmentRepository.findOne(department.getId());
-		if (department.getParent() != null) {
+		Department currentParent = department.getParent();
+		if (currentParent != null) {
+			Department originalParent = originalDepartment.getParent();
 			department.setParent(
-				(originalDepartment.getParent() == null || !originalDepartment.getParent().getId().equals(department.getParent().getId())) ? 
-					this.findById(department.getParent().getId()) : originalDepartment.getParent());
+				(originalParent == null || !originalParent.getId().equals(currentParent.getId())) ? 
+					this.findById(currentParent.getId()) : originalParent);
+		}
+		Organization currentOrganization = department.getOrganization();
+		if (currentOrganization != null) {
+			Organization originalOrganization = originalDepartment.getOrganization();
+			department.setOrganization(
+				(originalOrganization == null || !originalOrganization.getId().equals(currentOrganization.getId())) ?
+					organizationService.findById(currentOrganization.getId()) : originalOrganization);
 		}
 		BeanUtils.copyProperties(department, originalDepartment);
 		return departmentRepository.save(originalDepartment);
@@ -101,6 +115,9 @@ public class DepartmentServiceImpl extends BaseAbstractServiceImpl implements De
 		
 		String available = content.getString("available");
 		exp = addExpression(available, exp, department.available.eq(toBooleanValue(available)));
+		
+		String organization = content.getString("organization");
+		exp = addExpression(organization, exp, department.organization.name.like(like(organization)));
 		
 		return exp;
 	}

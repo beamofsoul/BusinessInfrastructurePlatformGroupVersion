@@ -45,6 +45,8 @@ public class QDepartment extends EntityPathBase<Department> {
 
     public final StringPath name = createString("name");
 
+    public final QOrganization organization;
+
     public final QDepartment parent;
 
     public final NumberPath<Integer> sort = createNumber("sort", Integer.class);
@@ -67,6 +69,7 @@ public class QDepartment extends EntityPathBase<Department> {
 
     public QDepartment(Class<? extends Department> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
+        this.organization = inits.isInitialized("organization") ? new QOrganization(forProperty("organization")) : null;
         this.parent = inits.isInitialized("parent") ? new QDepartment(forProperty("parent"), inits.get("parent")) : null;
     }
 
