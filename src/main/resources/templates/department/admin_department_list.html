@@ -40,7 +40,7 @@
 						<i-input v-model="vueAddForm.descirption" type="textarea" :rows="4" placeholder="请输入部门描述"></i-input>
 					</Form-item>
 					<Form-item label="排序" prop="sort">
-						<i-input v-model="vueAddForm.sort" number="true" placeholder="请输入排序"></i-input>
+						<Input-number :max="9999" :min="1" v-model="vueAddForm.sort" style="width: 100%"></Input-number>
 					</Form-item>
 					<Form-item label="上级部门" prop="parent_id">
 					    <i-select v-if="parentDataSelect.length > 0" v-model="vueAddForm.parent_id" style="width:100%" placeholder="请选择上级部门">
@@ -84,7 +84,7 @@
 						<i-input v-model="vueUpdateForm.descirption" type="textarea" :rows="4" placeholder="请输入部门描述"></i-input>
 					</Form-item>
 					<Form-item label="排序" prop="sort">
-						<i-input v-model="vueUpdateForm.sort" number="true" placeholder="请输入排序"></i-input>
+						<Input-number :max="9999" :min="1" v-model="vueUpdateForm.sort" style="width: 100%"></Input-number>
 					</Form-item>
 					<Form-item ref="updateFormParentSelection" label="上级部门" prop="parent_id">
 						<i-select v-if="parentDataSelect.length > 0" v-model="vueUpdateForm.parent_id" style="width:100%" placeholder="请选择上级部门">
