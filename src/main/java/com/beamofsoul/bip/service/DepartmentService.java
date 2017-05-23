@@ -23,7 +23,9 @@ public interface DepartmentService {
 	Page<Department> findAll(Pageable pageable, Predicate predicate);
 	List<Department> findAllAvailableDepartments();
 	List<Long> findChildrenIds(Long id);
+	List<Department> findRelationalAll(Predicate predicate);
 	
 	BooleanExpression onSearch(JSONObject content);
+	BooleanExpression onRelationalSearch(JSONObject content);
 	boolean checkDepartmentCodeUnique(String code, Long id);
 }

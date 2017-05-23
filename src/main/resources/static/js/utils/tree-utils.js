@@ -40,11 +40,16 @@ function generateRootNode() {
  * @param parent 父节点
  */
 function toggleExpand(parent) {
-	var content = [];
-	$.posty(loadTreeNodeUrl,loadTreeNodeDataFunction(parent),function(data) {
-		loadTreeNodeCallback(content,data);
-	});
-	parent.children = content;
+	if(!parent.expand) {
+		//收缩时不需要重新加载数据
+		return;
+	} else {
+		var content = [];
+		$.posty(loadTreeNodeUrl,loadTreeNodeDataFunction(parent),function(data) {
+			loadTreeNodeCallback(content,data);
+		});
+		parent.children = content;
+	}
 }
 
 /**

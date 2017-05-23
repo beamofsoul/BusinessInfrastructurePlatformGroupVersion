@@ -13,6 +13,8 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -114,5 +116,27 @@ public class DepartmentServiceImpl extends BaseAbstractServiceImpl implements De
 	public List<Long> findChildrenIds(Long id) {
 		List<BigInteger> result = departmentRepository.findChildrenIds(id);
 		return result.stream().map(e -> e.longValue()).collect(Collectors.toList());
+	}
+	
+	@Override
+	public List<Department> findRelationalAll(Predicate predicate) {
+		List<Department> children = departmentRepository.findByPredicateAndSort(predicate, new Sort(Direction.ASC, "sort"));
+		loadRelationalInformation(children);
+		return children;
+	}
+	
+	@Override
+	public BooleanExpression onRelationalSearch(JSONObject content) {
+		QDepartment department = new QDepartment("Department");
+		Long parentId = content.getLongValue("parentId");
+		if (parentId != 0L)
+			return department.parent.id.eq(parentId);
+		return department.parent.id.isNull();
+	}
+	
+	private void loadRelationalInformation(List<Department> departments) {
+		departments.stream().forEach(e -> {
+			e.setCountOfChildren(departmentRepository.count(QDepartment.department.parent.id.eq(e.getId())));
+		});
 	}
 }

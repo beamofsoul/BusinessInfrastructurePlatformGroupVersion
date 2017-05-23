@@ -6,6 +6,12 @@
 	<body>
 		<div id="contentContainer" width="100%" height="100%" style="margin: 15px;">
 
+			<Row>
+				<i-col span="4">
+					<Tree ref="tree" :data="treeData" v-on:on-toggle-expand="toggleExpand" v-on:on-select-change="selectChange" v-on:on-check-change="checkChange"></Tree>
+				</i-col>
+				<i-col span="20">
+
 			<div th:replace="fragment/admin_content_query_form"></div>
 			 
 			<!-- 按钮 -->
@@ -120,9 +126,13 @@
 			</Modal>
 
 			<div th:replace="fragment/admin_content_delete_modal"></div>
+			
+				</i-col>
+			</Row>
 			<Back-top />
 		</div>
 		<div th:replace="fragment/admin_content_scripts"></div>
+		<script th:src="@{/static/js/utils/tree-utils.js}"></script>
 		<script th:src="@{/static/js/business/department-biz.js}"></script>
 	</body>
 </html>

@@ -82,12 +82,13 @@ function doAddButton() {
  * 点击AddForm页面提交按钮，默认调用后台方法进行业务记录数据插入，并重置AddForm表单
  */
 function submitAddForm() {
+	var cachedAddForm = Object.assign({}, this.vueAddForm);
 	if(submitAddBefore) submitAddBefore(getVueObject().vueAddForm);
 	submitFormValidate(currentAction, function (data) {
 		toastSuccess('提交成功!');
 		getVueObject().vueAddModalVisible = false;
 		resetForm();
-		if(submitAddAfter) submitAddAfter();
+		if(submitAddAfter) submitAddAfter(cachedAddForm);
 	});
 }
 
@@ -140,7 +141,7 @@ function submitUpdateForm() {
 		toastSuccess('更新成功!');
 		getVueObject().vueUpdateModalVisible = false;
 		resetForm();
-		if(submitUpdateAfter) submitUpdateAfter();
+		if(submitUpdateAfter) submitUpdateAfter(data.updated);
 	});
 }
 
@@ -184,6 +185,7 @@ function rowDeleteButton(index, tableDataName) {
  */
 function submitDeleteForm() {
 	var ids = this[currentCheckedTableRowIdsName];
+	var	cachedDeleteIds = ids; 
 	if(submitDeleteBefore) submitDeleteBefore(ids);
 	this.vueDeleteProgressVisible = true;
 	submitForm(currentAction, ids, function (data) {
@@ -195,7 +197,7 @@ function submitDeleteForm() {
 			getVueObject().vueDeleteProgressVisible = false;
 		}
 		getVueObject().vueDeleteModalVisible = false;
-		if(submitDeleteAfter) submitDeleteAfter();
+		if(submitDeleteAfter) submitDeleteAfter(ids);
 	}, function (errorMessage) {
 		toastError(errorMessage);
 		getVueObject().vueDeleteProgressVisible = false;

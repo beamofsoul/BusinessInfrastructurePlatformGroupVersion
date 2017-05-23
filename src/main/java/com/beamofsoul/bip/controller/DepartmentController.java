@@ -95,4 +95,13 @@ public class DepartmentController extends BaseAbstractController {
 	public JSONObject getChildrenIds(@RequestBody Map<String, Object> map) {
 		return newInstance("ids", departmentService.findChildrenIds(new BigDecimal(map.get("id").toString()).longValue()));
 	}
+	
+	@PreAuthorize("authenticated and hasPermission('department','department:list')")
+	@RequestMapping(value = "children", method = RequestMethod.POST, produces = PRODUCES_APPLICATION_JSON)
+	@ResponseBody
+	public JSONObject getChildrenData(@RequestBody Map<String, Object> map) {
+		Object condition = map.get("condition");
+		return newInstance("children", departmentService.findRelationalAll(condition == null ? null : 
+			departmentService.onRelationalSearch(formatAndParseObject(condition.toString()))));
+	}
 }

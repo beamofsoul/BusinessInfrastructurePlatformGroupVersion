@@ -9,6 +9,7 @@ import java.util.Map;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.parser.Feature;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 
 import lombok.NonNull;
@@ -22,25 +23,27 @@ public class JSONUtils {
 	public static final String DELIMITER = ":";
 	
 	/**
-	 * @Title: formatAndParseObject  
-	 * @Description: 格式化并且解析JSON字符串并返回JSON对象
+	 * @Title: formatAndParseObject
+	 * @Description: 格式化并且解析JSON字符串并返回JSON对象, 如在序列化过程中某些属性存在null值，则自动删除该属性
 	 * @param jsonStr 格式化前的JSON字符串
 	 * @param replaceFrom 需要在格式化过程中替换掉的字符，替换为JSON的默认分隔符
+	 * @param features 序列化所用的特性
 	 * @return JSONObject 格式化和解析后生成的JSON对象  
 	 */
-	public static JSONObject formatAndParseObject(String jsonStr, String replaceFrom) {
+	public static JSONObject formatAndParseObject(String jsonStr, String replaceFrom, Feature... features) {
 		jsonStr = jsonStr.replace(replaceFrom, DELIMITER);
-		return JSONObject.parseObject(jsonStr);
+		return JSONObject.parseObject(jsonStr, features);
 	}
 	
 	/**
 	 * @Title: formatAndParseObject  
 	 * @Description: 格式化并且解析JSON字符串并返回JSON对象
 	 * @param jsonStr 格式化前的JSON字符串
+	 * @param features 序列化所用的特性
 	 * @return JSONObject 格式化和解析后生成的JSON对象  
 	 */
-	public static JSONObject formatAndParseObject(String jsonStr) {
-		return formatAndParseObject(jsonStr,"=");
+	public static JSONObject formatAndParseObject(String jsonStr, Feature... features) {
+		return formatAndParseObject(jsonStr,"=",features);
 	}
 	
 	/**
