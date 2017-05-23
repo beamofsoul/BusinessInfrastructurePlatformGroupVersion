@@ -26,7 +26,7 @@ setFormDataObject({id:null,name: '',descirption: '',sort: 1,parentId: null,avail
 ////综合查询 form
 //hasQueryFrom = false;
 queryFormItemName = ['此节点ID下数据'];
-queryFormItemKey = ['currentId'];
+queryFormItemKey = ['selectedNodeId'];
 queryFormItemType = ['string'];
 //
 //
@@ -54,22 +54,47 @@ vueContentBeforeCreate = function(){
 
 //////////////////tree///////////////////
 loadTreeRootUrl = 'organization/single';
-loadTreeRootDataFunction = function() {return {id: 2}}
+loadTreeRootDataFunction = function() {return {id: 1}}
 loadTreeNodeUrl = 'organization/children';
 
 vueContentMethods.toggleExpand = toggleExpand;
 
-vueContentMethods.selectChange = function(node){
-	//取 select 选中节点的 id
-	if(node.length!=0){
-		var selectId = node[0].id;
-		//根据节点加载table数据
-		console.log(currentQueryFormName);
-		console.log(getVueObject()[currentQueryFormName]);
-		getVueObject().doLoadPage();
-		
+var selectedTreeId=-1;
+
+function doUpdateTreeButton() {
+	
+	if (selectedTreeId == -1) {
+		toastInfo('请点击组织机构名称!');
+		return;
 	}
-	console.log('selectChange: ' + JSON.stringify(node));
+	getSingleData(selectedTreeId, updateBefore, function(data) {
+		currentAction = actions.update;
+		resetForm();
+		copyProperties(data, getVueObject().vueUpdateForm);
+		getVueObject().vueUpdateModalVisible = true;
+	});
+}
+
+function submitUpdateTreeForm(){
+	submitFormValidate(currentAction, function (data) {
+		toastSuccess('更新成功!');
+		getVueObject().vueUpdateModalVisible = false;
+		resetForm();
+	});
+}
+
+vueContentMethods.selectChange = function(node){
+	if(node.length!=0){
+		selectedTreeId  = node[0].id;
+		//
+//		getVueRefObject(getVuecurrentCheckedTableRowIdsName) = selectedTreeId;
+		//设置query from 
+		getVueObject()[currentQueryFormName].selectedNodeId = selectedTreeId;
+		getVueObject().doLoadPage();
+	}else{
+		selectedTreeId=-1;
+	}
+//	console.log('selectChange: ' + JSON.stringify(node));
 	
 };
 

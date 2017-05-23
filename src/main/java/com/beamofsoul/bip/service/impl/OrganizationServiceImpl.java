@@ -7,6 +7,7 @@ import static com.beamofsoul.bip.management.util.BooleanExpressionUtils.toLongVa
 import static com.beamofsoul.bip.management.util.JSONUtils.formatAndParseObject;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -113,11 +114,17 @@ public class OrganizationServiceImpl extends BaseAbstractServiceImpl implements 
 	public Page<Organization> findAllChildrenOrganizations(Pageable pageable, Object condition) {
 		//根据条件 查询节点下级所有数据
 		if(condition!=null){
-			Object currentId = formatAndParseObject(condition.toString()).get("currentId");
+			Object selectedNodeId = formatAndParseObject(condition.toString()).get("selectedNodeId");
 			List<Long> idsLong = null;
-			if(currentId!=null&&StringUtils.isNotBlank(currentId.toString())){
-				List<BigInteger> result = organizationRepository.findChildrenIds(Long.valueOf(currentId.toString()));
+			if(selectedNodeId!=null&&StringUtils.isNotBlank(selectedNodeId.toString())){
+				List<BigInteger> result = organizationRepository.findChildrenIds(Long.valueOf(selectedNodeId.toString()));
 				idsLong =  result.stream().map(e -> e.longValue()).collect(Collectors.toList());
+				if(idsLong!=null){
+					idsLong.add(0, Long.valueOf(selectedNodeId.toString()));
+				}else{
+					idsLong = new ArrayList<Long>();
+					idsLong.add(Long.valueOf(selectedNodeId.toString()));
+				}
 			}
 			
 			return organizationRepository.findAll(this.onSearch(formatAndParseObject(condition.toString()),idsLong), pageable);
@@ -138,8 +145,8 @@ public class OrganizationServiceImpl extends BaseAbstractServiceImpl implements 
 		QOrganization organization = QOrganization.organization;
 		BooleanExpression exp = null;
 		
-//		String currentId = content.getString("currentId");
-//		exp = addExpression(currentId, exp, permission.name.like(like(name)));
+//		String selectedNodeId = content.getString("selectedNodeId");
+//		exp = addExpression(selectedNodeId, exp, permission.name.like(like(name)));
 		
 		if(idsLong!=null&&idsLong.size()!=0){
 			exp = addExpression(idsLong.toString(), exp, organization.id.in(idsLong));
