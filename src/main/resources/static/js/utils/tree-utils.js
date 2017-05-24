@@ -83,3 +83,54 @@ function getSelectedNodes(nodes) {
 function getCheckedNodes(nodes) {
 	alert('checkedNodes: ' + JSON.stringify(nodes));
 }
+
+/**
+ * 根据输入的节点id在某一个节点下获取节点对象，并在原有父节点下删除其数据对象
+ * @param id 要查找的节点id
+ * @param node 包含该子节点的节点对象
+ * @returns 找到的节点对象
+ */
+function getChildFromNode(id, node) {
+	var target = null;
+	var inCurrentNode = false;
+	var children = node.children;
+	for (var r in children) {
+		var child = children[r];
+		if (child.id == id) {
+			target = child;
+			inCurrentNode = true;
+		} else {
+			target = getChildFromNode(id, child);
+		}
+		if (target != null) {
+			if (inCurrentNode) {
+				node.children.splice(r,1);
+				if (node.children.length == 0) node.children = null;
+			}
+			return target;
+		}
+	}
+}
+
+/**
+ * 根据输入的父节点id在输入的节点对象中查找该父节点对象的位置，并将输入的子节点插入到该父节点对象下
+ * @param child 将被插入的子节点对象
+ * @param parentId 父节点id
+ * @param node 包含该父节点的节点对象
+ */
+function setChildToNode(child, parentId, node) {
+	if (node.id != parentId) {
+		var children = node.children;
+		if (children) {
+			for(var r in children) {
+				setChildToNode(child, parentId, children[r]);
+			}
+		}
+	} else {
+		if (node.children) {
+			node.children.push(child);
+		} else {
+			node.children = [child];
+		}
+	}
+}
