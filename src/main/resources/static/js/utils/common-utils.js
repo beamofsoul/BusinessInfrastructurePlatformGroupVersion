@@ -3,6 +3,8 @@ var projectRootPath = window.document.location.pathname.substring(0,window.docum
 //当前请求映射根路径
 var currentRequestMappingRootPath;
 
+const nullAsNumber = -999999999;
+
 /**
  * 初始化当前请求映射根路径，在点击菜单加载子页面时使用
  * @param currentRequestPath 当前请求路径，例如: user/usersByPage
