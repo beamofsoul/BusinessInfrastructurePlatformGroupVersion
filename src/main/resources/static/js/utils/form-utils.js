@@ -197,7 +197,7 @@ function submitDeleteForm() {
 			getVueObject().vueDeleteProgressVisible = false;
 		}
 		getVueObject().vueDeleteModalVisible = false;
-		if(submitDeleteAfter) submitDeleteAfter(ids);
+		if(submitDeleteAfter) submitDeleteAfter({ids: ids, count: data.count});
 	}, function (errorMessage) {
 		toastError(errorMessage);
 		getVueObject().vueDeleteProgressVisible = false;
