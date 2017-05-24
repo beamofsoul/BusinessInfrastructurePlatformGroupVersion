@@ -1,9 +1,9 @@
 /**
  * 加载树控件根节点需要提供的数据
  */
-var loadTreeRootUrl = 'permission/single';
-var loadTreeRootDataFunction = () => ({id: 1})
-var loadTreeRootCallback = (content, data) => {
+let loadTreeRootUrl = 'permission/single';
+let loadTreeRootDataFunction = () => ({id: 1})
+let loadTreeRootCallback = (content, data) => {
 	data.obj.countOfChildren = 1;
 	content.push(parseNode(data.obj));
 };
@@ -12,8 +12,8 @@ var loadTreeRootCallback = (content, data) => {
  * 加载树控件根节点下子节点需要提供的数据
  */
 var loadTreeNodeUrl = 'permission/children';
-var loadTreeNodeDataFunction = parent => ({condition: {parentId: parent.id}})
-var loadTreeNodeCallback = (content, data) => {
+let loadTreeNodeDataFunction = parent => ({condition: {parentId: parent.id}})
+let loadTreeNodeCallback = (content, data) => {
 	let children = data.children;
 	for(let r in children) content.push(parseNode(children[r]));
 }
@@ -25,7 +25,7 @@ var parseNode = data => ({id: data.id, expand: data.expand, title: data.name, ch
 /**
  * 生成并返回生成的树控件根节点 
  */
-generateRootNode = () => {
+var generateRootNode = () => {
 	var content = [];
 	$.posty(loadTreeRootUrl,loadTreeRootDataFunction(), data => loadTreeRootCallback(content, data));
 	return content;
@@ -35,7 +35,7 @@ generateRootNode = () => {
  * 根据输入的父节点加载其下子节点
  * @param parent 父节点
  */
-toggleExpand = parent => {
+var toggleExpand = parent => {
 	if(!parent.expand) {
 		//收缩时不需要重新加载数据
 		return;
@@ -50,25 +50,25 @@ toggleExpand = parent => {
  * 当树控件任何节点被点选中时发生的事件
  * @param node 被点选的节点
  */
-selectChange = node => alert(`selectChange: ${JSON.stringify(node)}`);
+var selectChange = node => alert(`selectChange: ${JSON.stringify(node)}`);
 
 /**
  * 当树控件任何节点前复选框被选中时发生的事件
  * @param nodes 一个到多个被点选中复选框的节点集合
  */
-checkChange = nodes => alert(`checkChange: ${JSON.stringify(nodes)}`);
+var checkChange = nodes => alert(`checkChange: ${JSON.stringify(nodes)}`);
 
 /**
  * 获取被鼠标选中的节点(非复选框被勾选)
  * @param nodes 被选中的节点集合
  */
-getSelectedNodes = nodes => alert(`selectedNodes: ${JSON.stringify(nodes)}`);
+var getSelectedNodes = nodes => alert(`selectedNodes: ${JSON.stringify(nodes)}`);
 
 /**
  * 获取复选框被选中的节点集合
  * @param nodes 被选中复选框的节点集合
  */
-getCheckedNodes = nodes => alert(`checkedNodes: ${JSON.stringify(nodes)}`);
+var getCheckedNodes = nodes => alert(`checkedNodes: ${JSON.stringify(nodes)}`);
 
 /**
  * 根据输入的节点id在某一个节点下获取节点对象，并在原有父节点下删除其数据对象
@@ -76,7 +76,7 @@ getCheckedNodes = nodes => alert(`checkedNodes: ${JSON.stringify(nodes)}`);
  * @param node 包含该子节点的节点对象
  * @returns 找到的节点对象
  */
-getChildFromNode = (id, node) => {
+var getChildFromNode = (id, node) => {
 	let target = null;
 	let inCurrentNode = false;
 	const children = node.children;
@@ -104,7 +104,7 @@ getChildFromNode = (id, node) => {
  * @param parentId 父节点id
  * @param node 包含该父节点的节点对象
  */
-setChildToNode = (child, parentId, node) => {
+var setChildToNode = (child, parentId, node) => {
 	if (node.id != parentId) {
 		let children = node.children;
 		if (children) {
