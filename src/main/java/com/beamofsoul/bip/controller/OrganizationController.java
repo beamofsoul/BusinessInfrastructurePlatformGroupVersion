@@ -94,4 +94,10 @@ public class OrganizationController extends BaseAbstractController {
 		return newInstance("count",organizationService
 				.delete(CommonConvertUtils.convertToLongArray(ids)));
 	}
+	
+	@RequestMapping(value = "/getAllAvailableOrganizations", method = RequestMethod.POST)
+	@ResponseBody
+	public JSONObject getAllAvailableOrganizations() {
+		return newInstance("parents", organizationService.findAllAvailableOrganizations());
+	}
 }
