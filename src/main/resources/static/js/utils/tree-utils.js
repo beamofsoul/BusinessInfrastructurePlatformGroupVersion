@@ -12,7 +12,7 @@ var loadTreeRootCallback = (content, data) => {
  * 加载树控件根节点下子节点需要提供的数据
  */
 var loadTreeNodeUrl = 'permission/children';
-var loadTreeNodeDataFunction = (parent) => ({condition: {parentId: parent.id}})
+var loadTreeNodeDataFunction = parent => ({condition: {parentId: parent.id}})
 var loadTreeNodeCallback = (content, data) => {
 	let children = data.children;
 	for(let r in children) content.push(parseNode(children[r]));
@@ -20,14 +20,14 @@ var loadTreeNodeCallback = (content, data) => {
 /**
  * 将输入数据解析成树控件node节点
  */
-var parseNode = (data) => ({id: data.id, expand: data.expand, title: data.name, children: data.countOfChildren != 0 ? [{}] : null});
+var parseNode = data => ({id: data.id, expand: data.expand, title: data.name, children: data.countOfChildren != 0 ? [{}] : null});
 
 /**
  * 生成并返回生成的树控件根节点 
  */
 generateRootNode = () => {
 	var content = [];
-	$.posty(loadTreeRootUrl,loadTreeRootDataFunction(), (data) => loadTreeRootCallback(content, data));
+	$.posty(loadTreeRootUrl,loadTreeRootDataFunction(), data => loadTreeRootCallback(content, data));
 	return content;
 }
 
@@ -35,13 +35,13 @@ generateRootNode = () => {
  * 根据输入的父节点加载其下子节点
  * @param parent 父节点
  */
-toggleExpand = (parent) => {
+toggleExpand = parent => {
 	if(!parent.expand) {
 		//收缩时不需要重新加载数据
 		return;
 	} else {
 		let content = [];
-		$.posty(loadTreeNodeUrl,loadTreeNodeDataFunction(parent),(data) => loadTreeNodeCallback(content,data));
+		$.posty(loadTreeNodeUrl,loadTreeNodeDataFunction(parent), data => loadTreeNodeCallback(content,data));
 		parent.children = content;
 	}
 }
@@ -50,25 +50,25 @@ toggleExpand = (parent) => {
  * 当树控件任何节点被点选中时发生的事件
  * @param node 被点选的节点
  */
-selectChange = (node) => alert(`selectChange: ${JSON.stringify(node)}`);
+selectChange = node => alert(`selectChange: ${JSON.stringify(node)}`);
 
 /**
  * 当树控件任何节点前复选框被选中时发生的事件
  * @param nodes 一个到多个被点选中复选框的节点集合
  */
-checkChange = (nodes) => alert(`checkChange: ${JSON.stringify(nodes)}`);
+checkChange = nodes => alert(`checkChange: ${JSON.stringify(nodes)}`);
 
 /**
  * 获取被鼠标选中的节点(非复选框被勾选)
  * @param nodes 被选中的节点集合
  */
-getSelectedNodes = (nodes) => alert(`selectedNodes: ${JSON.stringify(nodes)}`);
+getSelectedNodes = nodes => alert(`selectedNodes: ${JSON.stringify(nodes)}`);
 
 /**
  * 获取复选框被选中的节点集合
  * @param nodes 被选中复选框的节点集合
  */
-getCheckedNodes = (nodes) => alert(`checkedNodes: ${JSON.stringify(nodes)}`);
+getCheckedNodes = nodes => alert(`checkedNodes: ${JSON.stringify(nodes)}`);
 
 /**
  * 根据输入的节点id在某一个节点下获取节点对象，并在原有父节点下删除其数据对象
