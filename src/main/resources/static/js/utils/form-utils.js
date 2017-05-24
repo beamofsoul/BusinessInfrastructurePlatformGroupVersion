@@ -1,6 +1,6 @@
 // 当前用户能够操作的所有行为
 var actions = {
-  'del': {'key': 'del', 'url': 'delete'},
+  'delete': {'key': 'delete', 'url': 'delete'},
   'add': {'key': 'add', 'url': 'singleAdd'},
   'update': {'key': 'update', 'url': 'singleUpdate'},
   'copy': {'key': 'copy', 'url': 'singleAdd'}
@@ -157,7 +157,7 @@ function doDeleteButton() {
 		toastInfo('至少选中1条记录!');
 		return;
 	}
-	currentAction = actions.del;
+	currentAction = actions.delete;
 	if (deleteBefore) deleteBefore(getCheckedTableRowIds(checkedRows));
 	this.vueDeleteMessage = "即将删除" + checkedRows.length + "条记录,是否继续删除?";
 	this.vueCheckedTableRowIds = getCheckedTableRowIds(checkedRows); //将要删除的id 赋值给data
@@ -174,7 +174,7 @@ function rowDeleteButton(index, tableDataName) {
 	if (beforeDelete) beforeDelete();
 	var id = String(getVueObject()[tableDataName][index].id);
 	if (deleteBefore) deleteBefore(id);
-	currentAction = actions.del;
+	currentAction = actions.delete;
 	this.vueDeleteMessage = "是否继续删除此条记录?";
 	this[currentCheckedTableRowIdsName] = id;
 	this.vueDeleteModalVisible = true;
@@ -377,7 +377,7 @@ function submitForm(currentAction, data, callback, errorCallback) {
 		fresh4NewData(data, function() {callback(data)});
 	};
 
-	if (currentAction.key === actions.del.key)
+	if (currentAction.key === actions.delete.key)
 		$.idel(currentAction.url, data, successCallback, errorCallback);
 	else {
 		//Iview解决resetFields不能清空Select选中项问题之前
