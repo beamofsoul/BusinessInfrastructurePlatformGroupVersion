@@ -17,6 +17,9 @@ let loadTreeNodeCallback = (content, data) => {
 	let children = data.children;
 	for(let r in children) content.push(parseNode(children[r]));
 }
+
+var checkedObject;//checkbox选中的节点对象数组
+
 /**
  * 将输入数据解析成树控件node节点
  */
@@ -43,6 +46,14 @@ var toggleExpand = parent => {
 		let content = [];
 		$.posty(loadTreeNodeUrl,loadTreeNodeDataFunction(parent), data => loadTreeNodeCallback(content,data));
 		parent.children = content;
+		//展开时将新加载数据节点对象覆盖原有对象 ，并将原有对象节点选中状态 赋给新节点对象
+		if(checkedObject)
+			parent.children.forEach(oneChildrenNode => {
+				checkedObject.forEach(oneCheckedNode =>{
+					if(oneChildrenNode.id == oneCheckedNode.id) oneChildrenNode.checked = true;
+				});
+            });
+		
 	}
 }
 
@@ -56,7 +67,12 @@ var selectChange = node => alert(`selectChange: ${JSON.stringify(node)}`);
  * 当树控件任何节点前复选框被选中时发生的事件
  * @param nodes 一个到多个被点选中复选框的节点集合
  */
-var checkChange = nodes => alert(`checkChange: ${JSON.stringify(nodes)}`);
+var checkChange = nodes => {
+	checkedObject = nodes;
+//	console.log('bbbbbbbbbbbbb');
+//	console.log(checkedObject);
+
+};
 
 /**
  * 获取被鼠标选中的节点(非复选框被勾选)
