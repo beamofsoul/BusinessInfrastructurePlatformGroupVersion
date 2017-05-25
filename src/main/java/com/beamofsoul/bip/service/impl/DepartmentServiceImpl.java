@@ -47,7 +47,8 @@ public class DepartmentServiceImpl extends BaseAbstractServiceImpl implements De
 	@Override
 	@Transactional
 	public long delete(Long... ids) {
-		return departmentRepository.deleteByIds(ids);
+		return departmentRepository.exists(QDepartment.department.parent.id.in(ids)) ? 0L : 
+			departmentRepository.deleteByIds(ids);
 	}
 
 	@Override
