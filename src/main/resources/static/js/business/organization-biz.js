@@ -109,4 +109,5 @@ $(function() {
 	//初始化树根节点下级子节点数据，并展开根节点下级子节点
 	toggleExpand(vueContentObject.treeData[0]);
 	vueContentObject.$refs.tree.$children[0].handleExpand(toggleExpand);
+	disableUpdateData(getVueRefObject('tree'));
 });

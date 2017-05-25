@@ -120,3 +120,11 @@ var setChildToNode = (child, parentId, node) => {
 		}
 	}
 }
+
+/**
+ * 根据输入的树对象(来自ref)，禁用其checkbox自动选择上级功能
+ * @param obj - 树对象
+ */
+function disableUpdateData(obj) {
+	obj.updateData = function() {};
+}
