@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50716
 File Encoding         : 65001
 
-Date: 2017-05-08 08:10:01
+Date: 2017-05-25 10:03:53
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -59,6 +59,38 @@ CREATE TABLE `t_code_record` (
 -- ----------------------------
 
 -- ----------------------------
+-- Table structure for t_department
+-- ----------------------------
+DROP TABLE IF EXISTS `t_department`;
+CREATE TABLE `t_department` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `create_date` datetime DEFAULT NULL,
+  `modify_date` datetime DEFAULT NULL,
+  `available` bit(1) DEFAULT NULL,
+  `code` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `descirption` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `name` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `sort` int(11) DEFAULT NULL,
+  `parent_id` bigint(20) DEFAULT NULL,
+  `organization_id` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FKjoxpd0y26uhuy0j085jvqmlo8` (`parent_id`),
+  KEY `FK8g0fldrdyf38vx2qsv1vb8o4f` (`organization_id`),
+  CONSTRAINT `FK8g0fldrdyf38vx2qsv1vb8o4f` FOREIGN KEY (`organization_id`) REFERENCES `t_organization` (`id`),
+  CONSTRAINT `FKjoxpd0y26uhuy0j085jvqmlo8` FOREIGN KEY (`parent_id`) REFERENCES `t_department` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+-- ----------------------------
+-- Records of t_department
+-- ----------------------------
+INSERT INTO `t_department` VALUES ('1', '2017-05-22 08:12:58', '2017-05-22 08:12:58', '', 'DEPT001', '部门001描述', '部门001', '1', null, '1');
+INSERT INTO `t_department` VALUES ('2', '2017-05-22 08:18:26', '2017-05-22 08:18:26', '\0', 'DEPT002', '部门002描述', '部门002', '2', '1', null);
+INSERT INTO `t_department` VALUES ('3', '2017-05-23 09:40:08', '2017-05-23 09:40:08', '', 'DEPT003', '部门003描述', '部门003', '3', '1', null);
+INSERT INTO `t_department` VALUES ('4', '2017-05-23 09:40:08', '2017-05-23 09:40:08', '\0', 'DEPT004', '部门004描述', '部门004', '4', '3', null);
+INSERT INTO `t_department` VALUES ('5', '2017-05-24 13:30:09', '2017-05-24 13:30:09', '', 'DEPT005', '部门005描述', '部门005', '5', null, null);
+INSERT INTO `t_department` VALUES ('6', '2017-05-24 16:25:54', '2017-05-24 16:25:54', '', 'DEPT006', '部门006描述', '部门006', '6', null, null);
+
+-- ----------------------------
 -- Table structure for t_detail_control
 -- ----------------------------
 DROP TABLE IF EXISTS `t_detail_control`;
@@ -96,11 +128,15 @@ CREATE TABLE `t_organization` (
   PRIMARY KEY (`id`),
   KEY `FKek1x02uw2s7yti5b17khbr418` (`parent_id`),
   CONSTRAINT `FKek1x02uw2s7yti5b17khbr418` FOREIGN KEY (`parent_id`) REFERENCES `t_organization` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 -- ----------------------------
 -- Records of t_organization
 -- ----------------------------
+INSERT INTO `t_organization` VALUES ('1', '2017-05-22 15:02:06', '2017-05-22 15:55:23', '', '组织001描述', '组织001', '1', null);
+INSERT INTO `t_organization` VALUES ('2', '2017-05-24 08:18:17', '2017-05-24 08:18:17', '', '组织002描述', '组织002', '1', '1');
+INSERT INTO `t_organization` VALUES ('3', '2017-05-24 08:18:32', '2017-05-24 08:18:32', '', '组织003描述', '组织003', '1', '2');
+INSERT INTO `t_organization` VALUES ('5', '2017-05-25 08:35:15', '2017-05-25 08:35:15', '', '组织004描述', '组织004', '4', '2');
 
 -- ----------------------------
 -- Table structure for t_permission
@@ -124,7 +160,7 @@ CREATE TABLE `t_permission` (
 -- ----------------------------
 -- Records of t_permission
 -- ----------------------------
-INSERT INTO `t_permission` VALUES ('1', '系统列表', 'sys/list', 'sys:list', '系统管理', '0', 'menu', '0', '', '2016-12-08 14:47:57', '2017-02-24 15:44:51');
+INSERT INTO `t_permission` VALUES ('1', '系统列表', 'sys/list', 'sys:list', '系统管理', null, 'menu', '0', '', '2016-12-08 14:47:57', '2017-05-17 13:45:37');
 INSERT INTO `t_permission` VALUES ('2', '系统添加', 'sys/add', 'sys:add', '系统管理', '1', 'button', '0', '', '2016-12-08 14:47:57', '2017-02-17 14:41:22');
 INSERT INTO `t_permission` VALUES ('3', '系统删除', 'sys/delete', 'sys:delete', '系统管理', '1', 'button', '0', '', '2017-02-07 14:02:15', '2017-02-17 14:41:27');
 INSERT INTO `t_permission` VALUES ('4', '系统修改', 'sys/update', 'sys:update', '系统管理', '1', 'button', '0', '', '2017-02-07 14:02:43', '2017-02-17 14:41:31');
