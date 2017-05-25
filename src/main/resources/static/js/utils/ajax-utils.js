@@ -1,4 +1,5 @@
 $(function() {
+	
 	$.del = function(url, data, successCallback, errorCallback) {
 		$.ajax({
 			type : 'DELETE',
