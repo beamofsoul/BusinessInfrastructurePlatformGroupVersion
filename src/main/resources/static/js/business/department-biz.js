@@ -141,9 +141,7 @@ function getDataList(url,label) {
 	//https://github.com/iview/iview/issues/970
 	//暂且用Javascript中数字类型最小值在clearNullStructureObject4JSON方法中表示null值进行处理
 	let content = [{value: nullAsNumber, label: label}];
-	$.posty(url, null, ({parents}) => {
-		parents.map(node => content.push({value: node.id, label: node.name}));
-	});
+	$.posty(url, null, ({parents}) => parents.map(node => content.push({value: node.id, label: node.name})));
 	return content;
 }
 
