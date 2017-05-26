@@ -141,3 +141,23 @@ var setChildToNode = (child, parentId, node) => {
 function disableUpdateData(obj) {
 	obj.updateData = function() {};
 }
+
+/**
+ * 获取树勾选的节点 标题名称
+ * @returns 所有勾选的节点名称数组
+ */
+function getTreeCheckedNodesTitle(){
+	let checkedNodesTitleArray = [];
+	if(checkedNodesObject)  checkedNodesObject.map(oneCheckedNode => checkedNodesTitleArray.push(oneCheckedNode.title));
+	return checkedNodesTitleArray;
+}
+
+/**
+ * 获取树勾选的节点 id
+ * @returns 所有勾选的节点id
+ */
+function getTreeCheckedNodesId(){
+	let checkedNodesIdArray = [];
+	if(checkedNodesObject)  checkedNodesObject.map(oneCheckedNode => checkedNodesIdArray.push(oneCheckedNode.id));
+	return checkedNodesIdArray;
+}

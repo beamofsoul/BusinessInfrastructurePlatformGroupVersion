@@ -2,15 +2,13 @@
 if (vueContentObject) vueContentObject.$destroy();
 
 //分页取数据url
-//loadPageableDataUrl = 'organizationsByPage';
-//自定义分页取数据url
 loadPageableDataUrl = 'organizationsByPage';
 //table column 显示名
 tableColumnsName = ['','ID','名称','描述','排序','上级机构ID','是否可用','操作'];
 //table column 对应data中的属性名   全选 加 'selection' 项 , 操作 加 'operation' 项。
 tableColumnsKey = ['selection','id#sortable','name#sortable','descirption','sort','parentId','available','operation'];
 //table 每行需要的按钮 
-tableButtonsOnEachRow = ['rowUpdateButton#修改','rowDeleteButton#删除'];
+tableButtonsOnEachRow = ['rowInfoButton#查看详情'];
 //格式化table行数据格式
 parseValuesOnTableEachRow = function (obj) {
 	return {id :obj.id,
@@ -42,27 +40,17 @@ queryFormItemType = ['string'];
 vueContentBeforeCreate = function(){
 	customVueContentData = {
 		treeData: generateRootNode(),
-		statusDataSelect : [{value: '1',label: '启用'},{value: '0',label: '禁用'}],
-		imgName : '',
-		imgvisible : false,
-		uploadList : []
+		statusDataSelect : [{value: '1',label: '启用'},{value: '0',label: '禁用'}]
 	}
 };
-////////////////////////////// 自定义 vue  methods ////////////////////////////////
-
-////////////////////////////// 覆盖 流程方法 实现个性化/////////////////////////////////
-
 //////////////////tree///////////////////
 loadTreeRootUrl = 'organization/single';
 loadTreeRootDataFunction = function() {return {id: 1}}
 loadTreeNodeUrl = 'organization/children';
 
-vueContentMethods.toggleExpand = toggleExpand;
-
 var selectedTreeId=-1;
-
+//更新
 function doUpdateTreeButton() {
-	
 	if (selectedTreeId == -1) {
 		toastInfo('请点击组织机构名称!');
 		return;
@@ -74,7 +62,6 @@ function doUpdateTreeButton() {
 		getVueObject().vueUpdateModalVisible = true;
 	});
 }
-
 function submitUpdateTreeForm(){
 	submitFormValidate(currentAction, function (data) {
 		toastSuccess('更新成功!');
@@ -82,25 +69,37 @@ function submitUpdateTreeForm(){
 		resetForm();
 	});
 }
+var checkedTreeNodesId;
+//删除
+function doDeleteTreeButton(){
+	
+	if (!checkedNodesObject||checkedNodesObject.length==0) {
+		toastInfo('请勾选要删除的机构!');
+		return;
+	}
+	let checkedNodestitle = getTreeCheckedNodesTitle();
+	console.log(checkedNodestitle);
+	currentAction = actions.delete;
+	getVueObject().vueDeleteMessage = "即将删除 [" + checkedNodestitle.toString() + "] 是否继续删除?";
+	checkedTreeNodesId = getTreeCheckedNodesId(); //将要删除的id 赋值给data
+	getVueObject().vueDeleteModalVisible = true;
+	
+}
 
+//点击节点名称
 vueContentMethods.selectChange = function(node){
 	if(node.length!=0){
 		selectedTreeId  = node[0].id;
-		//
-//		getVueRefObject(getVuecurrentCheckedTableRowIdsName) = selectedTreeId;
-		//设置query from 
-		getVueObject()[currentQueryFormName].selectedNodeId = selectedTreeId;
+		getVueObject()[currentQueryFormName].selectedNodeId = selectedTreeId;//设置query from 
 		getVueObject().doLoadPage();
 	}else{
 		selectedTreeId=-1;
 	}
-//	console.log('selectChange: ' + JSON.stringify(node));
-	
 };
 
+vueContentMethods.toggleExpand = toggleExpand;
 vueContentMethods.checkChange = checkChange;
 vueContentMethods.getCheckedNodes = getCheckedNodes;
-vueContentMethods.getSelectedNodes = getSelectedNodes;
 vueContentMethods.getSelectedNodes = getSelectedNodes;
 
 var vueContentObject = new Vue(initializeContentOptions());
