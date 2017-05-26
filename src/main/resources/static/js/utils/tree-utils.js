@@ -18,7 +18,8 @@ let loadTreeNodeCallback = (content, data) => {
 	for(let r in children) content.push(parseNode(children[r]));
 }
 //树是否有选中的节点
-var hasCheckedNode;
+//var hasCheckedNode;
+var checkedNodesObject;
 
 /**
  * 将输入数据解析成树控件node节点
@@ -46,7 +47,10 @@ var toggleExpand = parent => {
 		let content = [];
 		$.posty(loadTreeNodeUrl,loadTreeNodeDataFunction(parent), data => loadTreeNodeCallback(content,data));
 		//展开时将新加载数据节点对象覆盖原有对象 ，并将原有对象节点选中状态 赋给新节点对象
-		if(hasCheckedNode) getVueRefObject('tree').getCheckedNodes().map(node => content.map(child => child.checked = node.id === child.id ? true : child.checked));
+		if(checkedNodesObject) checkedNodesObject.map(node => content.map(child => child.checked = node.id === child.id ? true : child.checked));		
+		
+		//此方法 在跃级收缩节点时会有隔级节点未选中情况
+//		if(hasCheckedNode) getVueRefObject('tree').getCheckedNodes().map(node => content.map(child => child.checked = node.id === child.id ? true : child.checked));
 		
 		parent.children = content;
 	}
@@ -63,8 +67,8 @@ var selectChange = node => alert(`selectChange: ${JSON.stringify(node)}`);
  * @param nodes 一个到多个被点选中复选框的节点集合
  */
 var checkChange = nodes => {
-	hasCheckedNode = nodes.length > 0;
-
+	checkedNodesObject = nodes;
+//	hasCheckedNode = nodes.length > 0;
 };
 
 /**
