@@ -16,8 +16,8 @@ public class DetailControlServiceImpl extends BaseAbstractServiceImpl implements
 	private DetailControlRepository detailControlRepository;
 	
 	@Override
-	public List<DetailControl> findById(Long id) {
-		return detailControlRepository.findById(id);
+	public DetailControl findById(Long id) {
+		return detailControlRepository.findOne(id);
 	}
 
 	@Override

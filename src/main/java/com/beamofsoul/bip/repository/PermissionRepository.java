@@ -15,6 +15,5 @@ import com.beamofsoul.bip.management.repository.BaseMultielementRepository;
 @Repository
 public interface PermissionRepository extends BaseMultielementRepository<Permission,Long> {
 
-	Permission findById(Long roleId);
 	Permission findByName(String name);
 }

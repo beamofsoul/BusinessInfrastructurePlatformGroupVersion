@@ -11,7 +11,6 @@ import com.beamofsoul.bip.management.repository.BaseMultielementRepository;
  * @author MingshuJian
  */
 @Repository
-//@CacheConfig(cacheNames = "userRoles")
 public interface UserRoleRepository extends BaseMultielementRepository<UserRole,Long>, UserRoleRepositoryCustom {
 	
 	int deleteByUser_IdAndRole_Id(Long userId, Long roleId);

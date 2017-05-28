@@ -91,7 +91,7 @@ public class PermissionServiceImpl extends BaseAbstractServiceImpl implements Pe
 	@Override
 	@Cacheable(key="#id")
 	public Permission findById(Long id) {
-		return permissionRepository.findById(id);
+		return permissionRepository.findOne(id);
 	}
 
 	@Override
