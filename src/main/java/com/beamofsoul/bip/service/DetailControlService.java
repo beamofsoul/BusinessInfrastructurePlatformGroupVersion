@@ -6,7 +6,7 @@ import com.beamofsoul.bip.entity.DetailControl;
 
 public interface DetailControlService {
 
-	List<DetailControl> findById(Long id);
+	DetailControl findById(Long id);
 	List<DetailControl> findByRoleIdAndEntityClass(Long roleId,String entityClass);
 	List<DetailControl> findByRoleIdAndEntityClass(Long roleId,String entityClass,Boolean enabled);
 }
