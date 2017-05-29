@@ -52,7 +52,6 @@ public class DepartmentController extends BaseAbstractController {
 		return newInstance(departmentService.findAll(pageable, 
 				condition == null ? null : 
 					departmentService.onSearch(formatAndParseObject(condition.toString()))));
-//		return newInstance(departmentService.findAll(PageUtils.parsePageable(map)));
 	}
 	
 	@RequestMapping(value = "single", method = RequestMethod.POST, produces = PRODUCES_APPLICATION_JSON)

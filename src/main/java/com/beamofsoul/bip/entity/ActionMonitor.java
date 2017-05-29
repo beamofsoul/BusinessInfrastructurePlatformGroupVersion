@@ -34,14 +34,13 @@ import lombok.RequiredArgsConstructor;
 public class ActionMonitor extends BaseAbstractEntity {
 
 	private static final long serialVersionUID = 7936770852487042470L;
-	
 	/**
 	 * id
 	 */
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	@Column
-	private long id;
+	@Column(name = "id")
+	private Long id;
 	/**
 	 * 操作行为用户
 	 */
@@ -51,7 +50,7 @@ public class ActionMonitor extends BaseAbstractEntity {
 	/**
 	 * 针对目标
 	 */
-	@Column
+	@Column(name = "target")
 	private String target;
 	/**
 	 * 特定操作
@@ -61,16 +60,17 @@ public class ActionMonitor extends BaseAbstractEntity {
 	/**
 	 * 对目标的影响
 	 */
-	@Column
+	@Column(name = "effect")
 	private String effect;
 	/**
 	 * 客户端ip地址
 	 */
-	@Column
+	@Column(name = "id_address")
 	private String ipAddress;
 	/**
 	 * 客户端mac地址
 	 */
+	@Column(name = "mac_address")
 	private String macAddress;
 	/**
 	 * 可能对系统造成的危害的危险等级

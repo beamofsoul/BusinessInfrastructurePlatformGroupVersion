@@ -1,24 +1,16 @@
-<%@ page language="java" pageEncoding="UTF-8"%>
-<%@ include file="../include_admin_taglib.html"%>
-<!DOCTYPE HTML>
-<html class="no-js">
-  <head>
-    <title>Backend ActionMonitor Management Page</title>
-    <meta name="description" content="这是后台管理行为监控页面">
-    <meta name="keywords" content="actionMonitorManagement">
-    <%@ include file="../include_admin_head.html"%>
-  </head>
-  <body>
-    <tags:subtitle primary="行为监控" secondary="列表" hr="true" />
-    <div class="am-g">
-      <div class="am-u-sm-12">
-        <div id="tableContainer"></div>
-        <tags:pagination sizes="10,20"/>
-      </div>
-    </div>
-
-    <%@ include file="../include_list_required.html"%>
-
-    <script src="${pageContext.request.contextPath }/static/js/business/action-monitor-biz.js"></script>
-  </body>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"> 
+	<head>
+		<title></title>
+	</head>
+	<body>
+    <div id="contentContainer" width="100%" height="100%" style="margin: 15px;">
+			<div th:replace="fragment/admin_content_query_form"></div>
+			<br />
+			<div th:replace="fragment/admin_content_table"></div>
+	    	<Back-top />
+		</div>
+		<div th:replace="fragment/admin_content_scripts"></div>
+	 	<script th:src="@{/static/js/business/action-monitor-biz.js}"></script>
+	</body>
 </html>
