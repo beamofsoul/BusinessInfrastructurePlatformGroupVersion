@@ -43,7 +43,7 @@
 			        	<i-input v-model="vueAddForm.group" placeholder="请输入分组信息"></i-input>
 			        </Form-item>
 			        <Form-item label="排序" prop="sort">
-			        	<i-input v-model="vueAddForm.sort" placeholder="请输入排序信息"></i-input>
+			        	<Input-number :max="9999" :min="1" v-model="vueAddForm.sort" style="width: 100%"></Input-number>
 			        </Form-item>
 			        <Form-item label="资源类型" prop="resourceType">
 			        	<Radio-group v-model="vueAddForm.resourceType" type="button">
@@ -90,7 +90,7 @@
 			        	<i-input v-model="vueUpdateForm.group" placeholder="请输入分组信息"></i-input>
 			        </Form-item>
 			        <Form-item label="排序" prop="sort">
-			        	<i-input v-model="vueUpdateForm.sort" placeholder="请输入排序信息"></i-input>
+			        	<Input-number v-model="vueUpdateForm.sort" style="width: 100%"></Input-number>
 			        </Form-item>
 			        <Form-item label="资源类型" prop="resourceType">
 			        	<Radio-group v-model="vueUpdateForm.resourceType" type="button">

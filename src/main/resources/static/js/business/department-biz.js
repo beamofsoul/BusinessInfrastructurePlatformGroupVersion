@@ -43,7 +43,6 @@ setFormDataObject({id: -1, code: '', name: '', descirption: '', sort: 1, organiz
 	['string','string','string','string','string','select#availableDataSelect']
 ];
 
-//form 验证信息 
 setFormRulesObject({
 	'code': [{trigger: 'blur',type: 'string', required: true, min:4,max :10,message: '部门编码为长度4至10位之间字符串!'}, {validator: this.validateFormRules, trigger: 'blur',unique:'checkDepartmentCodeUnique',message: '部门编码已被使用'}],
 	'name': [{trigger: 'blur',type: 'string', required: true, min:2,max :12,message: '部门名称为长度2至12位之间字符串!'}],
