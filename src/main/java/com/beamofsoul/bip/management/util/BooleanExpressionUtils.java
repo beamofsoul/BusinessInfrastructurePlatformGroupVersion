@@ -57,6 +57,16 @@ public class BooleanExpressionUtils {
 	}
 	
 	/**
+	 * @Title: toIntegerValue  
+	 * @Description: 当输入值不为空或""时，将其转换为长整形并返回，否则返回0  
+	 * @param value 需要被转型的字符串
+	 * @return Integer 转型后的整形  
+	 */
+	public static Integer toIntegerValue(String value) throws NumberFormatException {
+		return StringUtils.isNotBlank(value) ? Integer.valueOf(value) : 0;
+	}
+	
+	/**
 	 * @Title: toLongValue  
 	 * @Description: 当输入值不为空或""时，将其转换为长整形并返回，否则返回0L  
 	 * @param value 需要被转型的字符串
