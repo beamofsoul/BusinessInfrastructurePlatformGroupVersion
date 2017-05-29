@@ -6,18 +6,21 @@ $(function() {
 			if (xhr.status == 'undefined') {
 				return;
 			}
+			let duration = 5;
+			let error = '';
 			switch (xhr.status) {
 			case 403:
-				warn("系统拒绝：您没有访问权限。");
+				error = '系统拒绝：您没有访问权限。';
 				break;
 			case 404:
-				warn("您访问的资源不存在。");
+				error = '您访问的资源不存在。';
 				break;
 			case 500:
-				warn("系统内部错误，请联系管理员。");
+				error = '系统内部错误，请联系管理员。';
 				break;
 			default:
-				warn("未知系统错误，请联系管理员。");
+				error = '未知系统错误，请联系管理员。';
 			}
+			toastError(error,duration);
 		});
 });
