@@ -14,7 +14,11 @@ public interface OrganizationService {
 
 	Organization create(Organization organization);
 	Organization update(Organization organization);
+//	Organization moveUp(Organization organization);
+	List<Organization> changeSort(Long beforeId,Long afterId);
 	long delete(Long... ids);
+	long deleteNodes(List<Long> parentIds,List<Long> childrenIds);
+//	long deleteNodes(Long[] parentIds,Long[] childrenIds);
 
 	Organization findById(Long id);
 

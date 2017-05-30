@@ -3,7 +3,9 @@ package com.beamofsoul.bip.controller;
 import static com.beamofsoul.bip.management.util.JSONUtils.formatAndParseObject;
 import static com.beamofsoul.bip.management.util.JSONUtils.newInstance;
 
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 
@@ -86,6 +88,27 @@ public class OrganizationController extends BaseAbstractController {
 	public JSONObject updateSingle(@RequestBody Organization organization) {
 		return newInstance("updated",organizationService.update(organization));
 	}
+	
+//	@PreAuthorize("authenticated and hasPermission('organization','organization:update')")
+	@RequestMapping(value = "changeSort", method = RequestMethod.POST)
+	@ResponseBody
+	public JSONObject changeSort(@RequestBody Map<String, Object> map) {
+		return newInstance("changeSort",organizationService.changeSort(Long.valueOf(map.get("beforeId").toString()),Long.valueOf(map.get("afterId").toString())));
+	}
+	
+//	@PreAuthorize("authenticated and hasPermission('organization','organization:delete')")
+	@RequestMapping(value = "/deleteNode", method = RequestMethod.POST)
+	@ResponseBody
+	public JSONObject deleteNode(@RequestBody Map<String, Object> map) {
+		List<Integer> a = (List<Integer>)map.get("parentId");
+		List<Integer> b = (List<Integer>)map.get("childId");
+		
+		List<Long> parentIds = a.stream().map(e -> e.longValue()).collect(Collectors.toList());
+		List<Long> childrenIds = b.stream().map(e -> e.longValue()).collect(Collectors.toList());
+		return newInstance("count",organizationService.deleteNodes(parentIds,childrenIds));
+	}
+	
+	
 	
 	@PreAuthorize("authenticated and hasPermission('organization','organization:delete')")
 	@RequestMapping(value = "/delete", method = RequestMethod.DELETE)

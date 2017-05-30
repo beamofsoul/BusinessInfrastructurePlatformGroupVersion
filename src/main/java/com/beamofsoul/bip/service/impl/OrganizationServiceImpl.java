@@ -53,6 +53,59 @@ public class OrganizationServiceImpl extends BaseAbstractServiceImpl implements 
 		BeanUtils.copyProperties(organization, originalOrganization);
 		return organizationRepository.save(originalOrganization);
 	}
+	
+//	@Transactional
+//	@CachePut(key="#organization.id")
+//	@Override
+//	public Organization moveUp(Organization organization) {
+//		Organization originalOrganization = organizationRepository.findOne(organization.getId());
+//		BeanUtils.copyProperties(organization, originalOrganization);
+//		return organizationRepository.save(originalOrganization);
+//	}
+	
+	@Transactional
+//	@CachePut(key="#organization.id")
+	@Override
+	public List<Organization> changeSort(Long beforeId,Long afterId) {
+		Organization beforeOrganization = organizationRepository.findOne(beforeId);
+		Organization afterOrganization = organizationRepository.findOne(afterId);
+//		BeanUtils.copyProperties(organization, originalOrganization);
+		Integer beforeSort = beforeOrganization.getSort();
+		Integer afterSort = afterOrganization.getSort();
+		beforeOrganization.setSort(afterSort);
+		afterOrganization.setSort(beforeSort);
+		List<Organization> changeSortOrganization = new ArrayList<Organization>();
+		changeSortOrganization.add(beforeOrganization);
+		changeSortOrganization.add(afterOrganization);
+		return organizationRepository.save(changeSortOrganization);
+	}
+	
+	@Override
+	@Transactional
+	public long deleteNodes(List<Long> parentIds,List<Long> childrenIds){
+		List<BigInteger> result = null;
+		List<Long> resultDeleteIds = new ArrayList<Long>();
+		for (Long parentId : parentIds) {
+			if(resultDeleteIds.contains(parentId)){
+				continue;
+			}
+			resultDeleteIds.add(parentId);
+			result = organizationRepository.findChildrenIds(parentId);
+			resultDeleteIds.addAll(result.stream().map(e -> e.longValue()).collect(Collectors.toList()));
+		}
+		
+		for (Long childrenId : childrenIds) {
+			if(resultDeleteIds.contains(childrenId)){
+				continue;
+			}else{
+				resultDeleteIds.add(childrenId);
+			}
+		}
+		Long[] deleteIdsResult = (Long[]) resultDeleteIds.toArray(new Long[0]);
+		return organizationRepository.deleteByIds(deleteIdsResult);
+		
+	}
+	
 
 	@Override
 	@Transactional
@@ -132,8 +185,6 @@ public class OrganizationServiceImpl extends BaseAbstractServiceImpl implements 
 	
 	@Override
 	public BooleanExpression onSearch(JSONObject content,List<Long> idsLong) {
-		
-		
 		
 //		QPermission permission = new QPermission("Permission");
 		QOrganization organization = QOrganization.organization;

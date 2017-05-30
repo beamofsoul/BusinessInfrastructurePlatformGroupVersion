@@ -20,6 +20,8 @@ let loadTreeNodeCallback = (content, data) => {
 //树是否有选中的节点
 //var hasCheckedNode;
 var checkedNodesObject;
+//selected 树节点
+var selectedNodeObject;
 
 /**
  * 将输入数据解析成树控件node节点
@@ -35,6 +37,7 @@ var generateRootNode = () => {
 	return content;
 }
 
+
 /**
  * 根据输入的父节点加载其下子节点
  * @param parent 父节点
@@ -42,13 +45,33 @@ var generateRootNode = () => {
 var toggleExpand = parent => {
 	if(!parent.expand) {
 		//收缩时不需要重新加载数据
+		
+//		//收缩时判断子节点是否有selected的节点，如果有 则将选中的节点清空
+//		if(selectedNodeObject){
+//			const child = parent.children;
+//			for(var node in child){
+//				console.log(node);
+//				if(child[node].id == selectedNodeObject.id) {
+//					selectedNodeObject =null;
+//					break;
+//				}
+//			}
+//		}
+		
 		return;
 	} else {
 		let content = [];
 		$.posty(loadTreeNodeUrl,loadTreeNodeDataFunction(parent), data => loadTreeNodeCallback(content,data));
 		//展开时将新加载数据节点对象覆盖原有对象 ，并将原有对象节点选中状态 赋给新节点对象
-		if(checkedNodesObject) checkedNodesObject.map(node => content.map(child => child.checked = node.id === child.id ? true : child.checked));		
+//		if(checkedNodesObject) checkedNodesObject.map(node => content.map(child => child.checked = node.id === child.id ? true : child.checked));		
 		
+		content.map(child => {
+			if(selectedNodeObject)
+				if(child.id == selectedNodeObject.id) child.selected = true;
+			
+			if(checkedNodesObject)
+				checkedNodesObject.map(node => child.checked = node.id === child.id ? true : child.checked);
+		});
 		//此方法 在跃级收缩节点时会有隔级节点未选中情况
 //		if(hasCheckedNode) getVueRefObject('tree').getCheckedNodes().map(node => content.map(child => child.checked = node.id === child.id ? true : child.checked));
 		
@@ -112,6 +135,24 @@ var getChildFromNode = (id, node) => {
 }
 
 /**
+ * 根据输入的节点id在某一个节点下获取节点对象
+ * @param id 要查找的节点id
+ * @param node 包含该子节点的节点对象
+ * @returns 找到的节点对象
+ */
+var getChildFromNodeNotDelete = (id, node) => {
+	let target = null;
+	let inCurrentNode = false;
+	const children = node.children;
+	for (let r in children) {
+		let child = children[r];
+		if (child.id == id) target = child;
+		else target = getChildFromNode(id, child);
+		return target;
+	}
+}
+
+/**
  * 根据输入的父节点id在输入的节点对象中查找该父节点对象的位置，并将输入的子节点插入到该父节点对象下
  * @param child 将被插入的子节点对象
  * @param parentId 父节点id
@@ -160,4 +201,21 @@ function getTreeCheckedNodesId(){
 	let checkedNodesIdArray = [];
 	if(checkedNodesObject)  checkedNodesObject.map(oneCheckedNode => checkedNodesIdArray.push(oneCheckedNode.id));
 	return checkedNodesIdArray;
+}
+
+/**
+ * 父节点下是否有未勾选的子节点
+ * @returns 
+ */
+function hasNotCheckedChildInParent(){
+	let checkedParentNodesIdArray = [];
+	let checkedChildNodesIdArray = [];
+	if(checkedNodesObject)  checkedNodesObject.map(oneCheckedNode => {
+		if(oneCheckedNode.children){
+			checkedParentNodesIdArray.push(oneCheckedNode.id);
+		}else{
+			checkedChildNodesIdArray.push(oneCheckedNode.id);
+		}
+	});
+	return {parentId:checkedParentNodesIdArray,childId:checkedChildNodesIdArray};
 }
