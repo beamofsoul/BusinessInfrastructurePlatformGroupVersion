@@ -71,12 +71,20 @@
 					        <Form-item label="描述" prop="descirption">
 					            <i-input v-model="vueAddForm.descirption" type="textarea" :rows="4" placeholder="请输入描述"></i-input>
 					        </Form-item>
-					        <Form-item label="排序" prop="sort">
+					        
+					        <!-- <Form-item label="排序" prop="sort">
 					        	<Input-number :max="9999" :min="1" v-model="vueAddForm.sort"></Input-number>
-					        </Form-item>
-					        <Form-item label="上级机构ID" prop="parentId">
-					            <i-input v-model="vueAddForm.parentId" number="true" placeholder="请输入上级机构ID"></i-input>
-					        </Form-item>
+					        </Form-item> -->
+					        
+					        
+					        <Form-item label="上级部门" prop="parentId">
+							    <i-select v-if="parentDataSelect.length > 0" v-model="vueAddForm.parentId" style="width:100%" placeholder="请选择上级部门">
+							        <i-option v-for="item in parentDataSelect" :value="item.value" :key="item">{{ item.label }}</i-option>
+							    </i-select>
+							    <i-input v-else="true" value="暂无上级部门可选" disabled="disabled"></i-input>
+							</Form-item>
+							
+					      
 					        <Form-item label="是否启用" prop="available">
 					        	<i-switch size="large" v-model="vueAddForm.available">
 							        <span slot="open">启用</span>

@@ -1,5 +1,9 @@
 package com.beamofsoul.bip.repository.impl;
 
+import static com.beamofsoul.bip.management.util.BooleanExpressionUtils.addExpression;
+import static com.beamofsoul.bip.management.util.BooleanExpressionUtils.like;
+import static com.beamofsoul.bip.management.util.BooleanExpressionUtils.toBooleanValue;
+import static com.beamofsoul.bip.management.util.BooleanExpressionUtils.toLongValue;
 import static com.beamofsoul.bip.management.util.QueryDSLUtils.*;
 
 import javax.persistence.EntityManager;
@@ -10,11 +14,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.NoRepositoryBean;
 
 import com.beamofsoul.bip.entity.Organization;
+import com.beamofsoul.bip.entity.query.QDepartment;
 import com.beamofsoul.bip.entity.query.QOrganization;
 import com.beamofsoul.bip.repository.OrganizationRepositoryCustom;
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQuery;
 
 import lombok.NonNull;
@@ -96,4 +103,19 @@ public class OrganizationRepositoryImpl implements OrganizationRepositoryCustom 
 //		Predicate predicate = QUserRoleCombineRole.userRoleCombineRole.userId.eq(userId);
 //		return doQuery(entityManager, QUserRoleCombineRole.userRoleCombineRole, predicate);
 //	}
+	
+//	@Override
+//	public Organization findOrganizationMaxSort(Long parentId){
+//		QOrganization organization = QOrganization.organization;
+//		QOrganization d = new QOrganization("d");
+//		Predicate predicate = organization.parentId.eq(parentId).and(organization.sort.eq(JPAExpressions.select(d.sort.max()).from(d).where(d.parentId.eq(parentId))));
+//		return doQuery(entityManager, QOrganization.organization, predicate);
+//	}
+	
+	@Override
+	public Integer findOrganizationMaxSort(Long parentId){
+		JPAQuery<Integer> query = new JPAQuery<Integer>(entityManager);
+		QOrganization organization = QOrganization.organization;
+		return query.select(organization.sort.max()).from(organization).where(organization.parentId.eq(parentId)).fetchFirst();
+	}
 }

@@ -50,6 +50,9 @@ queryFormItemType = ['string'];
 vueContentBeforeCreate = function(){
 	customVueContentData = {
 		treeData: generateRootNode(),
+//		'organization/getAllAvailableOrganizations'
+//		(currentRequestMappingRootPath + '/getAllAvailableDepartments')
+		parentDataSelect: getDataList('organization/getAllAvailableOrganizations','请选择上级部门'),
 		statusDataSelect : [{value: '1',label: '启用'},{value: '0',label: '禁用'}]
 	}
 };
@@ -78,6 +81,7 @@ function submitUpdateTreeForm(){
 		toastSuccess('更新成功!');
 		getVueObject().vueUpdateModalVisible = false;
 		resetForm();
+		vueContentObject.parentDataSelect = getDataList('organization/getAllAvailableOrganizations','请选择上级部门');
 	});
 }
 
@@ -114,6 +118,7 @@ function submitDeleteTreeForm(){
 			getVueObject().vueDeleteProgressVisible = false;
 		}
 		getVueObject().vueDeleteModalVisible = false;
+		vueContentObject.parentDataSelect = getDataList('organization/getAllAvailableOrganizations','请选择上级部门');
 	}, function (errorMessage) {
 		toastError(errorMessage);
 		getVueObject().vueDeleteProgressVisible = false;
@@ -205,6 +210,16 @@ vueContentMethods.selectChange = function(node){
 		selectedNodeObject = null;
 	}
 };
+
+//获取下拉列表数据
+function getDataList(url,label) {
+	//Iview解决resetFields不能清空Select选中项问题之前
+	//https://github.com/iview/iview/issues/970
+	//暂且用Javascript中数字类型最小值在clearNullStructureObject4JSON方法中表示null值进行处理
+	let content = [{value: nullAsNumber, label: label}];
+	$.posty(url, null, ({parents}) => parents.map(node => content.push({value: node.id, label: node.name})));
+	return content;
+}
 
 var vueContentObject = new Vue(initializeContentOptions());
 
