@@ -1,31 +1,21 @@
 package com.beamofsoul.bip.controller;
 
-import static com.beamofsoul.bip.management.util.JSONUtils.newInstance;
-
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.alibaba.fastjson.JSONObject;
 import com.beamofsoul.bip.management.util.Constants;
-import com.beamofsoul.bip.service.UserService;
 
 @Controller
 public class HomeController {
 	
-	@Autowired
-	private UserService userService;
-
 	@RequestMapping(value = { "/", "/index" }, method = RequestMethod.GET)
 	public String index(HttpServletRequest request, HttpServletResponse response, Map<String, Object> map) {
 		return "index";
@@ -65,12 +55,6 @@ public class HomeController {
 		return "admin_index";
 	}
 	
-	@RequestMapping(value = "/forgetPassword", method = RequestMethod.POST)
-	@ResponseBody
-	public JSONObject forgetPassword(@RequestBody Map<String, String> map) {
-		return newInstance("message", userService.forgotPassword(map.get("username")));
-	}
-
 //	@RequestMapping(value = "/admin/systemLog")
 //	public String systemLog() {
 //		return "/system_log/admin_system_log_list";

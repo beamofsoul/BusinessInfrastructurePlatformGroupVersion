@@ -108,12 +108,6 @@ public class UserController extends BaseAbstractController {
 		return newInstance("changed", changed);
 	}
 	
-	@RequestMapping(value = "/changePasswordWithCode", method = RequestMethod.POST)
-	@ResponseBody
-	public JSONObject changePasswordWithCode(@RequestBody Map<String, String> map, HttpSession session) {
-		return newInstance("changed", userService.changePassword(map.get("code"), map.get("password")));
-	}
-	
 	@RequestMapping(value = "/updatePhoto", method = RequestMethod.POST)
 	public void updatePhoto(@RequestParam("file") MultipartFile[] files) {
 		MultipartFile file = files[0];
