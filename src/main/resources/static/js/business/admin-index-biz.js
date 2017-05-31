@@ -20,6 +20,7 @@ function initBreadcrumbContent(name) {
 	if (name === 'adminIndexContent') vueObject.breadcrumb = [{href: '#', content: '首页内容'}];
 	if (name.indexOf('permission/') == 0) vueObject.breadcrumb = [{href: '#', content: '权限管理'}];
 	if (name.indexOf('department/') == 0) vueObject.breadcrumb = [{href: '#', content: '部门管理'}];
+	if (name.indexOf('login/') == 0) vueObject.breadcrumb = [{href: '#', content: '登录记录'}];
 }
 
 function loadContent(name) {

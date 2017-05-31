@@ -55,4 +55,71 @@ public class ClientInformationUtils {
 		ClientMacAddressHandler handler = new ClientMacAddressHandler(ipAddress);
 		return handler.getRemoteMacAddress();
 	}
+	
+	public static String getOperatingSystem(HttpServletRequest request) {
+		String userAgent = request.getHeader("User-Agent");
+		String lowerUserAgent = userAgent.toLowerCase();
+		String os = "";
+		if (lowerUserAgent.contains("windows")) {
+			os = "Windows";
+		} else if (lowerUserAgent.contains("mac")) {
+			os = "Mac";
+		} else if (lowerUserAgent.contains("x11")) {
+			os = "Unix";
+		} else if (lowerUserAgent.contains("android")) {
+			os = "Android";
+		} else if (lowerUserAgent.contains("iphone")) {
+			os = "IOS";
+		} else {
+			os = "Others, More-Info: " + userAgent;
+		}
+		return os;
+	}
+	
+	public static String getBrowser(HttpServletRequest request) {
+		String userAgent = request.getHeader("User-Agent");
+		String lowerUserAgent = userAgent.toLowerCase();
+		String browser = "";
+		if (lowerUserAgent.contains("edge")) {
+			browser = (userAgent.substring(userAgent.indexOf("Edge")).split(" ")[0]).replace("/", "-");
+		} else if (lowerUserAgent.contains("msie")) {
+			String substring = userAgent.substring(userAgent.indexOf("MSIE")).split(";")[0];
+            browser = substring.split(" ")[0].replace("MSIE", "IE")+"-"+substring.split(" ")[1];
+		} else if (lowerUserAgent.contains("safari") && lowerUserAgent.contains("version")) {
+			browser = (userAgent.substring(userAgent.indexOf("Safari")).split(" ")[0]).split("/")[0]+ "-" +(userAgent.substring(userAgent.indexOf("Version")).split(" ")[0]).split("/")[1];
+		} else if (lowerUserAgent.contains("opr") || lowerUserAgent.contains("opera")) {
+			if(lowerUserAgent.contains("opera")){  
+                browser = (userAgent.substring(userAgent.indexOf("Opera")).split(" ")[0]).split("/")[0]+"-"+(userAgent.substring(userAgent.indexOf("Version")).split(" ")[0]).split("/")[1];  
+            }else if(lowerUserAgent.contains("opr")){  
+                browser = ((userAgent.substring(userAgent.indexOf("OPR")).split(" ")[0]).replace("/", "-")).replace("OPR", "Opera");  
+            }  
+		} else if (lowerUserAgent.contains("chrome")) {
+			browser = (userAgent.substring(userAgent.indexOf("Chrome")).split(" ")[0]).replace("/", "-");
+		} else if ((lowerUserAgent.indexOf("mozilla/7.0") > -1) || (lowerUserAgent.indexOf("netscape6") != -1)  ||  
+                (lowerUserAgent.indexOf("mozilla/4.7") != -1) || (lowerUserAgent.indexOf("mozilla/4.78") != -1) ||  
+                (lowerUserAgent.indexOf("mozilla/4.08") != -1) || (lowerUserAgent.indexOf("mozilla/3") != -1)) {  
+			browser = "Netscape-?";
+		} else if (lowerUserAgent.contains("firefox")) {  
+            browser = (userAgent.substring(userAgent.indexOf("Firefox")).split(" ")[0]).replace("/", "-");  
+        } else if(lowerUserAgent.contains("rv")) {  
+            String IEVersion = (userAgent.substring(userAgent.indexOf("rv")).split(" ")[0]).replace("rv:", "-");  
+            browser = "IE" + IEVersion.substring(0,IEVersion.length() - 1);  
+        } else {  
+            browser = "Others, More-Info: " + userAgent;  
+        }
+		
+		return browser;
+	}
+	
+	public static String getBrand(HttpServletRequest request) {
+		return request.getHeader("clientBrand");
+	}
+	
+	public static String getModel(HttpServletRequest request) {
+		return request.getHeader("clientModel");
+	}
+	
+	public static String getScreenSize(HttpServletRequest request) {
+		return request.getHeader("clientScreenSize");
+	}
 }

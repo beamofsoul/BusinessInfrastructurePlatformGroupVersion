@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"> 
+	<head>
+		<title></title>
+	</head>
+	<body>
+		<div id="contentContainer" width="100%" height="100%" style="margin: 15px;">
+			<div th:replace="fragment/admin_content_query_form"></div>
+			<br />
+			<div th:replace="fragment/admin_content_table"></div>
+			<Back-top />
+		</div>
+		<div th:replace="fragment/admin_content_scripts"></div>
+		<script th:src="@{/static/js/business/login-biz.js}"></script>
+	</body>
+</html>

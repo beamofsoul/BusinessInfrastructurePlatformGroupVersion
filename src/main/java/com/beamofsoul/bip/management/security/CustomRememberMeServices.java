@@ -13,12 +13,17 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.rememberme.TokenBasedRememberMeServices;
 
+import com.beamofsoul.bip.entity.Login;
+import com.beamofsoul.bip.entity.User;
 import com.beamofsoul.bip.entity.dto.UserExtension;
 
 public class CustomRememberMeServices extends TokenBasedRememberMeServices {
 
 	@Autowired
 	private CustomUserDetailsService customUserDetailsService;
+	
+	@Autowired
+	private CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
 	
 	public CustomRememberMeServices(String key, UserDetailsService userDetailsService) {
 		super(key, userDetailsService);
@@ -34,7 +39,8 @@ public class CustomRememberMeServices extends TokenBasedRememberMeServices {
 	
 	private void afterOnLoginSuccess(HttpServletRequest request, HttpServletResponse response,
             Authentication successfulAuthentication) {
-        saveSessionProperties(request, convertToUserExtension(customUserDetailsService.getUser0(successfulAuthentication.getName())));
+		User currentUser = customUserDetailsService.getUser0(successfulAuthentication.getName());
+        saveSessionProperties(request, convertToUserExtension(currentUser), customAuthenticationSuccessHandler.new LoginRecordHandler().saveLoginRecord(currentUser, request, response));
     }
 	
 	@Override
@@ -46,10 +52,12 @@ public class CustomRememberMeServices extends TokenBasedRememberMeServices {
 	}
 
 	private void afterProcessAutoLoginCookie(UserDetails userDetails, HttpServletRequest request, HttpServletResponse response) {
-		saveSessionProperties(request, convertToUserExtension(customUserDetailsService.getUser0(userDetails.getUsername())));
+		User currentUser = customUserDetailsService.getUser0(userDetails.getUsername());
+		saveSessionProperties(request, convertToUserExtension(currentUser), customAuthenticationSuccessHandler.new LoginRecordHandler().saveLoginRecord(currentUser, request, response));
     }
 	
-	private void saveSessionProperties(HttpServletRequest request, UserExtension userExtension) {
+	private void saveSessionProperties(HttpServletRequest request, UserExtension userExtension, Login currentLogin) {
 		saveCurrentUser(request.getSession(), userExtension);
+		request.getSession().setAttribute("currentLogin", currentLogin);
 	}
 }

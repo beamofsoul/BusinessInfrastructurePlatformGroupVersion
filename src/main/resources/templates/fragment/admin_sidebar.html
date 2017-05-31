@@ -63,6 +63,10 @@
 					<Icon type="settings" :size="iconSize"></Icon>
 					<span class="layout-text">系统设置</span>
 				</template>
+					<Menu-item access="hasPermission('login','login:list')" th:name="@{login/adminList}">
+						<Icon type="monitor"></Icon>
+						<span class="layout-text">登录记录</span>
+					</Menu-item>
 					<Menu-item access="hasPermission('actionMonitor','actionMonitor:list')" th:name="@{actionMonitor/adminList}">
 						<Icon type="monitor"></Icon>
 						<span class="layout-text">行为监控</span>
