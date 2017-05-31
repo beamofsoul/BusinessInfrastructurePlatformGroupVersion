@@ -4,33 +4,29 @@
 		<title>ERROR PAGE</title>
 	</head>
 	<body>
-		<h1>ERROR - ${status }</h1>
+		<h1 th:text="'ERROR - '+ ${status }"></h1>
 		<hr></hr>
 		<ul>
 			<li>
 				<div th:switch="${status}">
-					<span th:case="403">You have no permissions to access the resource that you expect</span>
-					<span th:case="404">Could not find the page that you want to access</span>
-					<span th:case="500">An ${exception } occurred</span>
-					<span th:case="*">An unknown exception or error occurred</span>
+					<span th:case="403" th:text="You have no permissions to access the resource that you expect"></span>
+					<span th:case="404" th:text="Could not find the page that you want to access"></span>
+					<span th:case="500" th:text="'An ' + ${exception } + ' occurred'"></span>
+					<span th:case="*" th:text="An unknown exception or error occurred"></span>
 				</div>
 			</li>
 			<li>
-				<span style="font-family: cursive;">
-					via a request with URL ${path }
-				</span>
+				<span style="font-family: cursive;" th:text="'via a request with URL ' + ${path }"></span>
 			</li>
 			<li>
-				<span style="font-family: cursive;">
-					at ${timestamp }
-				</span>
+				<span style="font-family: cursive;" th:text="'at ' + ${timestamp }"></span>
 			</li>
-			<br />
+		</ul>
+		<br />
+		<ul>
 			<li>
 				<span style="font-family: cursive;">
-					Please access 
-					<a th:href="@{/index}">index page</a>
-					or try the current operation later...
+					Please access <a th:href="@{/index}">index page</a> or try the current operation later...
 				</span>
 			</li>
 		</ul>
