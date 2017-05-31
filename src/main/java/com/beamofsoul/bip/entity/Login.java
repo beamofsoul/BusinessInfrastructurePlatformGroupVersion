@@ -9,8 +9,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import com.beamofsoul.core.generator.Generate;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -30,7 +28,6 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "T_LOGIN")
-@Generate
 public class Login extends BaseAbstractEntity {
 
 	private static final long serialVersionUID = 1336473767251163468L;
