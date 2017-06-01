@@ -54,6 +54,7 @@ vueContentBeforeCreate = function () {
         vueAllotModalVisible: false
     };
 };
+hasQueryForm = false; //是否有queryForm
 // 自定义 Module
 vueContentMethods.doAllotButton = doAllotButton;
 vueContentMethods.loadAllotPermissionAll = loadAllotPermissionAll;
