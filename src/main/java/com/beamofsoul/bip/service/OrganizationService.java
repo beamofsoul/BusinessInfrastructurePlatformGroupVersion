@@ -31,4 +31,6 @@ public interface OrganizationService {
 	
 	BooleanExpression onSearch(JSONObject content,List<Long> idsLong);
 	BooleanExpression onRelationalSearch(JSONObject content);
+	
+	boolean checkNameUnique(String name, Long id);
 }

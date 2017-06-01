@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.alibaba.fastjson.JSONObject;
 import com.beamofsoul.bip.entity.Organization;
 import com.beamofsoul.bip.management.util.CommonConvertUtils;
+import com.beamofsoul.bip.management.util.Constants;
 import com.beamofsoul.bip.management.util.PageUtils;
 import com.beamofsoul.bip.service.OrganizationService;
 
@@ -123,4 +124,17 @@ public class OrganizationController extends BaseAbstractController {
 	public JSONObject getAllAvailableOrganizations() {
 		return newInstance("parents", organizationService.findAllAvailableOrganizations());
 	}
+	
+	@RequestMapping(value = "/checkNameUnique", method = RequestMethod.POST)
+	@ResponseBody
+	public JSONObject checkNameUnique(@RequestBody Map<String, Object> map) {
+		String name = map.get("data").toString();
+		Long id = null;
+		if(map.containsKey(Constants.DEFAULT_ENTITY_PRIMARY_KEY)){
+			id = map.get(Constants.DEFAULT_ENTITY_PRIMARY_KEY) != null ? Long.valueOf(map.get(Constants.DEFAULT_ENTITY_PRIMARY_KEY).toString()) : null;
+		}
+//		Long id = map.containsKey(Constants.DEFAULT_ENTITY_PRIMARY_KEY) ? Long.valueOf(map.get(Constants.DEFAULT_ENTITY_PRIMARY_KEY).toString()) : null;
+		return newInstance("isUnique", organizationService.checkNameUnique(name, id));
+	}
+	
 }
