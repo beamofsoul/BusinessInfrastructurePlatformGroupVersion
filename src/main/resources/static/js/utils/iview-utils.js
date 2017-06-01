@@ -78,7 +78,7 @@ beforeVueContentCreate = function () {
 	    };//设置 vue 生命周期 Mounted 时 调用table读取页数据
 	  }
   }
-  if(hasQueryFrom){
+  if(hasQueryForm){
 	  if (queryFormItemName && queryFormItemKey && queryFormItemType && defaultQueryFormDomId) {
 	    //根据用户定义的数据 生成query form 放到指定 dom id
 	    createFormTemplate('vueQueryForm', queryFormItemName, queryFormItemKey, queryFormItemType, defaultQueryFormDomId);

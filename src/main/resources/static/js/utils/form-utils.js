@@ -1,9 +1,9 @@
 // 当前用户能够操作的所有行为
 var actions = {
-  'delete': {'key': 'delete', 'url': 'delete'},
-  'add': {'key': 'add', 'url': 'singleAdd'},
-  'update': {'key': 'update', 'url': 'singleUpdate'},
-  'copy': {'key': 'copy', 'url': 'singleAdd'}
+    'delete': {'key': 'delete', 'url': 'delete'},
+    'add': {'key': 'add', 'url': 'singleAdd'},
+    'update': {'key': 'update', 'url': 'singleUpdate'},
+    'copy': {'key': 'copy', 'url': 'singleAdd'}
 };
 
 var vueAddForm;
@@ -15,9 +15,9 @@ var vueAddFormName = 'vueAddForm';
 var vueUpdateFormName = 'vueUpdateForm';
 var vueCopyFormName = 'vueCopyForm';
 
-var vueAddFormRules={};
-var vueUpdateFormRules={};
-var vueCopyFormRules={};
+var vueAddFormRules = {};
+var vueUpdateFormRules = {};
+var vueCopyFormRules = {};
 
 var vueAddModalVisible = false; //添加form 对话框 显示状态
 var vueUpdateModalVisible = false;  //修改form 对话框 显示状态
@@ -62,7 +62,7 @@ var submitUpdateBefore;   //提交前执行的自定义方法
 var submitDeleteBefore;   //提交前执行的自定义方法
 var submitCopyBefore;     //提交前执行的自定义方法
 
-var hasQueryFrom = true; //是否有queryForm
+var hasQueryForm = true; //是否有queryForm
 
 /********************  添加按钮  *********************/
 
@@ -71,10 +71,10 @@ var hasQueryFrom = true; //是否有queryForm
  */
 function doAddButton() {
 	if (beforeAdd) beforeAdd();
-	currentAction = actions.add;
-	resetForm();
+    currentAction = actions.add;
+    resetForm();
 	if (initAddForm) initAddForm();
-	this.vueAddModalVisible = true;
+    this.vueAddModalVisible = true;
 	if(showAddFormBefore) showAddFormBefore();
 }
 
@@ -82,14 +82,14 @@ function doAddButton() {
  * 点击AddForm页面提交按钮，默认调用后台方法进行业务记录数据插入，并重置AddForm表单
  */
 function submitAddForm() {
-	var cachedAddForm = Object.assign({}, this.vueAddForm);
+    var cachedAddForm = Object.assign({}, this.vueAddForm);
 	if(submitAddBefore) submitAddBefore(getVueObject().vueAddForm);
-	submitFormValidate(currentAction, function (data) {
-		toastSuccess('提交成功!');
-		getVueObject().vueAddModalVisible = false;
-		resetForm();
+    submitFormValidate(currentAction, function (data) {
+        toastSuccess('提交成功!');
+        getVueObject().vueAddModalVisible = false;
+        resetForm();
 		if(submitAddAfter) submitAddAfter(cachedAddForm);
-	});
+    });
 }
 
 /********************  修改按钮  *********************/
@@ -99,14 +99,14 @@ function submitAddForm() {
  */
 function doUpdateButton() {
 	if (beforeUpdate) beforeUpdate();
-	var checkedRows = this[currentCheckedTableRowName];
-	if (checkedRows.length !== 1) {
-		toastInfo('请选择1条记录!');
-		return;
-	}
-	getSingleData(getCheckedTableRowIds(checkedRows), updateBefore, function(data) {
-		initUpdateForm(data);
-	});
+    var checkedRows = this[currentCheckedTableRowName];
+    if (checkedRows.length !== 1) {
+        toastInfo('请选择1条记录!');
+        return;
+    }
+    getSingleData(getCheckedTableRowIds(checkedRows), updateBefore, function (data) {
+        initUpdateForm(data);
+    });
 }
 
 /**
@@ -116,20 +116,20 @@ function doUpdateButton() {
  */
 function rowUpdateButton(index, tableDataName) {
 	if (beforeUpdate) beforeUpdate();
-	getSingleData(this[tableDataName][index].id, updateBefore, function (data) {
-		initUpdateForm(data);
-	});
+    getSingleData(this[tableDataName][index].id, updateBefore, function (data) {
+        initUpdateForm(data);
+    });
 }
 
 /**
  * 初始化并弹出UpdateForm页面
  */
 initUpdateForm = function (obj) {
-	currentAction = actions.update;
-	resetForm();
-	copyProperties(obj, getVueObject().vueUpdateForm);
+    currentAction = actions.update;
+    resetForm();
+    copyProperties(obj, getVueObject().vueUpdateForm);
 	if (showUpdateFormBefore) showUpdateFormBefore(getVueObject().vueUpdateForm);
-	getVueObject().vueUpdateModalVisible = true;
+    getVueObject().vueUpdateModalVisible = true;
 };
 
 /**
@@ -137,12 +137,12 @@ initUpdateForm = function (obj) {
  */
 function submitUpdateForm() {
 	if(submitUpdateBefore) submitUpdateBefore(this.vueUpdateForm);
-	submitFormValidate(currentAction, function (data) {
-		toastSuccess('更新成功!');
-		getVueObject().vueUpdateModalVisible = false;
-		resetForm();
+    submitFormValidate(currentAction, function (data) {
+        toastSuccess('更新成功!');
+        getVueObject().vueUpdateModalVisible = false;
+        resetForm();
 		if(submitUpdateAfter) submitUpdateAfter(data.updated);
-	});
+    });
 }
 
 /********************  删除按钮  *********************/
@@ -152,16 +152,16 @@ function submitUpdateForm() {
  */
 function doDeleteButton() {
 	if (beforeDelete) beforeDelete();
-	var checkedRows = this[currentCheckedTableRowName];
-	if (checkedRows.length === 0) {
-		toastInfo('至少选中1条记录!');
-		return;
-	}
-	currentAction = actions.delete;
+    var checkedRows = this[currentCheckedTableRowName];
+    if (checkedRows.length === 0) {
+        toastInfo('至少选中1条记录!');
+        return;
+    }
+    currentAction = actions.delete;
 	if (deleteBefore) deleteBefore(getCheckedTableRowIds(checkedRows));
-	this.vueDeleteMessage = "即将删除" + checkedRows.length + "条记录,是否继续删除?";
-	this.vueCheckedTableRowIds = getCheckedTableRowIds(checkedRows); //将要删除的id 赋值给data
-	this.vueDeleteModalVisible = true;
+    this.vueDeleteMessage = "即将删除" + checkedRows.length + "条记录,是否继续删除?";
+    this.vueCheckedTableRowIds = getCheckedTableRowIds(checkedRows); //将要删除的id 赋值给data
+    this.vueDeleteModalVisible = true;
 }
 
 /**
@@ -172,36 +172,36 @@ function doDeleteButton() {
  */
 function rowDeleteButton(index, tableDataName) {
 	if (beforeDelete) beforeDelete();
-	var id = String(getVueObject()[tableDataName][index].id);
+    var id = String(getVueObject()[tableDataName][index].id);
 	if (deleteBefore) deleteBefore(id);
-	currentAction = actions.delete;
-	this.vueDeleteMessage = "是否继续删除此条记录?";
-	this[currentCheckedTableRowIdsName] = id;
-	this.vueDeleteModalVisible = true;
+    currentAction = actions.delete;
+    this.vueDeleteMessage = "是否继续删除此条记录?";
+    this[currentCheckedTableRowIdsName] = id;
+    this.vueDeleteModalVisible = true;
 }
 
 /**
  * 提交删除表单
  */
 function submitDeleteForm() {
-	var ids = this[currentCheckedTableRowIdsName];
-	var	cachedDeleteIds = ids; 
+    var ids = this[currentCheckedTableRowIdsName];
+	var	cachedDeleteIds = ids;
 	if(submitDeleteBefore) submitDeleteBefore(ids);
-	this.vueDeleteProgressVisible = true;
-	submitForm(currentAction, ids, function (data) {
-		if (data.count > 0) {
-			toastSuccess('删除成功');
-			getVueObject().vueDeleteProgressVisible = false;
-		} else {
-			toastWarning('记录正被使用，禁止删除');
-			getVueObject().vueDeleteProgressVisible = false;
-		}
-		getVueObject().vueDeleteModalVisible = false;
+    this.vueDeleteProgressVisible = true;
+    submitForm(currentAction, ids, function (data) {
+        if (data.count > 0) {
+            toastSuccess('删除成功');
+            getVueObject().vueDeleteProgressVisible = false;
+        } else {
+            toastWarning('记录正被使用，禁止删除');
+            getVueObject().vueDeleteProgressVisible = false;
+        }
+        getVueObject().vueDeleteModalVisible = false;
 		if(submitDeleteAfter) submitDeleteAfter({ids: ids, count: data.count});
-	}, function (errorMessage) {
-		toastError(errorMessage);
-		getVueObject().vueDeleteProgressVisible = false;
-	});
+    }, function (errorMessage) {
+        toastError(errorMessage);
+        getVueObject().vueDeleteProgressVisible = false;
+    });
 }
 
 /********************  复制按钮  *********************/
@@ -214,33 +214,33 @@ function submitDeleteForm() {
 function rowCopyButton(index, tableDataName) {
 	if (beforeCopy) beforeCopy();
 	getSingleData(this[tableDataName][index].id, copyBefore, function(data) {
-		initCopyForm(data);
-	});
+        initCopyForm(data);
+    });
 }
 
 /**
  * 初始化复制表单模型属性值
  */
 initCopyForm = function (obj) {
-	currentAction = actions.copy;
-	var copyForm = getVueObject().vueCopyForm;
-	copyPropertiesValue(copyForm, obj); //mapping 值映射
-	formatObject2String(copyForm);  //格式化返回json属性类型
+    currentAction = actions.copy;
+    var copyForm = getVueObject().vueCopyForm;
+    copyPropertiesValue(copyForm, obj); //mapping 值映射
+    formatObject2String(copyForm);  //格式化返回json属性类型
 	if (showCopyFOrmBefore) showCopyFormBefore(getVueObject().vueCopyForm);
-	getVueObject().vueCopyModalVisible = true;
+    getVueObject().vueCopyModalVisible = true;
 };
 
 /**
  * 提交复制表单至后台，具体执行添加操作
  */
 function submitCopyForm() {
-	this.vueCopyForm.id = -1;
-	submitFormValidate(currentAction, function(data) {
-		toastSuccess('提交成功!');
-		getVueObject().vueCopyModalVisible = false;
-		resetForm();
-		if(submitCopyAfter)submitCopyAfter();
-	});
+    this.vueCopyForm.id = -1;
+    submitFormValidate(currentAction, function (data) {
+        toastSuccess('提交成功!');
+        getVueObject().vueCopyModalVisible = false;
+        resetForm();
+		if(submitCopyAfter) submitCopyAfter();
+    });
 }
 
 /********************  查询按钮  *********************/
@@ -249,23 +249,23 @@ function submitCopyForm() {
  * 提交复合查询表单
  */
 function submitQueryForm() {
-	//此处可设置 table 相关值 ，然后在加载分页
-	this.doLoadPage();
+    //此处可设置 table 相关值 ，然后在加载分页
+    this.doLoadPage();
 }
 
 /**
  * 根据数据表格中复选框选中的记录Id，获取所对应的业务对象实例
  */
-var getSingleData = function(idData, successCallbackBefore, successCallback, errorCallback) {
-	var result = false;
-	$.iposty('single', {'id': idData}, function(data) {
-		var obj = data.obj;
+var getSingleData = function (idData, successCallbackBefore, successCallback, errorCallback) {
+    var result = false;
+    $.iposty('single', {'id': idData}, function (data) {
+        var obj = data.obj;
         if ((successCallbackBefore && successCallbackBefore(obj)) || !successCallbackBefore) {
         	if (successCallback) successCallback(obj);
-        	result = true;
+            result = true;
         }
-	}, errorCallback);
-	return result;
+    }, errorCallback);
+    return result;
 };
 
 /**
@@ -273,7 +273,7 @@ var getSingleData = function(idData, successCallbackBefore, successCallback, err
  * @returns
  */
 function getCurrentForm() {
-	return (!currentAction || !vueContentObject) ? null : currentAction.key === actions.add.key ? getVueObject().vueAddForm : currentAction.key === actions.update.key ? getVueObject().vueUpdateForm : getVueObject().vueCopyForm;
+    return (!currentAction || !vueContentObject) ? null : currentAction.key === actions.add.key ? getVueObject().vueAddForm : currentAction.key === actions.update.key ? getVueObject().vueUpdateForm : getVueObject().vueCopyForm;
 }
 
 /**
@@ -281,7 +281,7 @@ function getCurrentForm() {
  * @returns null值或相应的表单名称
  */
 function getCurrentFormName() {
-	return (!currentAction || !vueContentObject) ? null : currentAction.key === actions.add.key ? vueAddFormName : currentAction.key === actions.update.key ? vueUpdateFormName : vueCopyFormName;
+    return (!currentAction || !vueContentObject) ? null : currentAction.key === actions.add.key ? vueAddFormName : currentAction.key === actions.update.key ? vueUpdateFormName : vueCopyFormName;
 }
 
 /**
@@ -289,20 +289,20 @@ function getCurrentFormName() {
  * @param formName 表单名
  */
 function resetFormSelections(formName) {
-	try {
-		if (!formName) {
-			var currentFormName = getCurrentFormName();
+    try {
+        if (!formName) {
+            var currentFormName = getCurrentFormName();
 			if (currentFormName) formName = currentFormName;
 			if (!formName) throw new Error('无效的表单名称');
-		}
-		var children = getVueRefObject(formName).$children;
-		for(var r in children) {
-			var child = children[r].$children[0];
+        }
+        var children = getVueRefObject(formName).$children;
+        for (var r in children) {
+            var child = children[r].$children[0];
 			if (child.clearable) child.clearSingleSelect();
-		}
-	} catch (e) {
-		console.log(e);
-	}
+        }
+    } catch (e) {
+        console.log(e);
+    }
 }
 
 /**
@@ -310,16 +310,16 @@ function resetFormSelections(formName) {
  * @param 表单名称
  */
 function resetForm(formName) {
-	try {
-		if (!formName) {
-			var currentFormName = getCurrentFormName();
+    try {
+        if (!formName) {
+            var currentFormName = getCurrentFormName();
 			if (currentFormName) formName = currentFormName;
 			if (!formName) throw new Error('无效的表单名称');
-		}
-		getVueRefObject(formName).resetFields();
-	} catch (e) {
-		console.log(e);
-	}
+        }
+        getVueRefObject(formName).resetFields();
+    } catch (e) {
+        console.log(e);
+    }
 }
 
 /**
@@ -337,31 +337,31 @@ function formValidateCallback(callback, isSuccess, errorMessage) {
  * 表单通用校验方法
  * @param rule 验证规则
  * @param value 值
- * @param callback 验证结果 
+ * @param callback 验证结果
  */
 function validateFormRules(rule, value, callback) {
-	var form = getCurrentForm();
+    var form = getCurrentForm();
 
-	if (rule.equal) {
-		var equalValue = form[rule.equal];
-		if (value === '') {
-			formValidateCallback(callback, false);
-		} else if (value !== equalValue) {
-			formValidateCallback(callback, false);
-		} else {
-			formValidateCallback(callback, true);
-		}
-	} else if (rule.unique) {
-		var url = rule.unique;
-		$.iposty(url, {'data': value, 'id': form.id}, function (data) {
-			formValidateCallback(callback, data.isUnique);
-		});
-	} else if (rule.otherValidate) {
-		var filedName = rule.otherValidate;
-		if (form[filedName] !== '')
-			getVueRefObject(getCurrentFormName()).validateField(filedName);
-		formValidateCallback(callback, true);
-	}
+    if (rule.equal) {
+        var equalValue = form[rule.equal];
+        if (value === '') {
+            formValidateCallback(callback, false);
+        } else if (value !== equalValue) {
+            formValidateCallback(callback, false);
+        } else {
+            formValidateCallback(callback, true);
+        }
+    } else if (rule.unique) {
+        var url = rule.unique;
+        $.iposty(url, {'data': value, 'id': form.id}, function (data) {
+            formValidateCallback(callback, data.isUnique);
+        });
+    } else if (rule.otherValidate) {
+        var filedName = rule.otherValidate;
+        if (form[filedName] !== '')
+            getVueRefObject(getCurrentFormName()).validateField(filedName);
+        formValidateCallback(callback, true);
+    }
 }
 
 /**
@@ -372,20 +372,20 @@ function validateFormRules(rule, value, callback) {
  * @param errorCallback 失败的回调函数
  */
 function submitForm(currentAction, data, callback, errorCallback) {
-	// 包装请求后 回调函数.data 请求成功后 后台返回的值
-	var successCallback = function (data) {
+    // 包装请求后 回调函数.data 请求成功后 后台返回的值
+    var successCallback = function (data) {
 		fresh4NewData(data, function() {callback(data)});
-	};
+    };
 
-	if (currentAction.key === actions.delete.key)
-		$.idel(currentAction.url, data, successCallback, errorCallback);
-	else {
-		//Iview解决resetFields不能清空Select选中项问题之前
-		//https://github.com/iview/iview/issues/970
-		//暂且用Javascript中数字类型最小值在clearNullStructureObject4JSON方法中表示null值进行处理
-		var clearedData = clearNullStructureObject4JSON(formatNonstandardData2JSON(data));
-		$.iposty(currentAction.url, clearedData, successCallback, errorCallback);
-	}
+    if (currentAction.key === actions.delete.key)
+        $.idel(currentAction.url, data, successCallback, errorCallback);
+    else {
+        //Iview解决resetFields不能清空Select选中项问题之前
+        //https://github.com/iview/iview/issues/970
+        //暂且用Javascript中数字类型最小值在clearNullStructureObject4JSON方法中表示null值进行处理
+        var clearedData = clearNullStructureObject4JSON(formatNonstandardData2JSON(data));
+        $.iposty(currentAction.url, clearedData, successCallback, errorCallback);
+    }
 }
 
 /**
@@ -395,12 +395,12 @@ function submitForm(currentAction, data, callback, errorCallback) {
  * @param errorCallback 提交表单失败回调函数
  */
 function submitFormValidate(currentAction, successCallback, errorCallback) {
-	getVueRefObject(getCurrentFormName()).validate((valid) => {
-		if (valid)
-			submitForm(currentAction, getCurrentForm(), successCallback, errorCallback);
-		else
-			toastError('表单验证失败!');
-	});
+    getVueRefObject(getCurrentFormName()).validate((valid) => {
+        if (valid)
+            submitForm(currentAction, getCurrentForm(), successCallback, errorCallback);
+        else
+            toastError('表单验证失败!');
+    });
 }
 ;
 
@@ -410,11 +410,11 @@ function submitFormValidate(currentAction, successCallback, errorCallback) {
  * @returns 格式化后的数据
  */
 function formatQueryFormData(vueBindFormQueryData) {
-	var queryObj = {};
-	for (var i in vueBindFormQueryData) {
-		queryObj[i] = '"' + vueBindFormQueryData[i] + '"';
-	}
-	return queryObj;
+    var queryObj = {};
+    for (var i in vueBindFormQueryData) {
+        queryObj[i] = '"' + vueBindFormQueryData[i] + '"';
+    }
+    return hasQueryForm ? queryObj : null;
 }
 
 /**
@@ -425,78 +425,78 @@ function formatQueryFormData(vueBindFormQueryData) {
  * @param queryFormItemType - 综合查询表单数据列的类型，如果是select 需要写成特定格式[select#xxxx(xxxx为对应的数据对象名称)]
  */
 function createTableQueryForm(queryFormName, queryFormItemName, queryFormItemKey, queryFormItemType) {
-	var icolSpan = 24 / queryFromRowItemNum - 1;//24栅格
-	var totalRow = parseInt(queryFormItemKey.length / queryFromRowItemNum);
+    var icolSpan = 24 / queryFromRowItemNum - 1;//24栅格
+    var totalRow = parseInt(queryFormItemKey.length / queryFromRowItemNum);
 
 	if (queryFormItemKey.length % queryFromRowItemNum !== 0) totalRow++;
 //	console.log('24格 每个控件占几格 '+icolSpan)
 //	console.log('总共多少行 '+totalRow)
 //	console.log('总共多少个控件 '+queryFormItemKey.length)
-	var itemIndex = 0;
-	var queryForm = '<i-form ref="' + queryFormName + '" :model="' + queryFormName + '"  :show-message="false" label-position="left" :label-width="' + queryFormItemWidth + '" >';
-	//行
-	for (var rowIndex = 0; rowIndex < totalRow; rowIndex++) {
+    var itemIndex = 0;
+    var queryForm = '<i-form ref="' + queryFormName + '" :model="' + queryFormName + '"  :show-message="false" label-position="left" :label-width="' + queryFormItemWidth + '" >';
+    //行
+    for (var rowIndex = 0; rowIndex < totalRow; rowIndex++) {
 //		console.log('生成第几行 '+rowIndex)
-		queryForm += '<Row type="flex" justify="space-between" >';
-		//项
-		for (var rowItemIndex = 0; rowItemIndex < queryFromRowItemNum; rowItemIndex++) {
+        queryForm += '<Row type="flex" justify="space-between" >';
+        //项
+        for (var rowItemIndex = 0; rowItemIndex < queryFromRowItemNum; rowItemIndex++) {
 //			console.log('生成这行第几个控件 '+rowItemIndex)
 //			console.log('---------生成总共控件的第几个 '+(itemIndex+1))
 //			console.log('queryFormItemKey.length '+queryFormItemKey.length);
-	    	
-			if (itemIndex >= queryFormItemKey.length){
+
+            if (itemIndex >= queryFormItemKey.length) {
 //				console.log('生成总共控件的第几个aaaaaa '+itemIndex)
-				queryForm += '<i-col span="' + icolSpan + '"></i-col>';
-				itemIndex++;
-				continue;
-			}
-	      
-			queryForm += '<i-col span="' + icolSpan + '">';
-	
-			var itemTypeArray = queryFormItemType[itemIndex].split('#');
-			var itemType = itemTypeArray[0];
-	
-			if (itemType === 'string') {
-				queryForm += '<Form-item label="' + queryFormItemName[itemIndex] + '：" prop="' + queryFormItemKey[itemIndex] + '">';
-				queryForm += '<i-input v-model="' + queryFormName + '.' + queryFormItemKey[itemIndex] + '" ></i-input>';
-				queryForm += '</Form-item>';
-			} else if (itemType.indexOf('number') >= 0) {
-				queryForm += '<Form-item label="' + queryFormItemName[itemIndex] + '：" prop="' + queryFormItemKey[itemIndex] + '">';
-				var rangeStr = '';
-				if (itemType.indexOf('<number') >= 0) {
-					var minIndex = itemType.indexOf('<number');
-					rangeStr += ' :min="' + itemType.substring(0, minIndex) + '"';
-				}
-				if (itemType.indexOf('number<') >= 0) {
-					var maxIndex = itemType.lastIndexOf('<');
-					rangeStr += ' :max="' + itemType.substring(maxIndex + 1) + '"';
-				}
-				queryForm += '<Input-number ' + rangeStr + ' v-model="' + queryFormName + '.' + queryFormItemKey[itemIndex] + '"></Input-number>';
-				queryForm += '</Form-item>';
-			} else if (itemType === 'select') {
-				queryForm += '<Form-item label="' + queryFormItemName[itemIndex] + '：" prop="' + queryFormItemKey[itemIndex] + '">';
-				queryForm += '<i-select v-model="' + queryFormName + '.' + queryFormItemKey[itemIndex] + '" clearable>';
-				queryForm += '<i-option v-for="item in ' + itemTypeArray[1] + '" :value="item.value" :key="item">{{ item.label }}</i-option>';
-				queryForm += '</i-select>';
-				queryForm += '</Form-item>';
-			} else if (itemType.startsWith("date")) {
-				queryForm += '<Form-item label="' + queryFormItemName[itemIndex] + '：" prop="' + queryFormItemKey[itemIndex] + '">';
-				queryForm += '<Date-picker placement="bottom" v-model="' + queryFormName + '.' + queryFormItemKey[itemIndex] + '" type="' + itemType + '"></Date-picker>';
-				queryForm += '</Form-item>';
-			}
-			queryForm += '</i-col>';
-			itemIndex++;
-		}
-		queryForm += '</Row>';
-	}
-	queryForm += '<Row type="flex" justify="center" >';
-	queryForm += '<i-col span="' + icolSpan + '">';
-	queryForm += '<i-button icon="ios-search"  @click="' + querySubmitButtonName + '()" >查询</i-button>';
-	queryForm += '<i-button icon="ios-search"  @click="resetForm(\'' + queryFormName + '\')"  style="margin-left: 8px">重置</i-button>';
-	queryForm += '</i-col>';
-	queryForm += '</Row>';
-	queryForm += '</i-form>';
-	return queryForm;
+                queryForm += '<i-col span="' + icolSpan + '"></i-col>';
+                itemIndex++;
+                continue;
+            }
+
+            queryForm += '<i-col span="' + icolSpan + '">';
+
+            var itemTypeArray = queryFormItemType[itemIndex].split('#');
+            var itemType = itemTypeArray[0];
+
+            if (itemType === 'string') {
+                queryForm += '<Form-item label="' + queryFormItemName[itemIndex] + '：" prop="' + queryFormItemKey[itemIndex] + '">';
+                queryForm += '<i-input v-model="' + queryFormName + '.' + queryFormItemKey[itemIndex] + '" ></i-input>';
+                queryForm += '</Form-item>';
+            } else if (itemType.indexOf('number') >= 0) {
+                queryForm += '<Form-item label="' + queryFormItemName[itemIndex] + '：" prop="' + queryFormItemKey[itemIndex] + '">';
+                var rangeStr = '';
+                if (itemType.indexOf('<number') >= 0) {
+                    var minIndex = itemType.indexOf('<number');
+                    rangeStr += ' :min="' + itemType.substring(0, minIndex) + '"';
+                }
+                if (itemType.indexOf('number<') >= 0) {
+                    var maxIndex = itemType.lastIndexOf('<');
+                    rangeStr += ' :max="' + itemType.substring(maxIndex + 1) + '"';
+                }
+                queryForm += '<Input-number ' + rangeStr + ' v-model="' + queryFormName + '.' + queryFormItemKey[itemIndex] + '"></Input-number>';
+                queryForm += '</Form-item>';
+            } else if (itemType === 'select') {
+                queryForm += '<Form-item label="' + queryFormItemName[itemIndex] + '：" prop="' + queryFormItemKey[itemIndex] + '">';
+                queryForm += '<i-select v-model="' + queryFormName + '.' + queryFormItemKey[itemIndex] + '" clearable>';
+                queryForm += '<i-option v-for="item in ' + itemTypeArray[1] + '" :value="item.value" :key="item">{{ item.label }}</i-option>';
+                queryForm += '</i-select>';
+                queryForm += '</Form-item>';
+            } else if (itemType.startsWith("date")) {
+                queryForm += '<Form-item label="' + queryFormItemName[itemIndex] + '：" prop="' + queryFormItemKey[itemIndex] + '">';
+                queryForm += '<Date-picker placement="bottom" v-model="' + queryFormName + '.' + queryFormItemKey[itemIndex] + '" type="' + itemType + '"></Date-picker>';
+                queryForm += '</Form-item>';
+            }
+            queryForm += '</i-col>';
+            itemIndex++;
+        }
+        queryForm += '</Row>';
+    }
+    queryForm += '<Row type="flex" justify="center" >';
+    queryForm += '<i-col span="' + icolSpan + '">';
+    queryForm += '<i-button icon="ios-search"  @click="' + querySubmitButtonName + '()" >查询</i-button>';
+    queryForm += '<i-button icon="ios-search"  @click="resetForm(\'' + queryFormName + '\')"  style="margin-left: 8px">重置</i-button>';
+    queryForm += '</i-col>';
+    queryForm += '</Row>';
+    queryForm += '</i-form>';
+    return queryForm;
 }
 
 /**
@@ -508,7 +508,7 @@ function createTableQueryForm(queryFormName, queryFormItemName, queryFormItemKey
  * @param queryFormDomId 页面中装载综合查询表单的元素DomId
  */
 function createFormTemplate(queryFormName, queryFormItemName, queryFormItemKey, queryFormItemType, queryFormDomId) {
-	document.getElementById(queryFormDomId).innerHTML = createTableQueryForm(queryFormName, queryFormItemName, queryFormItemKey, queryFormItemType);
+    document.getElementById(queryFormDomId).innerHTML = createTableQueryForm(queryFormName, queryFormItemName, queryFormItemKey, queryFormItemType);
 }
 
 /**
@@ -517,10 +517,10 @@ function createFormTemplate(queryFormName, queryFormItemName, queryFormItemKey, 
  * @param queryFormData 指定的表单对象
  */
 function createQueryForm(queryForm, queryFormData) {
-	if (!queryFormData)
-		vueQueryForm = queryForm;
-	else
-		queryFormData = queryForm;
+    if (!queryFormData)
+        vueQueryForm = queryForm;
+    else
+        queryFormData = queryForm;
 }
 
 /**
@@ -529,23 +529,23 @@ function createQueryForm(queryForm, queryFormData) {
  * @returns 生成好的综合查询表单数据模型对象
  */
 function createQueryFormData(queryFormItemKey) {
-	var obj = {};
-	for (var i in queryFormItemKey) {
-		obj[queryFormItemKey[i]] = '';
-	}
-	return obj;
+    var obj = {};
+    for (var i in queryFormItemKey) {
+        obj[queryFormItemKey[i]] = '';
+    }
+    return obj;
 }
 
 /**
  * 为特定表单指定数据模型对象
- * @param formDataValue 表单对象对应的数据模型对象 
+ * @param formDataValue 表单对象对应的数据模型对象
  * @param formData 指定的表单对象
  */
 function setFormDataObject(formDataValue, formData) {
-	if (!formData)
-		vueAddForm = vueUpdateForm = vueCopyForm = formDataValue;
-	else
-		formData = formDataValue;
+    if (!formData)
+        vueAddForm = vueUpdateForm = vueCopyForm = formDataValue;
+    else
+        formData = formDataValue;
 }
 
 /**
@@ -553,5 +553,5 @@ function setFormDataObject(formDataValue, formData) {
  * @param vueBindFormRulesDataValue 表单验证规则
  */
 function setFormRulesObject(vueBindFormRulesDataValue) {
-	vueAddFormRules = vueUpdateFormRules = vueCopyFormRules = vueBindFormRulesDataValue;
+    vueAddFormRules = vueUpdateFormRules = vueCopyFormRules = vueBindFormRulesDataValue;
 }
