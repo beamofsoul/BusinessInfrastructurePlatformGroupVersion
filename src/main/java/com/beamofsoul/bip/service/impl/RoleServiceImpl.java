@@ -3,6 +3,7 @@ package com.beamofsoul.bip.service.impl;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
+import org.hibernate.Hibernate;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;
@@ -87,7 +88,9 @@ public class RoleServiceImpl extends BaseAbstractServiceImpl implements RoleServ
 	@Override
 	@Cacheable(key="#id")
 	public Role findById(Long id) {
-		return roleRepository.findOne(id);
+		Role role = roleRepository.findOne(id);
+		if (role != null) Hibernate.initialize(role.getPermissions());
+		return role;
 	}
 
 	@Override
