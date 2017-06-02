@@ -23,8 +23,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.alibaba.fastjson.JSONObject;
 import com.beamofsoul.bip.entity.Organization;
+import com.beamofsoul.bip.entity.query.QDepartment;
 import com.beamofsoul.bip.entity.query.QOrganization;
 import com.beamofsoul.bip.entity.query.QPermission;
+import com.beamofsoul.bip.entity.query.QUser;
 import com.beamofsoul.bip.management.cache.CacheableBasedPageableCollection;
 import com.beamofsoul.bip.repository.OrganizationRepository;
 import com.beamofsoul.bip.service.OrganizationService;
@@ -42,8 +44,8 @@ public class OrganizationServiceImpl extends BaseAbstractServiceImpl implements 
 
 	@Override
 	public Organization create(Organization organization) {
-		
-		Integer maxSort = organizationRepository.findOrganizationMaxSort(organization.getParentId());
+		Integer maxSort = (organization.getParent() == null||organization.getParent().getId()==null) ? null:organizationRepository.findOrganizationMaxSort(organization.getParent().getId());
+//		Integer maxSort = organization.getParentId() == null? null:organizationRepository.findOrganizationMaxSort(organization.getParentId());
 		if (maxSort != null) organization.setSort(maxSort+1);
 		else organization.setSort(1);
 		
@@ -144,12 +146,20 @@ public class OrganizationServiceImpl extends BaseAbstractServiceImpl implements 
 	}
 	private void loadRelationalInformation(List<Organization> organizations) {
 		organizations.stream().forEach(e -> {
-			e.setCountOfChildren(organizationRepository.count(QOrganization.organization.parentId.eq(e.getId())));
+//			e.setCountOfChildren(organizationRepository.count(QOrganization.organization.parentId.eq(e.getId())));
+			e.setCountOfChildren(organizationRepository.count(QOrganization.organization.parent.id.eq(e.getId())));
 		});
 	}
 	@Override
 	public BooleanExpression onRelationalSearch(JSONObject content) {
-		return new QPermission("Organization").parentId.eq(content.getLongValue("parentId"));
+		
+		QOrganization organization = new QOrganization("Organization");
+		Long parentId = content.getLongValue("parentId");
+		if (parentId != 0L)
+			return organization.parent.id.eq(parentId);
+		return organization.parent.id.isNull();
+		
+//		return new QPermission("Organization").parentId.eq(content.getLongValue("parentId"));
 	}
 
 	@Override
@@ -239,4 +249,14 @@ public class OrganizationServiceImpl extends BaseAbstractServiceImpl implements 
 	public List<Organization> findAllAvailableOrganizations() {
 		return organizationRepository.findByPredicate(new QOrganization("Organization").available.eq(true));
 	}
+	
+	@Override
+	public boolean checkNameUnique(String name, Long id) {
+		BooleanExpression predicate = QOrganization.organization.name.eq(name);
+		if (id != null) {
+			predicate = predicate.and(QOrganization.organization.id.ne(id));
+		}
+		return organizationRepository.count(predicate) == 0;
+	}
+	
 }

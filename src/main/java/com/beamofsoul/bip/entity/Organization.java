@@ -7,6 +7,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import lombok.AccessLevel;
@@ -58,8 +60,14 @@ public class Organization extends BaseAbstractRelationalEntity {
 	/**
 	 * 上级组织机构
 	 */
-	@Column(name = "parentId")
-	private Long parentId;
+//	@Column(name = "parentId")
+//	private Long parentId;
+	
+	@ManyToOne
+	@JoinColumn(name = "PARENT_ID", nullable = true)
+	private Organization parent;
+
+	
 //	@ManyToOne(cascade = CascadeType.ALL)
 //    @JoinColumn(name = "PARENT_ID")
 //	private Organization parent;
@@ -74,6 +82,6 @@ public class Organization extends BaseAbstractRelationalEntity {
 	@Override
 	public String toString() {
 		return "Organization [id=" + id + ", name=" + name + ", descirption=" + descirption + ", sort=" + sort
-				+ ", parentId=" + parentId + ", available=" + available + "]";
+				+ ", parent=" + parent + ", available=" + available + "]";
 	}
 }

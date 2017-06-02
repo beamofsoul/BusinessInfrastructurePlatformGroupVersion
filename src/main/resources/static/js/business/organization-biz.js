@@ -16,7 +16,7 @@ loadPageableDataUrl = 'organizationsByPage';
 //table column 显示名
 tableColumnsName = ['ID','名称','描述','排序','上级机构ID','是否可用','操作'];
 //table column 对应data中的属性名   全选 加 'selection' 项 , 操作 加 'operation' 项。
-tableColumnsKey = ['id#sortable','name#sortable','descirption','sort','parentId','available','operation'];
+tableColumnsKey = ['id#sortable','name#sortable','descirption','sort','parent_id','available','operation'];
 //table 每行需要的按钮 
 tableButtonsOnEachRow = ['rowInfoButton#查看详情'];
 //格式化table行数据格式
@@ -30,26 +30,24 @@ parseValuesOnTableEachRow = function (obj) {
 }
 
 //设置add update vue form data obj
-setFormDataObject({id:null,name: '',descirption: '',sort: 1,parentId: null,available: true});
+setFormDataObject({id:null,name: '',descirption: '',sort: 1,parent_id: nullAsNumber,available: true});
 ////综合查询 form
 //hasQueryFrom = false;
 queryFormItemName = ['此节点ID下数据'];
 queryFormItemKey = ['selectedNodeId'];
 queryFormItemType = ['string'];
-//
-//
-////form 验证信息 
-//setFormRulesObject({
-//	'username': [{trigger: 'blur',type: 'string', required: true, pattern: /^[a-zA-Z\d]\w{4,11}[a-zA-Z\d]$/, message: '用户名称必须为长度6至12位之间以字母、特殊字符(·)或数字字符组成的字符串!'},{validator: this.validateFormRules, trigger: 'blur',unique:'checkUsernameUnique',message: '用户名已被占用'}],
-//	'password': [{trigger: 'blur',type: 'string', required: true, min:6,max :16,message: '密码为长度6至12位之间字符串!'},{validator: this.validateFormRules, trigger: 'blur',otherValidate:'repassword',message: '用户名已被占用'}],
-//    'repassword': [{trigger: 'blur',type: 'string', required: true,message:'请输入确认密码'},{trigger: 'blur',type: 'string', validator: this.validateFormRules,equal:'password',message: '两次输入密码不一致!'}],
-//    'nickname': [{trigger: 'blur',type: 'string', required: true, pattern: /^[a-zA-Z0-9·\u4e00-\u9fa5]{2,12}$/, message: '昵称必须为长度2至12位之间以字母、特殊字符(·)、汉字或数组字符组成的字符串!'},{validator: this.validateFormRules, trigger: 'blur',unique:'checkNicknameUnique',message: '昵称已被占用'}]
-//});
+
+
+//form 验证信息 
+setFormRulesObject({
+	'name': [{trigger: 'blur',type: 'string', required: true, min:2,max :12, message: '名称为长度2至12位之间字符串!'},{validator: this.validateFormRules, trigger: 'blur',unique:'checkNameUnique',message: '名称已被占用'}]
+});
 
 ////////////////////////////// 在vue生命周期 BeforeCreate 自定义 data ////////////////////////////////
 vueContentBeforeCreate = function(){
 	customVueContentData = {
-		treeData: generateRootNode(),
+//		treeData: generateRootNode(),
+		treeData: [{id: null, expand: false, title: '<i class="ivu-icon ivu-icon-ios-circle-filled" style="font-size: 16px;">', children: vueContentObject.vueRecordTotal != 0 ? [{}] : null}],
 //		'organization/getAllAvailableOrganizations'
 //		(currentRequestMappingRootPath + '/getAllAvailableDepartments')
 		parentDataSelect: getDataList('organization/getAllAvailableOrganizations','请选择上级部门'),
@@ -57,8 +55,8 @@ vueContentBeforeCreate = function(){
 	}
 };
 //////////////////tree///////////////////
-loadTreeRootUrl = 'organization/single';
-loadTreeRootDataFunction = function() {return {id: 1}}
+//loadTreeRootUrl = 'organization/single';
+//loadTreeRootDataFunction = function() {return {id: 1}}
 loadTreeNodeUrl = 'organization/children';
 
 var checkedTreeNodesId;
@@ -70,6 +68,9 @@ function doUpdateTreeButton() {
 		return;
 	}
 	getSingleData(selectedNodeObject.id, updateBefore, function(data) {
+		
+//		console.log('--------');
+//		console.log(data);
 		currentAction = actions.update;
 		resetForm();
 		copyProperties(data, getVueObject().vueUpdateForm);
@@ -147,7 +148,7 @@ function submitUpAndDownRemove(isUp){
 		currentAction = actions.changeSort;
 		if(data.sort>1){
 			
-			let parentId = data.parentId;
+			let parentId = data.parent_id;
 			if(parentId==0) return;
 			let afterId ;
 			//根据parentId 取到 节点，取此节点的children数组。遍历数组 调换两个对象位置
@@ -225,8 +226,9 @@ var vueContentObject = new Vue(initializeContentOptions());
 
 $(function() {
 	//初始化树根节点下级子节点数据，并展开根节点下级子节点
-	toggleExpand(vueContentObject.treeData[0]);
-	vueContentObject.$refs.tree.$children[0].handleExpand(toggleExpand);
+//	toggleExpand(vueContentObject.treeData[0]);
+//	vueContentObject.$refs.tree.$children[0].handleExpand(toggleExpand);
+	getVueRefObject('tree').$children[0].handleExpand();
 	disableUpdateData(getVueRefObject('tree'));
 	//为了解决 先选checkbox后点击select 出现的 上级checkbox被选中的情况，暂时不明白原因
 	getVueObject().treeData[0].selected=false;
