@@ -10,7 +10,9 @@ import com.beamofsoul.bip.management.util.AnnotationServiceNameMapping;
 import com.beamofsoul.bip.management.util.DatabaseTableEntityMapping;
 import com.beamofsoul.bip.management.util.DatabaseUtils;
 import com.beamofsoul.bip.management.util.RolePermissionsMapping;
+import com.beamofsoul.bip.management.util.SensitiveWordsMapping;
 import com.beamofsoul.bip.service.RolePermissionService;
+import com.beamofsoul.bip.service.SensitiveWordService;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -28,6 +30,9 @@ public class CustomDataFillingStartupRunner implements CommandLineRunner {
 	
 	@Autowired
 	private RolePermissionService rolePermissionService;
+	
+	@Autowired
+	private SensitiveWordService sensitiveWordService;
 
 	@Override
 	public void run(String... args) throws Exception {
@@ -43,7 +48,8 @@ public class CustomDataFillingStartupRunner implements CommandLineRunner {
 		 * 完成后点run即可通过运行结果看到参数使用情况了。
 		 */
 		log.info("服务启动执行,执行加载数据等操作...");
-		RolePermissionsMapping.fill(rolePermissionService.findAllRolePermissionMapping());	
+		RolePermissionsMapping.fill(rolePermissionService.findAllRolePermissionMapping());
+		SensitiveWordsMapping.fill(sensitiveWordService.findAll());
 		DatabaseUtils.loadDatabaseTableNames();
 		DatabaseTableEntityMapping.initTableEntityMap();
 		AnnotationServiceNameMapping.loadServiceMap();
