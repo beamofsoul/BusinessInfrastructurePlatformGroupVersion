@@ -53,7 +53,7 @@ vueContentMethods.cancelSetRoleForm = cancelSetRoleForm;
 vueContentMethods.loadUserRolesBypage = loadUserRolesBypage;
 //调入所有权限信息并初始化
 function loadSetRoleAllRole2TreeData() {
-    var curSetRoleTreeData = [{title: '角色列表', expand: true, selected: true, children: []}];
+    let curSetRoleTreeData = [{title: '角色列表', expand: true, selected: true, children: []}];
     $.iposty('all', {}, function (data) {
         for (let role of data.all) {
             curSetRoleTreeData[0].children.push({title: role.name, id: role.id});
@@ -97,7 +97,7 @@ function loadUserRolesBypage(page, size, condition) {
 //
 function clickRowSetRoleButton(index, tableDataName) {
     this.vueSetRoleFormData.allRoles = [];
-    var formdata = this.vueSetRoleFormData;
+    let formdata = this.vueSetRoleFormData;
     formdata.userId = this.vueTableData[index].userId;
     formdata.nickName = this.vueTableData[index].nickname;
     formdata.userName = this.vueTableData[index].username;
