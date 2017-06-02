@@ -36,7 +36,7 @@ vueContentMethods.vueBindTableSortMethod = function (a, b, c, d, e) {
 vueContentBeforeCreate = function () {
     customVueContentData = {
         vueSetRoleTreeData: loadSetRoleAllRole2TreeData(),
-        vueSetRoleFormData: {userId: 0, nickName: '', userName: '', allRoleIds: [], allRoles: [], userRoles: []},
+        vueSetRoleFormData: {userId: 0, nickName: '', userName: '', allRoles: [], userRoles: []},
         vueSetRoleCondition: null,
         vueSetRoleModalVisible: false
     };
@@ -55,25 +55,24 @@ vueContentMethods.loadUserRolesBypage = loadUserRolesBypage;
 function loadSetRoleAllRole2TreeData() {
     var curSetRoleTreeData = [{title: '角色列表', expand: true, selected: true, children: []}];
     $.iposty('all', {}, function (data) {
-        var array = data.all;
-        for (var i in array) {
-            curSetRoleTreeData[0].children.push({title: array[i].name, id: array[i].id});
+        for (let role of data.all) {
+            curSetRoleTreeData[0].children.push({title: role.name, id: role.id});
         }
     });
     return curSetRoleTreeData;
 }
 //
 function onSelectChangeTree() {
-    var obj = this.vueSetRoleTreeData;
+    let obj = this.vueSetRoleTreeData;
     if (obj[0].selected) {
         this.vueSetRoleCondition = null;
         //loadUserRolesBypage(vueCurrentPage - 1, this[currentPageSizeName], null);
         this.doLoadPage();
     } else {
         this.vueSetRoleCondition = {};
-        for (var i in obj[0].children) {
-            if (obj[0].children[i].selected) {
-                this.vueSetRoleCondition.ids = obj[0].children[i].id;
+        for (let children of obj[0].children) {
+            if (children.selected) {
+                this.vueSetRoleCondition.ids = children.id;
                 break;
             }
         }
@@ -83,33 +82,27 @@ function onSelectChangeTree() {
 //
 function loadUserRolesBypage(page, size, condition) {
     $.iposty("userRolesByPage", {page: page, size: size, condition: condition}, function (data) {
-        var arr = [];
-        for (var i in tableColumnsKey) {
-            arr[tableColumnsKey[i]] = tableColumnsKey[i];
-        }
-        var contentArr = data.pageableData.content;
         vueContentObject.vueTableData = [];
-        for (var r in contentArr) {
-            var row = {};
-            for (var i in arr) {
-                row[i] = data.pageableData.content[r][arr[i]];
+        for (let rowContent of data.pageableData.content) {
+            let row = {};
+            for (let key of tableColumnsKey) {
+                row[key] = rowContent[key];
             }
             vueContentObject.vueTableData.push(row);
         }
+        vueContentObject.vueRecordTotal = data.pageableData.totalElements;
         setTimeout(toastLoading('正在加载中...', 0), 30);
     });
 }
 //
 function clickRowSetRoleButton(index, tableDataName) {
     this.vueSetRoleFormData.allRoles = [];
-    var children = this.vueSetRoleTreeData[0].children;
     var formdata = this.vueSetRoleFormData;
     formdata.userId = this.vueTableData[index].userId;
     formdata.nickName = this.vueTableData[index].nickname;
     formdata.userName = this.vueTableData[index].username;
-    for (var i in children) {
-        formdata.allRoleIds.push(children[i].id);
-        formdata.allRoles.push(children[i].title);
+    for (let children of this.vueSetRoleTreeData[0].children) {
+        formdata.allRoles.push({id: children.id, name: children.title});
     }
     this.loadSetRoleUserRole(formdata.userId);
     this.vueSetRoleModalVisible = true;
@@ -122,16 +115,15 @@ function loadSetRoleUserRole(userId) {
 }
 //Modal 提交按钮
 function submitSetRoleForm() {
-    var formdata = this.vueSetRoleFormData;
+    let formdata = this.vueSetRoleFormData;
     if (formdata.userRoles[0] === '') {
         formdata.userRoles.splice(0, 1);
     }
-    var roleId = "";
-    for (var i in formdata.userRoles) {
-        var curUserRole = formdata.userRoles[i];
-        for (var j in formdata.allRoles) {
-            if (curUserRole === formdata.allRoles[j]) {
-                roleId += ((roleId === "") ? "" : ",") + formdata.allRoleIds[j];
+    let roleId = "";
+    for (let userRole of formdata.userRoles) {
+        for (let allRole of formdata.allRoles) {
+            if (userRole === allRole.name) {
+                roleId += ((roleId === "") ? "" : ",") + allRole.id;
                 break;
             }
         }
@@ -144,7 +136,7 @@ function submitSetRoleForm() {
 }
 //Modal 取消按钮 / X按钮
 function cancelSetRoleForm() {
-    this.vueSetRoleFormData = {userId: 0, nickName: '', userName: '', allRoleIds: [], allRoles: [], userRoles: []};
+    this.vueSetRoleFormData = {userId: 0, nickName: '', userName: '', allRoles: [], userRoles: []};
     this.vueSetRoleModalVisible = false;
 }
 
