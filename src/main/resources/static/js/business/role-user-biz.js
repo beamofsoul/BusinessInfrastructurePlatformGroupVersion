@@ -63,18 +63,20 @@ function loadSetRoleAllRole2TreeData() {
 }
 //
 function onSelectChangeTree() {
-    let obj = this.vueSetRoleTreeData;
-    if (obj[0].selected) {
+    let treeData = this.vueSetRoleTreeData;
+    if (treeData[0].selected) {
         this.vueSetRoleCondition = null;
-        //loadUserRolesBypage(vueCurrentPage - 1, this[currentPageSizeName], null);
-        this.doLoadPage();
+        this.doLoadPage();  //loadUserRolesBypage(vueCurrentPage - 1, this[currentPageSizeName], null);
     } else {
-        this.vueSetRoleCondition = {};
-        for (let children of obj[0].children) {
-            if (children.selected) {
-                this.vueSetRoleCondition.ids = children.id;
-                break;
+        let selectedRoleId = treeData[0].children.find(obj => obj.selected);
+        if (selectedRoleId === undefined) {
+            if (this.vueSetRoleCondition === null) {
+                treeData[0].selected = true;
+            } else {
+                treeData[0].children.find(obj => obj.id === this.vueSetRoleCondition.ids).selected = true;
             }
+        } else {
+            this.vueSetRoleCondition = {ids: selectedRoleId.id};
         }
         loadUserRolesBypage(0, this[currentPageSizeName], this.vueSetRoleCondition);
     }
