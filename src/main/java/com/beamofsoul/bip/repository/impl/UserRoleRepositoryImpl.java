@@ -55,8 +55,8 @@ public class UserRoleRepositoryImpl implements UserRoleRepositoryCustom {
 	
 	@Override
 	public Page<UserRoleCombineRole> findUserRoleMappingByConditionViaView(Pageable pageable, Object condition) {
-		Predicate predicate = 
-				QUserRoleCombineRole.userRoleCombineRole.roleId.contains(condition.toString());
+		Predicate predicate = null;
+		if (condition != null) predicate = QUserRoleCombineRole.userRoleCombineRole.roleId.contains(condition.toString());
 		return doQuery(entityManager, QUserRoleCombineRole.userRoleCombineRole,pageable,predicate);
 	}
 	

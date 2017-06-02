@@ -28,6 +28,7 @@ public class ConfigurationReader {
 	public static final String PROJECT_COMPONENT_QRCODE_DEFAULT_IMAGE = "project.component.qrcode.defaultImage";
 	public static final String PROJECT_COMPONENT_QRCODE_REVERSAL_COLOR = "project.component.qrcode.reversalColor";
 	
+	public static final String PROJECT_BASE_FILTER_SENSITIVE = "project.base.filter.sensitive";
 	public static final String PROJECT_BASE_REPOSITORY_FACTORY = "project.base.repository.factory";
 	public static final String PROJECT_BASE_REPOSITORY_BATCH_SIZE = "project.base.repository.batch.size";
 	public static final String PROJECT_BUSSINESS_USER_PHOTO_PATH = "project.business.user.photoPath";

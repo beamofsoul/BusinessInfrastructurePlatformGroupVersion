@@ -76,6 +76,11 @@ $(function() {
 		});
 	}
 	
+	$.igety = function(url, successCallback) {
+		if(currentRequestMappingRootPath) url = currentRequestMappingRootPath+"/"+url;
+		$.gety(url, successCallback);
+	}
+	
 	$.iposty = function(url, data, successCallback, errorCallback) {
 		if(currentRequestMappingRootPath)
 			url = currentRequestMappingRootPath+"/"+url;

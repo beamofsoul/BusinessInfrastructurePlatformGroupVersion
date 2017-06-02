@@ -1,8 +1,5 @@
 package com.beamofsoul.bip.management.security;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,13 +13,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.rememberme.TokenBasedRememberMeServices;
-import org.springframework.security.web.header.HeaderWriter;
-import org.springframework.security.web.header.HeaderWriterFilter;
 import org.thymeleaf.extras.springsecurity4.dialect.SpringSecurityDialect;
 import org.thymeleaf.spring4.SpringTemplateEngine;
 import org.thymeleaf.templateresolver.TemplateResolver;
-
-import com.google.common.collect.Lists;
 
 @Configuration
 @EnableWebSecurity
@@ -72,29 +65,6 @@ public class CustomWebSecurityConfig extends WebSecurityConfigurerAdapter {
 					.tokenValiditySeconds(props.getTokenValiditySeconds())
 					.rememberMeParameter(props.getRememberMeParameter())
 					.rememberMeServices(customRememberMeServices());
-        
-		/**
-		 * 增加响应头过滤器，当返回响应对象时设置允许JSP页面在<frame>、<iframe>或者<object>中展现
-		 * X-Frame-Options参数的值有三种：
-		 *  - DENY: 表示该页面不允许在 frame 中展示，即便是在相同域名的页面中嵌套也不允许(SpringSecurity默认值)
-		 * 	- SAMEORIGIN: 表示该页面可以在相同域名页面的 frame 中展示(手动修改后的值)
-		 * 	- ALLOW-FROM uri: 表示该页面可以在指定来源的 frame 中展示(暂时不会考虑使用的值)
-		 * 
-		 * PS: 其他的响应头参数可以替代JSP页面中设定的meta数据值
-		 */
-        HeaderWriterFilter responseFilter4Frame = new HeaderWriterFilter(Lists.newArrayList(new HeaderWriter() {
-            @Override
-        	public void writeHeaders(HttpServletRequest request, HttpServletResponse response) {  
-                response.setHeader("Cache-Control", "no-cache, no-store, max-age=0, must-revalidate");  
-                response.setHeader("Expires", "0");  
-                response.setHeader("Pragma", "no-cache");  
-                response.setHeader("X-Frame-Options", "SAMEORIGIN");
-                response.setHeader("X-UA-Compatible", "IE=edge");
-                response.setHeader("X-XSS-Protection", "1; mode=block");
-                response.setHeader("x-content-type-options", "nosniff");
-            }
-        }));
-        http.addFilter(responseFilter4Frame);
 	}
 
 	@Override

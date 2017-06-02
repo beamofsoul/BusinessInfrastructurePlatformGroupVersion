@@ -71,6 +71,10 @@
 						<Icon type="monitor"></Icon>
 						<span class="layout-text">行为监控</span>
 					</Menu-item>
+					<Menu-item access="hasPermission('sensitiveWord','sensitiveWord:list')" th:name="@{sensitiveWord/adminList}">
+						<Icon type="monitor"></Icon>
+						<span class="layout-text">敏感词管理</span>
+					</Menu-item>
 				<!-- 
 				<Menu-item name="${pageContext.request.contextPath}/admin/systemLog">
 					<Icon type="ios-keypad"></Icon>
