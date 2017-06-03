@@ -62,7 +62,7 @@ var submitUpdateBefore;   //提交前执行的自定义方法
 var submitDeleteBefore;   //提交前执行的自定义方法
 var submitCopyBefore;     //提交前执行的自定义方法
 
-var hasQueryForm = true; //是否有queryForm
+var hasQueryForm = isQueryFormAvailable();; //是否有queryForm
 
 /********************  添加按钮  *********************/
 
@@ -402,7 +402,14 @@ function submitFormValidate(currentAction, successCallback, errorCallback) {
             toastError('表单验证失败!');
     });
 }
-;
+
+/**
+ * 判断是否当前页面存在综合查询表单
+ * @returns boolean类型值 - true: 存在，false: 不存在
+ */
+function isQueryFormAvailable() {
+	return document.getElementById('queryFormDomId') ? true : false;
+}
 
 /**
  * 格式化查询form的数据 加“\“ \”” 后台需要
