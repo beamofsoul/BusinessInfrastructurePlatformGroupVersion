@@ -1,4 +1,7 @@
 /* form 间距 */
-		    /* .ivu-form-item{margin-bottom: 10px;} */
-		    /* 折叠面板内 超出部分显示 */
-			.ivu-collapse-content{overflow:visible;}
+/* .ivu-form-item{margin-bottom: 10px;} */
+/* 折叠面板内 超出部分显示 */
+.ivu-collapse-content{overflow:visible;}
+
+.ivu-tree ul {list-style:none;margin:0;padding:0;font-size:14px}
+.ivu-tree-title-selected,.ivu-tree-title-selected:hover {color:#fff;background-color:#00a5ff}
