@@ -13,10 +13,15 @@
 	            </i-col>
 	            <i-col :span="spanRight">
 	            	<div th:replace="fragment/admin_header"></div>
-	            	<div th:replace="fragment/admin_breadcrumb"></div>
-	            	<div class="layout-content">
-						<div class="layout-content-main"></div>
-					</div>
+		            <Card>
+		            	<a href="#" slot="extra">
+		            		<Icon type="ios-loop-strong"></Icon>
+		            	</a>
+		            	<div th:replace="fragment/admin_breadcrumb"></div>
+		            	<div class="layout-content">
+							<div class="layout-content-main"></div>
+						</div>
+					</Card>
 					<div th:replace="fragment/admin_footer"></div>
 	            </i-col>
 	        </Row>

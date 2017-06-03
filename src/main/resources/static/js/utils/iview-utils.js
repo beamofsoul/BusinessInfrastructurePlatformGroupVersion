@@ -12,6 +12,7 @@ var vueContentDestroyed = function () {};
 
 var vueContentMethods = {};
 var vueContentData = function () {};
+var vueContentComputed = {};
 
 var vueContentElementSelector = '#contentContainer';
 
@@ -97,6 +98,7 @@ function initializeContentOptions() {
     el: vueContentElementSelector,
     data: vueContentData,
     methods: vueContentMethods,
+    computed: vueContentComputed,
     beforeCreate: vueContentBeforeCreate,
     created: vueContentCreated,
     beforeMount: vueContentBeforeMount,

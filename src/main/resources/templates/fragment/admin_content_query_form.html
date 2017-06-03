@@ -2,6 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<body>
 		<Collapse ref="vueQueryFormVisible" v-model="vueQueryFormVisible">
+<!-- 			queryFormDomId不可修改，在form-utils.js中被引用，用以判断当前页面是否存在综合查询表单 -->
 	        <Panel name="1">&nbsp; 综合查询 <p slot="content" id="queryFormDomId"></p></Panel>
 	    </Collapse>
 	</body>
