@@ -103,9 +103,8 @@ public class OrganizationController extends BaseAbstractController {
 	public JSONObject deleteNode(@RequestBody Map<String, Object> map) {
 		List<Integer> a = (List<Integer>)map.get("parentId");
 		List<Integer> b = (List<Integer>)map.get("childId");
-		
-		List<Long> parentIds = a.stream().map(e -> e.longValue()).collect(Collectors.toList());
-		List<Long> childrenIds = b.stream().map(e -> e.longValue()).collect(Collectors.toList());
+		List<Long> parentIds = a==null ? new ArrayList<Long>(0):a.stream().map(e -> e.longValue()).collect(Collectors.toList());
+		List<Long> childrenIds = b==null ? new ArrayList<Long>(0):b.stream().map(e -> e.longValue()).collect(Collectors.toList());
 		return newInstance("count",organizationService.deleteNodes(parentIds,childrenIds));
 	}
 	

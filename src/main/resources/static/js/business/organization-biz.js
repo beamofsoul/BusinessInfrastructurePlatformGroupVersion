@@ -59,7 +59,7 @@ vueContentBeforeCreate = function(){
 //loadTreeRootDataFunction = function() {return {id: 1}}
 loadTreeNodeUrl = 'organization/children';
 
-var checkedTreeNodesId;
+//var checkedTreeNodesId;
 var deleteNodesIdObject;
 //更新
 function doUpdateTreeButton() {
@@ -83,6 +83,7 @@ function submitUpdateTreeForm(){
 		getVueObject().vueUpdateModalVisible = false;
 		resetForm();
 		vueContentObject.parentDataSelect = getDataList('organization/getAllAvailableOrganizations','请选择上级部门');
+		handleNodeMovement(data);
 	});
 }
 
@@ -111,6 +112,7 @@ function doDeleteTreeButton(){
 function submitDeleteTreeForm(){
 	this.vueDeleteProgressVisible = true;
 	submitForm(currentAction, deleteNodesIdObject, function (data) {
+		console.log(getTreeCheckedNodesId());
 		if (data.count > 0) {
 			toastSuccess('删除成功');
 			getVueObject().vueDeleteProgressVisible = false;
@@ -120,6 +122,7 @@ function submitDeleteTreeForm(){
 		}
 		getVueObject().vueDeleteModalVisible = false;
 		vueContentObject.parentDataSelect = getDataList('organization/getAllAvailableOrganizations','请选择上级部门');
+		handleNodeMovement({ids: getTreeCheckedNodesId(), count: data.count});
 	}, function (errorMessage) {
 		toastError(errorMessage);
 		getVueObject().vueDeleteProgressVisible = false;
@@ -188,6 +191,69 @@ function submitUpAndDownRemove(isUp){
 		}
 	});	
 
+}
+
+function handleNodeMovement(data) {
+	
+	const treeDataStr = JSON.stringify(vueContentObject.treeData); //字符串类型树数据对象
+	const rootNode = vueContentObject.treeData[0]; //树数据对象根节点对象
+	const parent = data.parent; //存储移动后新父节点内容的对象
+	const parentId = parent == null ? null : parent.id; //存储移动后新父节点ID的对象
+	const isParentOnTree = treeDataStr.includes(`{"id":${parentId},`); //树数据对象中新父节点的位置
+	const isChildOnTree = treeDataStr.includes(`{"id":${data.id},`); //树数据对象中移动后节点的位置
+	let child = {}; //存储移动后节点内容的对象
+	
+	if (currentAction == actions.update) {
+		if (isChildOnTree) {
+			console.log('-------3--------');
+			//移动的子节点在当前树中，扫描并获取当前节点，并移至新父节点下
+			child = getChildFromNode(data.id, rootNode);
+			//判断是否当前新父节点在当前树中
+			if (isParentOnTree) {
+				//新父节点在当前树中，在新父节点下插入
+				setChildToNode(child,parentId,rootNode);
+			} else {
+				//新父节点不在当前树中，暂时不做任何操作
+			}
+		} else {
+			console.log('-------2--------');
+			//移动的子节点不在当前树中，判断是否新父节点在当前树中
+			if (isParentOnTree) {
+				parseChild(child, data, true);
+				child = parseNode(child);
+				//寻找新父节点并为其插入移动过来的子节点
+				setChildToNode(child,parentId,rootNode);
+			} else {
+				//新父节点不在当前树中，暂时不做任何操作
+			}
+		}
+	} else if (currentAction == actions.deleteNode && data.count > 0) {
+		console.log('111111111111')
+		console.log(data);
+		for(let r of data.ids) {
+//			console.log(r);
+//			console.log(data.ids[r]);
+			getChildFromNode(r, rootNode);
+//			getChildFromNode(data.ids[r], rootNode);
+		}
+	} else if (currentAction == actions.add) {
+		if (isParentOnTree) {
+			parseChild(child, data);
+			child = parseNode(child);
+			//寻找新父节点并为其插入移动过来的子节点
+			setChildToNode(child,parentId,rootNode);
+		} else {
+			//新父节点不在当前树中，暂时不做任何操作
+		}
+	}
+}
+
+function parseChild(child, data, checkChildren) {
+	child.id = data.id;
+	child.expand = false;
+	child.name = data.name;
+	child.available = data.available;
+	child.countOfChildren = checkChildren ? data.countOfChildren : 0;
 }
 
 //交换数组元素
