@@ -40,7 +40,7 @@ var initCopyForm;   //初始化复制页面表单业务数据的方法
 
 var showAddFormBefore;      //显示增加页面之前执行的自定义方法
 var showUpdateFormBefore;   //显示修改页面之前执行的自定义方法
-var showCopyFOrmBefore;     //显示复制页面之前执行的自定义方法
+var showCopyFormBefore;     //显示复制页面之前执行的自定义方法
 
 var beforeAdd;      //执行进入添加按钮单击事件方法首先需要执行的方法
 var beforeUpdate;   //执行进入修改按钮单击事件方法首先需要执行的方法
@@ -223,10 +223,9 @@ function rowCopyButton(index, tableDataName) {
  */
 initCopyForm = function (obj) {
     currentAction = actions.copy;
-    var copyForm = getVueObject().vueCopyForm;
-    copyPropertiesValue(copyForm, obj); //mapping 值映射
-    formatObject2String(copyForm);  //格式化返回json属性类型
-	if (showCopyFOrmBefore) showCopyFormBefore(getVueObject().vueCopyForm);
+    resetForm();
+    copyProperties(obj, getVueObject().vueCopyForm);
+    if (showCopyFormBefore) showCopyFormBefore(getVueObject().vueCopyForm);
     getVueObject().vueCopyModalVisible = true;
 };
 
@@ -235,11 +234,13 @@ initCopyForm = function (obj) {
  */
 function submitCopyForm() {
     this.vueCopyForm.id = -1;
+    var cachedCopyForm = Object.assign({}, this.vueCopyForm);
+    if(submitCopyBefore) submitCopyBefore(this.vueCopyForm);
     submitFormValidate(currentAction, function (data) {
         toastSuccess('提交成功!');
         getVueObject().vueCopyModalVisible = false;
         resetForm();
-		if(submitCopyAfter) submitCopyAfter();
+		if(submitCopyAfter) submitCopyAfter(cachedCopyForm);
     });
 }
 
