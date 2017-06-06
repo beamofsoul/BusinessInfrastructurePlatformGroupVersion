@@ -22,6 +22,7 @@ function initBreadcrumbContent(name) {
 	if (name.indexOf('department/') == 0) vueObject.breadcrumb = [{href: '#', content: '部门管理'}];
 	if (name.indexOf('login/') == 0) vueObject.breadcrumb = [{href: '#', content: '登录记录'}];
 	if (name.indexOf('sensitiveWord/') == 0) vueObject.breadcrumb = [{href: '#', content: '敏感词管理'}];
+	if (name.indexOf('development/') == 0) vueObject.breadcrumb = [{href: '#', content: '开发者模式'}];
 }
 
 function loadContent(name) {

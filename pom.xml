@@ -280,26 +280,20 @@
 		    <artifactId>snakeyaml</artifactId>
 		</dependency>
 		
-		<!-- CKEdit下CKFinder依赖的.jar包 -->
+		<!-- 手动编译Java文件并加载至内存工具类 -->
 		<dependency>
-		    <groupId>com.ckfinder</groupId>
-		    <artifactId>ckfinder</artifactId>
-		    <version>${ckfinder.version}</version>
+		    <groupId>org.mdkt.compiler</groupId>
+		    <artifactId>InMemoryJavaCompiler</artifactId>
+		    <version>1.2</version>
 		</dependency>
 		
-		<dependency>
-		    <groupId>net.coobird</groupId>
-		    <artifactId>thumbnailator</artifactId>
-		    <version>${thumbnailator.version}</version>
-		</dependency>
-		
-		<!-- 业务代码生成 
+		<!-- 业务代码生成 -->
 		<dependency>
 		    <groupId>com.beamofsoul.core</groupId>
 		    <artifactId>generator</artifactId>
-		    <version>1.0.4</version>
+		    <version>2.0.0</version>
 		</dependency>
-		-->
+		
 	</dependencies>
 
 	<build>

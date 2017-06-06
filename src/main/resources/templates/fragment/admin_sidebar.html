@@ -50,11 +50,11 @@
 			
 			<Menu-item sec:authorize="hasPermission('organization','organization:list')" th:name="@{organization/adminList}">
 				<Icon type="earth" :size="iconSize"></Icon>
-				<span class="layout-text">组织结构管理</span>
+				<span class="layout-text">组织机构管理</span>
 			</Menu-item>
 			
 			<Menu-item sec:authorize="hasPermission('department','department:list')" th:name="@{department/adminList}">
-				<Icon type="earth" :size="iconSize"></Icon>
+				<Icon type="android-apps" :size="iconSize"></Icon>
 				<span class="layout-text">部门管理</span>
 			</Menu-item>
 			
@@ -86,6 +86,41 @@
 			<Menu-item th:name="@{/logout}">
 				<Icon type="log-out" :size="iconSize"></Icon>
 				<span class="layout-text">注销</span>
+			</Menu-item>
+			
+			<br />
+			<br />
+			<br />
+			<br />
+			
+			<br />
+			<br />
+			<br />
+			<br />
+			
+			<br />
+			<br />
+			<br />
+			<br />
+			
+			<br />
+			<br />
+			<br />
+			<br />
+			
+			<br />
+			<br />
+			<br />
+			<br />
+			
+			<br />
+			<br />
+			<br />
+			<br />
+			
+			<Menu-item th:name="@{development/adminList}">
+				<Icon type="bug" :size="iconSize"></Icon>
+				<span class="layout-text">开发者模式</span>
 			</Menu-item>
 		</i-menu>
 	</body>
