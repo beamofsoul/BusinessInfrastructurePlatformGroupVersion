@@ -86,7 +86,11 @@ spring:
           starttls:
             enable: true
             required: true
-      
+#  redis:
+#    host: localhost
+#    password: 
+#    port: 6379
+    
 logging:
   config: classpath:logback.xml
   

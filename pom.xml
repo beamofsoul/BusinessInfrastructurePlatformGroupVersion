@@ -64,6 +64,25 @@
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-core</artifactId>
 		</dependency>
+		
+		<!-- 使用Redis为集群后HttpSession提供共享 -->
+<!-- 		<dependency> -->
+<!-- 			<groupId>org.springframework.session</groupId> -->
+<!-- 			<artifactId>spring-session</artifactId> -->
+<!--         </dependency> -->
+        
+<!--         <dependency> -->
+<!-- 			<groupId>org.springframework.boot</groupId> -->
+<!-- 			<artifactId>spring-boot-starter-redis</artifactId> -->
+<!--         </dependency> -->
+        
+        <!-- 指定Redis的客户端为lettuce
+        <dependency>
+			<groupId>biz.paluch.redis</groupId>
+			<artifactId>lettuce</artifactId>
+			<version>3.5.0.Final</version>
+        </dependency>
+         -->
 
 		<!-- Cache (Ehcache) -->
 		<dependency>
