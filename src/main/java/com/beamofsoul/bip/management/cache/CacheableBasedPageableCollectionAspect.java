@@ -34,12 +34,11 @@ import lombok.extern.slf4j.Slf4j;
  * 根据分页对象从缓存和数据库中获取需要的业务对象列表
  * 并同步缓存与数据库中这些数据的内容
  * @author MingshuJian
- * @param <K>
  */
 @Slf4j
 @Aspect
 @Component
-public class CacheableBasedPageableCollectionAspect<K> {
+public class CacheableBasedPageableCollectionAspect {
 	
 	@PersistenceContext
 	private EntityManager entityManager;
