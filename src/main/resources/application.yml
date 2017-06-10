@@ -114,7 +114,7 @@ project:
       photoPath: D://bip//userfiles//user-photo
   base:
     filter:
-      sensitive: true
+      sensitive: false
     repository:
       factory: com.beamofsoul.bip.management.repository.BaseMultielementRepositoryFactory
       batch:

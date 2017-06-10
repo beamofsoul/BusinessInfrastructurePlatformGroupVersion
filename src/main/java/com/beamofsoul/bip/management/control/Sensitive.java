@@ -12,7 +12,7 @@ import java.lang.annotation.Target;
  * @Date 2017年6月1日 下午2:34:15
  * @version 1.0.0
  */
-@Target(ElementType.PARAMETER)
+@Target({ElementType.PARAMETER, ElementType.FIELD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Sensitive {
 

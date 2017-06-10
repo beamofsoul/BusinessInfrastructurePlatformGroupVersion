@@ -5,7 +5,6 @@ import static com.beamofsoul.bip.management.util.ConfigurationReader.asBoolean;
 import static com.beamofsoul.bip.management.util.ConfigurationReader.getValue;
 
 import java.io.IOException;
-import java.util.Map;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -19,7 +18,6 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.beamofsoul.bip.entity.SensitiveWord;
 import com.beamofsoul.bip.management.util.HttpServletRequestUtils;
 import com.beamofsoul.bip.management.util.SensitiveWordsMapping;
 
@@ -52,17 +50,7 @@ public class SensitiveWordFilter implements Filter {
 		if (isOpen && httpServletRequest.getMethod().equalsIgnoreCase(RequestMethod.POST.name())) {
 			String requestBody = HttpServletRequestUtils.getRequestBody(httpServletRequest);
 			CustomHttpServletRequestWrapper requestWrapper = new CustomHttpServletRequestWrapper(httpServletRequest,requestBody);
-			if (StringUtils.isNotBlank(requestBody)) {
-				SensitiveWord sw = null;
-				for (Map.Entry<String, SensitiveWord> entry : SensitiveWordsMapping.SENSITIVEWORD_REPLACEMENT_MAP.entrySet()) {
-					sw = entry.getValue();
-					if (sw.getAvailable()) 
-						requestBody = sw.getRegular() ? 
-							requestBody.replaceAll(entry.getKey(), sw.getReplacement()) : 
-							requestBody.replace(entry.getKey(), sw.getReplacement());
-				}
-				requestWrapper.setRequestBody(requestBody);
-			}
+			if (StringUtils.isNotBlank(requestBody)) requestWrapper.setRequestBody(SensitiveWordsMapping.filter(requestBody));
 			chain.doFilter(requestWrapper, response);
 		} else {
 			chain.doFilter(request, response);
