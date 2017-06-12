@@ -5,6 +5,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.Arrays;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
@@ -29,6 +30,8 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 public class SensitiveAspect {
 	
+	final String FIELDS_SEPARATOR = ",";
+	
 	@Pointcut("@within(org.springframework.stereotype.Service) && !execution(* *.find*(..)) && !execution(* *.search*(..)) && !execution(* *.*Search*(..))")
 	public void locateAllServiceImplMethods() {}
 	
@@ -46,14 +49,18 @@ public class SensitiveAspect {
 		Parameter parameter = null; //某个Parameter对象
 		Object argument = null; //拦截的方法参数中某个参数对象
 		Field[] accessibleFields = null; //拦截的方法参数中某个参数对象类型下所有可用属性
+		Sensitive annotation = null; //拦截的目标对象上的具体注解对象，包括注解上的配置信息
+		String[] filteredFields = null; //如果拦截的目标方法上的具体注解对象配置了fields属性，则该数组装载fields解析后的标识需要过滤的属性名数组
 
 		/**
 		 * 1. 判断输入参数前是否有Sensitive注解
-		 * 1.1 判断输入参数类型上是否有Sensitive注解
-		 * 1.1.1 如果类型上面有注解，则过滤该类型下所有可识别的属性值(暂定只有String类型)
-		 * 1.1.2 如果类型上面没有注解，则判断是否该类型的某些属性上有Sensitive注解
-		 * 1.1.2.1 如果属性上面有，则过滤该属性值
-		 * 1.1.2.2 如果没有任何属相上有Sensitive属性，则过滤该类型下所有可识别的属性值 
+		 * 1.1 判断是否Sensitive注解上配置了fields用以直接标识想过滤的具体属性
+		 * 1.1.1 如果Sensitive注解上配置了合法的fields值，则解析后直接过滤目标对象对应的属性值
+		 * 1.1.2 如果Sensitive注解上没有配置fields属性值，则判断输入参数类型上是否有Sensitive注解
+		 * 1.1.2.1 如果类型上面有注解，则过滤该类型下所有可识别的属性值(暂定只有String类型)
+		 * 1.1.2.2 如果类型上面没有注解，则判断是否该类型的某些属性上有Sensitive注解
+		 * 1.1.2.2.1 如果属性上面有，则过滤该属性值
+		 * 1.1.2.2.2 如果没有任何属相上有Sensitive属性，则过滤该类型下所有可识别的属性值 
 		 */
 		try {
 			/**
@@ -71,19 +78,31 @@ public class SensitiveAspect {
 					 */
 					if (parameter.isAnnotationPresent(annotationClass) || isTargetMethodAnnotated) {
 						accessibleFields = ReflectUtil.getAccessibleFields(parameter.getType());
-						if (parameter.getType().isAnnotationPresent(annotationClass) || (countFieldsAnnotatedBy(annotationClass, accessibleFields) == 0)) {
-							/**
-							 * 被注解的输入参数类型上有Sensitive注解 或者 被注解的输入参数类型上没有Sensitive注解但是其下所有属性值上也都没有Sensitive注解，则过滤所有能够过滤的属性
-							 */
+						annotation = parameter.getAnnotation(annotationClass);
+						filteredFields = annotation.fields().split(FIELDS_SEPARATOR);
+						
+						/**
+						 * 判断是否Sensitive注解上配置了fields用以直接标识想过滤的具体属性
+						 */
+						if (filteredFields.length > 0) {
 							for (Field field : accessibleFields)
-								filterFieldValue(argument, field);
-						} else {
-							/**
-							 * 被注解的输入参数类型上没有Sensitive注解，则过滤所有在属性上有Sensitive注解的属性值
-							 */
-							for (Field field : accessibleFields)
-								if (field.isAnnotationPresent(annotationClass))
+								if (ArrayUtils.contains(filteredFields, field.getName()))
 									filterFieldValue(argument, field);
+						} else {
+							if (parameter.getType().isAnnotationPresent(annotationClass) || (countFieldsAnnotatedBy(annotationClass, accessibleFields) == 0)) {
+								/**
+								 * 被注解的输入参数类型上有Sensitive注解 或者 被注解的输入参数类型上没有Sensitive注解但是其下所有属性值上也都没有Sensitive注解，则过滤所有能够过滤的属性
+								 */
+								for (Field field : accessibleFields)
+									filterFieldValue(argument, field);
+							} else {
+								/**
+								 * 被注解的输入参数类型上没有Sensitive注解，则过滤所有在属性上有Sensitive注解的属性值
+								 */
+								for (Field field : accessibleFields)
+									if (field.isAnnotationPresent(annotationClass))
+										filterFieldValue(argument, field);
+							}
 						}
 					}
 				}
