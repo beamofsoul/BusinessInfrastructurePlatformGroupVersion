@@ -134,6 +134,7 @@ var getChildFromNode = (id, node) => {
 	}
 }
 
+
 /**
  * 根据输入的节点id在某一个节点下获取节点对象
  * @param id 要查找的节点id
@@ -142,13 +143,15 @@ var getChildFromNode = (id, node) => {
  */
 var getChildFromNodeNotDelete = (id, node) => {
 	let target = null;
-	let inCurrentNode = false;
 	const children = node.children;
 	for (let r in children) {
 		let child = children[r];
 		if (child.id == id) target = child;
-		else target = getChildFromNode(id, child);
-		return target;
+		else target = getChildFromNodeNotDelete(id, child);
+		
+		if (target != null) {
+			return target;
+		}
 	}
 }
 

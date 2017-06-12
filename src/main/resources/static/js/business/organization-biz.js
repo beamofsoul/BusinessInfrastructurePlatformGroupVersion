@@ -61,6 +61,24 @@ loadTreeNodeUrl = 'organization/children';
 
 //var checkedTreeNodesId;
 var deleteNodesIdObject;
+var updateNodeParent;//更新时判断 是否修改过上级机构
+
+
+//新增
+function doAddTreeButton() {
+    currentAction = actions.add;
+    resetForm();
+    getVueObject().vueAddModalVisible = true;
+}
+function submitAddTreeForm(){
+	submitFormValidate(currentAction, function (data) {
+		toastSuccess('提交成功!');
+	    getVueObject().vueAddModalVisible = false;
+	    resetForm();
+	    handleNodeMovement(data.created);
+	});
+}
+
 //更新
 function doUpdateTreeButton() {
 	if (!selectedNodeObject ||selectedNodeObject.id == -1) {
@@ -68,22 +86,22 @@ function doUpdateTreeButton() {
 		return;
 	}
 	getSingleData(selectedNodeObject.id, updateBefore, function(data) {
-		
-//		console.log('--------');
-//		console.log(data);
 		currentAction = actions.update;
 		resetForm();
 		copyProperties(data, getVueObject().vueUpdateForm);
 		getVueObject().vueUpdateModalVisible = true;
+		updateNodeParent = data.parent;//保存未修改前上级机构值
 	});
 }
 function submitUpdateTreeForm(){
+	
+	//? ?????? 更新sort 问题未解决
 	submitFormValidate(currentAction, function (data) {
 		toastSuccess('更新成功!');
 		getVueObject().vueUpdateModalVisible = false;
 		resetForm();
 		vueContentObject.parentDataSelect = getDataList('organization/getAllAvailableOrganizations','请选择上级部门');
-		handleNodeMovement(data);
+		handleNodeMovement(data.updated);
 	});
 }
 
@@ -110,9 +128,8 @@ function doDeleteTreeButton(){
 	
 }
 function submitDeleteTreeForm(){
-	this.vueDeleteProgressVisible = true;
+	getVueObject().vueDeleteProgressVisible = true;
 	submitForm(currentAction, deleteNodesIdObject, function (data) {
-		console.log(getTreeCheckedNodesId());
 		if (data.count > 0) {
 			toastSuccess('删除成功');
 			getVueObject().vueDeleteProgressVisible = false;
@@ -205,18 +222,25 @@ function handleNodeMovement(data) {
 	
 	if (currentAction == actions.update) {
 		if (isChildOnTree) {
-			console.log('-------3--------');
-			//移动的子节点在当前树中，扫描并获取当前节点，并移至新父节点下
-			child = getChildFromNode(data.id, rootNode);
-			//判断是否当前新父节点在当前树中
-			if (isParentOnTree) {
-				//新父节点在当前树中，在新父节点下插入
-				setChildToNode(child,parentId,rootNode);
-			} else {
-				//新父节点不在当前树中，暂时不做任何操作
+			// 判断是否修改了 上级机构 ，如果未修改 位置不动 更新信息。 如果修改了 上级机构 删除节点 重新添加节点。
+			if(updateNodeParent == data.parent){
+				let childrenArray = getChildFromNodeNotDelete(data.id, rootNode);
+				childrenArray.title = data.name;
+			}else{
+				//移动的子节点在当前树中，扫描并获取当前节点，并移至新父节点下
+				let unUsedChild = getChildFromNode(data.id, rootNode);//为了删除节点
+				//判断是否当前新父节点在当前树中
+				if (isParentOnTree) {
+					parseChild(child, data);
+					child = parseNode(child);
+					//新父节点在当前树中，在新父节点下插入
+					setChildToNode(child,parentId,rootNode);
+				} else {
+					//新父节点不在当前树中，暂时不做任何操作
+				}
 			}
+			
 		} else {
-			console.log('-------2--------');
 			//移动的子节点不在当前树中，判断是否新父节点在当前树中
 			if (isParentOnTree) {
 				parseChild(child, data, true);
@@ -228,13 +252,8 @@ function handleNodeMovement(data) {
 			}
 		}
 	} else if (currentAction == actions.deleteNode && data.count > 0) {
-		console.log('111111111111')
-		console.log(data);
 		for(let r of data.ids) {
-//			console.log(r);
-//			console.log(data.ids[r]);
 			getChildFromNode(r, rootNode);
-//			getChildFromNode(data.ids[r], rootNode);
 		}
 	} else if (currentAction == actions.add) {
 		if (isParentOnTree) {
