@@ -8,7 +8,6 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodReturnValueHandler;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
-import com.alibaba.druid.support.json.JSONParser;
 import com.alibaba.fastjson.JSONObject;
 
 /**
@@ -58,7 +57,7 @@ public class CustomJSONReturnHandler implements HandlerMethodReturnValueHandler 
 		JSONObject returnJSON = (JSONObject) returnValue;
 		JSONObject parsedReturnValue = new JSONObject();
 		for (String key : returnJSON.keySet()) {
-			parsedReturnValue.put(key, new JSONParser(serializer.toJSON(returnJSON.get(key))).parse());
+			parsedReturnValue.put(key, JSONObject.parse(serializer.toJSON(returnJSON.get(key))));
 		}
 		returnValue = serializer.toJSON(parsedReturnValue);
 		//当前控制器处理过后，交由RequestResponseBodyMethodProcessor进行最终处理

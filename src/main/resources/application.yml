@@ -7,49 +7,18 @@ server:
       max-age: 3600
   tomcat.max-threads: 0
   tomcat.uri-encoding: UTF-8
-  
-# spring.datasource.* 此部分属性由DruidConfiguration文件读取并配置，所有结构与命名都已与该类紧密捆绑
+
 spring:
   datasource:
-    type: com.alibaba.druid.pool.DruidDataSource
     url: jdbc:mysql://localhost:3306/bip?characterEncoding=utf-8&useSSL=true
     username: root
     password:
-    driverClassName: com.mysql.jdbc.Driver
-    # 初始化大小，最小，最大
-    initialSize: 5
-    minIdle: 5
-    maxActive: 20
-    # 配置获取连接等待超时的时间
-    maxWait: 60000
-    # 连接超过时间限制是否回收
-    removeAbandoned: false
-    # 超时时间，单位为秒
-    removeAbandonedTimeout: 300
-    # 关闭abanded连接时输出错误日志
-    logAbandoned: true    
-    # 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒
-    timeBetweenEvictionRunsMillis: 60000
-    # 配置一个连接在池中最小生存的时间，单位是毫秒
-    minEvictableIdleTimeMillis: 300000
-    # 用来检测连接是否有效的sql，要求是一个查询语句。如果validationQuery为null，testOnBorrow、testOnReturn、testWhileIdle都不会其作用
-    validationQuery: SELECT 1
-    # 申请连接的时候检测，如果空闲时间大于timeBetweenEvictionRunsMillis，执行validationQuery检测连接是否有效
-    # 建议配置为true，不影响性能，并且保证安全性
-    testWhileIdle: true
-    # 申请连接时执行validationQuery检测连接是否有效，做了这个配置会降低性能
-    testOnBorrow: true
-    # 归还连接时执行validationQuery检测连接是否有效，做了这个配置会降低性能
-    testOnReturn: false
-    # 打开PSCache，并且指定每个连接上PSCache的大小
-    poolPreparedStatements: true
-    maxPoolPreparedStatementPerConnectionSize: 20
-    # 配置监控统计拦截的filters，'stat'去掉后监控界面sql无法统计，'wall'用于防火墙(包括防注入功能，where 1=1会抛异常)，'slf4j'用于打印druid数据源与连接池相关sql
-    filters: stat
-    # 通过connectProperties属性来打开mergeSql功能；慢SQL记录
-    connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
-    # 合并多个DruidDataSource的监控数据
-    useGlobalDataSourceStat: true
+    hikari:
+      max-lifetime: 1765000 #一个连接的生命时长（毫秒），超时而且没被使用则被释放（retired），缺省:30分钟，建议设置比数据库超时时长少30秒，参考MySQL wait_timeout参数（show variables like '%timeout%';）
+      maximum-pool-size: 15 #连接池中允许的最大连接数。缺省值：10；推荐的公式：((core_count * 2) + effective_spindle_count)
+      minimum-idle: 5 #连接池中允许的最小闲置连接数
+      connection-timeout: 60000 # 等待连接池分配连接的最大时长（毫秒），超过这个时长还没可用的连接则发生SQLException， 缺省:30秒
+      idle-timeout: 600000 #一个连接idle状态的最大时长（毫秒），超时则被释放（retired），缺省:10分钟
   jpa:
     show-sql: false
     hibernate:
@@ -66,9 +35,6 @@ spring:
     content-type: text/html; charset=utf-8
     cache: false
   mvc:
-#    view:
-#      prefix: /WEB-INF/views/
-#      suffix: .jsp
     static-path-pattern: /static/**
   cache:
     cache-names: es
@@ -98,18 +64,12 @@ logging:
 project:
   component:
     qrcode:
-      # 二维码宽度，如果不设置，默认400
-      width: 200
-      # 二维码高度，如果不设置，默认400
-      height: 200
-      # 边框宽度，数字越大，边框越大
-      margin: 0
-      # 生成的二维码格式
-      suffix: .png
-      # 默认附带图片相对路径
-      defaultImage: /static/image/logo_qrcode.png
-      # 反转白色与黑色
-      reversalColor: false
+      width: 200 # 二维码宽度，如果不设置，默认400
+      height: 200 # 二维码高度，如果不设置，默认400
+      margin: 0 # 边框宽度，数字越大，边框越大
+      suffix: .png # 生成的二维码格式
+      defaultImage: /static/image/logo_qrcode.png # 默认附带图片相对路径
+      reversalColor: false # 反转白色与黑色
   business:
     user:
       photoPath: D://bip//userfiles//user-photo

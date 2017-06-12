@@ -20,7 +20,6 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.8</java.version>
 		
-		<druid.version>1.0.31</druid.version>
 		<fastjson.version>1.2.33</fastjson.version>
 		<commons-lang3.version>3.5</commons-lang3.version>
 		<jodd.version>3.3.2</jodd.version>
@@ -139,9 +138,8 @@
 
 		<!-- Database Connection Pool -->
 		<dependency>
-			<groupId>com.alibaba</groupId>
-			<artifactId>druid</artifactId>
-			<version>${druid.version}</version>
+			<groupId>com.zaxxer</groupId>
+			<artifactId>HikariCP</artifactId>
 		</dependency>
 
 		<!-- Monitoring Production Environment -->
