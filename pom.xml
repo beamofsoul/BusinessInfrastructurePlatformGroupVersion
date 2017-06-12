@@ -11,7 +11,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>1.4.1.RELEASE</version>
+		<version>1.5.4.RELEASE</version>
 		<relativePath />
 	</parent>
 
@@ -20,9 +20,9 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.8</java.version>
 		
-		<druid.version>1.0.28</druid.version>
-		<fastjson.version>1.2.15</fastjson.version>
-		<commons-lang3.version>3.0</commons-lang3.version>
+		<druid.version>1.0.31</druid.version>
+		<fastjson.version>1.2.33</fastjson.version>
+		<commons-lang3.version>3.5</commons-lang3.version>
 		<jodd.version>3.3.2</jodd.version>
 		<zxing.version>3.3.0</zxing.version>
 		<InMemoryJavaCompiler.version>1.2</InMemoryJavaCompiler.version>
@@ -73,7 +73,7 @@
         
 <!--         <dependency> -->
 <!-- 			<groupId>org.springframework.boot</groupId> -->
-<!-- 			<artifactId>spring-boot-starter-redis</artifactId> -->
+<!-- 			<artifactId>spring-boot-starter-data-redis</artifactId> -->
 <!--         </dependency> -->
         
         <!-- 指定Redis的客户端为lettuce

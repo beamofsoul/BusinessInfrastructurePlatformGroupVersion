@@ -51,7 +51,6 @@ spring:
     # 合并多个DruidDataSource的监控数据
     useGlobalDataSourceStat: true
   jpa:
-    database: MYSQL
     show-sql: false
     hibernate:
       ddl-auto: update
@@ -86,6 +85,8 @@ spring:
           starttls:
             enable: true
             required: true
+#  session: #since spring boot 1.5.x
+#    store-type: redis
 #  redis:
 #    host: localhost
 #    password: 
