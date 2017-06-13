@@ -21,6 +21,7 @@ public class JSONUtils {
 	 */
 	public static final String PAGEABLE_JSON_OBJECT_NAME = "pageableData";
 	public static final String DELIMITER = ":";
+	public static final String ESCAPE_CHARACTER = "\\\"";
 	
 	/**
 	 * @Title: formatAndParseObject
@@ -31,7 +32,7 @@ public class JSONUtils {
 	 * @return JSONObject 格式化和解析后生成的JSON对象  
 	 */
 	public static JSONObject formatAndParseObject(String jsonStr, String replaceFrom, Feature... features) {
-		jsonStr = jsonStr.replace(replaceFrom, DELIMITER);
+		jsonStr = jsonStr.replace(replaceFrom, DELIMITER).replace(ESCAPE_CHARACTER, "");
 		return JSONObject.parseObject(jsonStr, features);
 	}
 	
