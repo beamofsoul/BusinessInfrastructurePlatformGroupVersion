@@ -45,16 +45,8 @@ public class OrganizationServiceImpl extends BaseAbstractServiceImpl implements 
 	@Override
 	public Organization create(Organization organization) {
 		Integer maxSort = (organization.getParent() == null||organization.getParent().getId()==null) ? null:organizationRepository.findOrganizationMaxSort(organization.getParent().getId());
-//		Integer maxSort = organization.getParentId() == null? null:organizationRepository.findOrganizationMaxSort(organization.getParentId());
 		if (maxSort != null) organization.setSort(maxSort+1);
 		else organization.setSort(1);
-		
-//		Organization o = organizationRepository.findOrganizationMaxSort(organization.getParentId());
-//		if (o ==null || o.getSort() == null)  organization.setSort(1); 
-//		else organization.setSort(o.getSort()+1);
-//		
-////		System.out.println(o.getSort());
-//		System.out.println(organization.getSort());
 		
 		return organizationRepository.save(organization);
 	}
@@ -63,8 +55,14 @@ public class OrganizationServiceImpl extends BaseAbstractServiceImpl implements 
 	@CachePut(key="#organization.id")
 	@Override
 	public Organization update(Organization organization) {
+		Integer maxSort = (organization.getParent() == null||organization.getParent().getId()==null) ? null:organizationRepository.findOrganizationMaxSort(organization.getParent().getId());
+		
 		Organization originalOrganization = organizationRepository.findOne(organization.getId());
 		BeanUtils.copyProperties(organization, originalOrganization);
+		
+		if (maxSort != null) originalOrganization.setSort(maxSort+1);
+		else originalOrganization.setSort(1);
+		
 		return organizationRepository.save(originalOrganization);
 	}
 	
@@ -83,7 +81,6 @@ public class OrganizationServiceImpl extends BaseAbstractServiceImpl implements 
 	public List<Organization> changeSort(Long beforeId,Long afterId) {
 		Organization beforeOrganization = organizationRepository.findOne(beforeId);
 		Organization afterOrganization = organizationRepository.findOne(afterId);
-//		BeanUtils.copyProperties(organization, originalOrganization);
 		Integer beforeSort = beforeOrganization.getSort();
 		Integer afterSort = afterOrganization.getSort();
 		beforeOrganization.setSort(afterSort);
