@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSONObject;
 import com.beamofsoul.bip.entity.Permission;
+import com.beamofsoul.bip.management.mvc.Attribute;
 import com.beamofsoul.bip.management.mvc.ConditionAttribute;
 import com.beamofsoul.bip.management.mvc.IdAttribute;
 import com.beamofsoul.bip.management.mvc.PageableAttribute;
@@ -91,8 +92,7 @@ public class PermissionController extends BaseAbstractController {
 	
 	@RequestMapping(value = "/checkPermissionNameUnique", method = RequestMethod.POST)
 	@ResponseBody
-	public JSONObject checkPermissionNameUnique(@RequestBody Map<String, Object> map, @IdAttribute Long id) {
-		String permissionName = map.get("data").toString();
+	public JSONObject checkPermissionNameUnique(@RequestBody Map<String, Object> map, @IdAttribute Long id, @Attribute("data") String permissionName) {
 		return newInstance("isUnique", permissionService.checkPermissionNameUnique(permissionName, id));
 	}
 	
