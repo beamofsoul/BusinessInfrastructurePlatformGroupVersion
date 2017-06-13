@@ -1,6 +1,5 @@
 package com.beamofsoul.bip.controller;
 
-import static com.beamofsoul.bip.management.util.JSONUtils.formatAndParseObject;
 import static com.beamofsoul.bip.management.util.JSONUtils.newInstance;
 
 import java.util.Map;
@@ -18,10 +17,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSONObject;
 import com.beamofsoul.bip.entity.Permission;
-import com.beamofsoul.bip.management.control.JSON;
+import com.beamofsoul.bip.management.mvc.ConditionAttribute;
+import com.beamofsoul.bip.management.mvc.IdAttribute;
+import com.beamofsoul.bip.management.mvc.PageableAttribute;
 import com.beamofsoul.bip.management.security.CustomPermissionEvaluator;
 import com.beamofsoul.bip.management.util.CommonConvertUtils;
-import com.beamofsoul.bip.management.util.PageUtils;
 import com.beamofsoul.bip.service.PermissionService;
 
 @Controller
@@ -56,34 +56,28 @@ public class PermissionController extends BaseAbstractController {
 	@PreAuthorize("authenticated and hasPermission('permission','permission:list')")
 	@RequestMapping(value = "permissionsByPage", method = RequestMethod.POST, produces = PRODUCES_APPLICATION_JSON)
 	@ResponseBody
-	public JSONObject getPageableData(@RequestBody Map<String, Object> map) {
-		Object condition = map.get("condition");
-		Pageable pageable = PageUtils.parsePageable(map);
-		return newInstance(permissionService.findAll(pageable, 
-				condition == null ? null : 
-					permissionService.onSearch(formatAndParseObject(condition.toString()))));
+	public JSONObject getPageableData(@RequestBody Map<String, Object> map,
+			@PageableAttribute Pageable pageable, @ConditionAttribute Object condition) {
+		return newInstance(permissionService.findAll(pageable, permissionService.onSearch((JSONObject) condition)));
 	}
 	
 	@PreAuthorize("authenticated and hasPermission('permission','permission:list')")
 	@RequestMapping(value = "children", method = RequestMethod.POST, produces = PRODUCES_APPLICATION_JSON)
 	@ResponseBody
-	public JSONObject getChildrenData(@RequestBody Map<String, Object> map) {
-		Object condition = map.get("condition");
-		return newInstance("children",permissionService.findRelationalAll(condition == null ? null : 
-					permissionService.onRelationalSearch(formatAndParseObject(condition.toString()))));
+	public JSONObject getChildrenData(@RequestBody Map<String, Object> map, @ConditionAttribute Object condition) {
+		return newInstance("children",permissionService.findRelationalAll(permissionService.onRelationalSearch((JSONObject) condition)));
 	}
 	
 	@RequestMapping(value = "allAvailable", method = RequestMethod.GET, produces = PRODUCES_APPLICATION_JSON)
 	@ResponseBody
-	@JSON(type=Permission.class, include="id,name,group")
 	public JSONObject getAllAvailableData() {
 		return newInstance("all",permissionService.findAllAvailableData());
 	}
 	
 	@RequestMapping(value = "single", method = RequestMethod.POST, produces = PRODUCES_APPLICATION_JSON)
 	@ResponseBody
-	public JSONObject getSingleJSONObject(@RequestBody Map<String, Object> map) {
-		return newInstance("obj",permissionService.findById(Long.valueOf(map.get("id").toString())));
+	public JSONObject getSingleJSONObject(@RequestBody Map<String, Object> map, @IdAttribute Long id) {
+		return newInstance("obj",permissionService.findById(id));
 	}
 	
 	@PreAuthorize("authenticated and hasPermission('permission','permission:update')")
@@ -103,10 +97,9 @@ public class PermissionController extends BaseAbstractController {
 	
 	@RequestMapping(value = "/checkPermissionNameUnique", method = RequestMethod.POST)
 	@ResponseBody
-	public JSONObject checkPermissionNameUnique(@RequestBody Map<String, Object> map) {
+	public JSONObject checkPermissionNameUnique(@RequestBody Map<String, Object> map, @IdAttribute Long id) {
 		String permissionName = map.get("data").toString();
-		Long permissionId = map.containsKey("id") ? Long.valueOf(map.get("id").toString()) : null;
-		return newInstance("isUnique", permissionService.checkPermissionNameUnique(permissionName, permissionId));
+		return newInstance("isUnique", permissionService.checkPermissionNameUnique(permissionName, id));
 	}
 	
 	@RequestMapping(value = "/isUsedPermissions", method = RequestMethod.POST)
