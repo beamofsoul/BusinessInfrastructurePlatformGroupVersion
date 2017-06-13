@@ -214,10 +214,12 @@ function hasNotCheckedChildInParent(){
 	let checkedParentNodesIdArray = [];
 	let checkedChildNodesIdArray = [];
 	if(checkedNodesObject)  checkedNodesObject.map(oneCheckedNode => {
-		if(oneCheckedNode.children){
-			checkedParentNodesIdArray.push(oneCheckedNode.id);
-		}else{
-			checkedChildNodesIdArray.push(oneCheckedNode.id);
+		if(oneCheckedNode.id){
+			if(oneCheckedNode.children){
+				checkedParentNodesIdArray.push(oneCheckedNode.id);
+			}else{
+				checkedChildNodesIdArray.push(oneCheckedNode.id);
+			}
 		}
 	});
 	return {parentId:checkedParentNodesIdArray,childId:checkedChildNodesIdArray};

@@ -75,6 +75,7 @@ function submitAddTreeForm(){
 		toastSuccess('提交成功!');
 	    getVueObject().vueAddModalVisible = false;
 	    resetForm();
+	    vueContentObject.parentDataSelect = getDataList('organization/getAllAvailableOrganizations','请选择上级部门');
 	    handleNodeMovement(data.created);
 	});
 }
@@ -113,7 +114,6 @@ function doDeleteTreeButton(){
 	}
 	//判断勾选的是否有 父节点 ，如果有，则询问用户是否删除此父节点下 包含未选择的子节点 是否删除
 	deleteNodesIdObject = hasNotCheckedChildInParent();
-	
 	if(deleteNodesIdObject.parentId.length>0){
 		//存在勾选父节点
 		getVueObject().vueDeleteMessage = "勾选的机构存在父机构，将删除此父机构下所有子机构。是否继续删除?";
