@@ -7,7 +7,6 @@ import java.util.Map;
 import javax.annotation.Resource;
 
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,6 +19,7 @@ import com.beamofsoul.bip.entity.Permission;
 import com.beamofsoul.bip.management.mvc.ConditionAttribute;
 import com.beamofsoul.bip.management.mvc.IdAttribute;
 import com.beamofsoul.bip.management.mvc.PageableAttribute;
+import com.beamofsoul.bip.management.security.Authorize;
 import com.beamofsoul.bip.management.security.CustomPermissionEvaluator;
 import com.beamofsoul.bip.management.util.CommonConvertUtils;
 import com.beamofsoul.bip.service.PermissionService;
@@ -34,34 +34,28 @@ public class PermissionController extends BaseAbstractController {
 	@Resource
 	private CustomPermissionEvaluator customPermissionEvaluator;
 	
-	@PreAuthorize("authenticated and hasPermission('permission','permission:list')")
+	@Authorize("permission:list")
 	@RequestMapping(value = "/adminList")
 	public String adminList() {
 		return "/permission/admin_permission_list";
 	}
 	
-	@PreAuthorize("authenticated and hasPermission('permission','permission:add')")
-	@RequestMapping(value = "/add")
-	public String add() {
-		return "/role/admin_permission_add";
-	}
-	
-	@PreAuthorize("authenticated and hasPermission('permission','permission:add')")
+	@Authorize("permission:add")
 	@RequestMapping(value = "/singleAdd", method = RequestMethod.POST)
 	@ResponseBody
 	public JSONObject addSingle(@RequestBody Permission permission) {
 		return newInstance("created",permissionService.create(permission));
 	}
 	
-	@PreAuthorize("authenticated and hasPermission('permission','permission:list')")
+	@Authorize("permission:list")
 	@RequestMapping(value = "permissionsByPage", method = RequestMethod.POST, produces = PRODUCES_APPLICATION_JSON)
 	@ResponseBody
 	public JSONObject getPageableData(@RequestBody Map<String, Object> map,
 			@PageableAttribute Pageable pageable, @ConditionAttribute Object condition) {
 		return newInstance(permissionService.findAll(pageable, permissionService.onSearch((JSONObject) condition)));
 	}
-	
-	@PreAuthorize("authenticated and hasPermission('permission','permission:list')")
+
+	@Authorize("permission:list")
 	@RequestMapping(value = "children", method = RequestMethod.POST, produces = PRODUCES_APPLICATION_JSON)
 	@ResponseBody
 	public JSONObject getChildrenData(@RequestBody Map<String, Object> map, @ConditionAttribute Object condition) {
@@ -80,14 +74,14 @@ public class PermissionController extends BaseAbstractController {
 		return newInstance("obj",permissionService.findById(id));
 	}
 	
-	@PreAuthorize("authenticated and hasPermission('permission','permission:update')")
+	@Authorize("permission:update")
 	@RequestMapping(value = "singleUpdate", method = RequestMethod.POST)
 	@ResponseBody
 	public JSONObject updateSingle(@RequestBody Permission permission) {
 		return newInstance("updated",permissionService.update(permission));
 	}
 	
-	@PreAuthorize("authenticated and hasPermission('permission','permission:delete')")
+	@Authorize("permission:delete")
 	@RequestMapping(value = "/delete", method = RequestMethod.DELETE)
 	@ResponseBody
 	public JSONObject delete(@RequestBody String ids) {
