@@ -25,14 +25,23 @@ public final class SensitiveWordsMapping {
 	}
 	
 	public static String filter(String words) {
+		return filter(words, null);
+	}
+	
+	public static String filter(String words, final String replacement) {
+		boolean clear = replacement != null;
 		SensitiveWord sw = null;
 		for (Map.Entry<String, SensitiveWord> entry : SENSITIVEWORD_REPLACEMENT_MAP.entrySet()) {
 			sw = entry.getValue();
 			if (sw.getAvailable())
 				words = sw.getRegular() ? 
-						words.replaceAll(entry.getKey(), sw.getReplacement()) : 
-							words.replace(entry.getKey(), sw.getReplacement());
+						words.replaceAll(entry.getKey(), clear ? replacement : sw.getReplacement()) : 
+							words.replace(entry.getKey(), clear ? replacement : sw.getReplacement());
 		}
 		return words;
+	}
+	
+	public static String clear(String words) {
+		return filter(words, "");
 	}
 }

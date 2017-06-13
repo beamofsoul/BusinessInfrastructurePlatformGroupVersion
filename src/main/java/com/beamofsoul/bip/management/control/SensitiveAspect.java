@@ -51,6 +51,7 @@ public class SensitiveAspect {
 		Field[] accessibleFields = null; //拦截的方法参数中某个参数对象类型下所有可用属性
 		Sensitive annotation = null; //拦截的目标对象上的具体注解对象，包括注解上的配置信息
 		String[] filteredFields = null; //如果拦截的目标方法上的具体注解对象配置了fields属性，则该数组装载fields解析后的标识需要过滤的属性名数组
+		boolean clear = false; //如果拦截的目标方法上的具体注解对象配置了clear属性，且值为true，则当过滤特定属性时，不采用替换方式，而采用擦除方式进行过滤
 
 		/**
 		 * 1. 判断输入参数前是否有Sensitive注解
@@ -80,6 +81,7 @@ public class SensitiveAspect {
 						accessibleFields = ReflectUtil.getAccessibleFields(parameter.getType());
 						annotation = parameter.getAnnotation(annotationClass);
 						filteredFields = annotation.fields().split(FIELDS_SEPARATOR);
+						clear = annotation.clear();
 						
 						/**
 						 * 判断是否Sensitive注解上配置了fields用以直接标识想过滤的具体属性
@@ -87,21 +89,21 @@ public class SensitiveAspect {
 						if (filteredFields.length > 0) {
 							for (Field field : accessibleFields)
 								if (ArrayUtils.contains(filteredFields, field.getName()))
-									filterFieldValue(argument, field);
+									filterFieldValue(argument, field, clear);
 						} else {
 							if (parameter.getType().isAnnotationPresent(annotationClass) || (countFieldsAnnotatedBy(annotationClass, accessibleFields) == 0)) {
 								/**
 								 * 被注解的输入参数类型上有Sensitive注解 或者 被注解的输入参数类型上没有Sensitive注解但是其下所有属性值上也都没有Sensitive注解，则过滤所有能够过滤的属性
 								 */
 								for (Field field : accessibleFields)
-									filterFieldValue(argument, field);
+									filterFieldValue(argument, field, clear);
 							} else {
 								/**
 								 * 被注解的输入参数类型上没有Sensitive注解，则过滤所有在属性上有Sensitive注解的属性值
 								 */
 								for (Field field : accessibleFields)
 									if (field.isAnnotationPresent(annotationClass))
-										filterFieldValue(argument, field);
+										filterFieldValue(argument, field, clear);
 							}
 						}
 					}
@@ -120,10 +122,10 @@ public class SensitiveAspect {
 		return Arrays.asList(accessibleFields).stream().filter(e -> e.isAnnotationPresent(annotationClass)).count();
 	}
 
-	private void filterFieldValue(Object argument, Field field) throws IllegalAccessException {
+	private void filterFieldValue(Object argument, Field field, boolean clear) throws IllegalAccessException {
 		field.setAccessible(true);
 		Object value = field.get(argument);
 		if (value instanceof String)
-			field.set(argument, SensitiveWordsMapping.filter(value.toString()));
+			field.set(argument, clear ? SensitiveWordsMapping.clear(value.toString()) : SensitiveWordsMapping.filter(value.toString()));
 	}
 }

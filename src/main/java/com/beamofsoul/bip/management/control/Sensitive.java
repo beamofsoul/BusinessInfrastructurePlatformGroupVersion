@@ -17,4 +17,5 @@ import java.lang.annotation.Target;
 public @interface Sensitive {
 
 	String fields() default "";
+	boolean clear() default false;
 }
