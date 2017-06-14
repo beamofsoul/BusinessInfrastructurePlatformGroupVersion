@@ -2,8 +2,8 @@ package com.beamofsoul.bip.management.cache;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -98,15 +98,19 @@ public class CacheableBasedPageableCollectionAspect {
 					reps.findPageableIds((Pageable) pageableParam, 
 					predicateParam == null ? null : (Predicate) predicateParam);
 			List<Long> ids = queryResults.getResults();
-			List<Long> sortedIds = ids.stream().map(e -> e.longValue()).collect(Collectors.toList());
+			List<Long> sortedIds = new ArrayList<Long>(ids.size());
+			for (Long id : ids)
+				sortedIds.add(id);
 			
 			//根据主键id列表去相应的缓存中查询是否有相应的缓存记录
 			//将id在缓存中有的对象存入返回结果集，将id在缓存中不存在的对象id存入一个列表中
-			List<Long> cachedIds = null;
-			for (String cacheName : cacheNames) {
-				cache = CacheUtils.getCache(cacheName);
+			List<Long> cachedIds = new ArrayList<Long>(ids.size());
+			for (String name : cacheNames) {
+				cache = CacheUtils.getCache(name);
 				if (cache != null) {
-					cachedIds = ids.stream().filter(e -> (cache.get(e, entityClass) != null)).collect(Collectors.toList());
+					for (Long id : ids)
+						if (cache.get(id, entityClass) != null)
+							cachedIds.add(id);
 				}
 				if (CollectionUtils.isNotBlank(ids)) {
 					ids.removeAll(cachedIds);
@@ -130,7 +134,9 @@ public class CacheableBasedPageableCollectionAspect {
 			}
 			
 			//2017-03-10 解决缓存数据与从数据库查出来数据合并时的乱序问题，现将所有为缓存记录存入缓存，再遵循顺序一次查出
-			List entityList = sortedIds.stream().map(e -> cache.get(e, entityClass)).collect(Collectors.toList());
+			List entityList = new ArrayList(sortedIds.size());
+			for (Long id : sortedIds)
+				entityList.add(cache.get(id, entityClass));
 			
 			//将返回结果集中的对象封装成页面展示需要的分页对象并进行返回
 			return new PageImpl<>(entityList,(Pageable)pageableParam,queryResults.getTotal());
