@@ -23,7 +23,7 @@ parseValuesOnTableEachRow = obj => ({
 
 const [departmentsUrl, departmentsLabel, organizationsUrl, organizationsLabel] = [
 	(currentRequestMappingRootPath + '/getAllAvailableDepartments'),'请选择上级部门',
-	'organization/getAllAvailableOrganizations','请选择上级部门'
+	'organization/getAllAvailableOrganizations','请选择所属机构'
 ];
 
 vueContentBeforeCreate = () => {
@@ -92,6 +92,7 @@ function handleNodeMovement(data) {
 		if (isChildOnTree) {
 			//移动的子节点在当前树中，扫描并获取当前节点，并移至新父节点下
 			child = getChildFromNode(data.id, rootNode);
+			child.title = data.name;
 			//判断是否当前新父节点在当前树中
 			if (isParentOnTree) {
 				//新父节点在当前树中，在新父节点下插入
@@ -104,6 +105,7 @@ function handleNodeMovement(data) {
 			if (isParentOnTree) {
 				parseChild(child, data, true);
 				child = parseNode(child);
+				child.title = data.name;
 				//寻找新父节点并为其插入移动过来的子节点
 				setChildToNode(child,parentId,rootNode);
 			} else {
