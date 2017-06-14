@@ -166,14 +166,14 @@ function submitUpAndDownRemove(isUp){
 	let beforeId = selectedNodeObject.id;
 	getSingleData(beforeId, updateBefore, function(data) {
 		currentAction = actions.changeSort;
-		if(data.sort>1){
-			
-			let parentId = data.parent_id;
-			if(parentId==0) return;
+		if(data.sort>0){
+			let parentId=null;
+			if(data.parent) parentId = data.parent.id;
 			let afterId ;
 			//根据parentId 取到 节点，取此节点的children数组。遍历数组 调换两个对象位置
 			let rootNode = getVueObject().treeData;
-			let childrenArray = getChildFromNodeNotDelete(parentId, rootNode[0]).children;
+			// 如果parentId为null 则为虚拟根下的一级节点
+			let childrenArray = parentId == null ? rootNode[0].children:getChildFromNodeNotDelete(parentId, rootNode[0]).children;
 			let selectedNodeObjectIndex = -1;
 			
 			for(let index in childrenArray){
@@ -253,7 +253,7 @@ function handleNodeMovement(data) {
 		}
 	} else if (currentAction == actions.deleteNode && data.count > 0) {
 		for(let r of data.ids) {
-			getChildFromNode(r, rootNode);
+			if(r) getChildFromNode(r, rootNode);
 		}
 	} else if (currentAction == actions.add) {
 		if (isParentOnTree) {

@@ -44,7 +44,8 @@ public class OrganizationServiceImpl extends BaseAbstractServiceImpl implements 
 
 	@Override
 	public Organization create(Organization organization) {
-		Integer maxSort = (organization.getParent() == null||organization.getParent().getId()==null) ? null:organizationRepository.findOrganizationMaxSort(organization.getParent().getId());
+		Integer maxSort = (organization.getParent() == null||organization.getParent().getId()==null) ? organizationRepository.findOrganizationMaxSort(null):organizationRepository.findOrganizationMaxSort(organization.getParent().getId());
+//		Integer maxSort = (organization.getParent() == null||organization.getParent().getId()==null) ? null:organizationRepository.findOrganizationMaxSort(organization.getParent().getId());
 		if (maxSort != null) organization.setSort(maxSort+1);
 		else organization.setSort(1);
 		

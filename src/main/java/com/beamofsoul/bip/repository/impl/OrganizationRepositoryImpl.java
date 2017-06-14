@@ -116,7 +116,9 @@ public class OrganizationRepositoryImpl implements OrganizationRepositoryCustom 
 	public Integer findOrganizationMaxSort(Long parentId){
 		JPAQuery<Integer> query = new JPAQuery<Integer>(entityManager);
 		QOrganization organization = QOrganization.organization;
-//		return query.select(organization.sort.max()).from(organization).where(organization.parentId.eq(parentId)).fetchFirst();
-		return query.select(organization.sort.max()).from(organization).where(organization.parent.id.eq(parentId)).fetchFirst();
+		if(parentId == null)
+			return query.select(organization.sort.max()).from(organization).where(organization.parent.id.isNull()).fetchFirst();
+		else
+			return query.select(organization.sort.max()).from(organization).where(organization.parent.id.eq(parentId)).fetchFirst();
 	}
 }
