@@ -3,7 +3,7 @@ package com.beamofsoul.bip.management.websocket;
 import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArraySet;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.LongAdder;
 import java.util.stream.Collectors;
 
 import org.springframework.scheduling.annotation.Async;
@@ -31,19 +31,22 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 public class CustomSystemLogWebSocketHandler implements WebSocketHandler {
 
-	private static AtomicInteger onlineCount = new AtomicInteger(0);
+	/**
+	 * LongAdder是比AtomicInteger性能更好的，源于JDK8的实现方式，可以减少乐观锁的重试次数
+	 */
+	private static LongAdder onlineCount = new LongAdder();
 	private static CopyOnWriteArraySet<WebSocketSession> webSocketSet = new CopyOnWriteArraySet<WebSocketSession>();
 	
 	@Override
 	public void afterConnectionClosed(WebSocketSession session, CloseStatus closeStatus) throws Exception {
 		webSocketSet.remove(session);
-		onlineCount.decrementAndGet();
+		onlineCount.decrement();
 	}
 	
 	@Override
 	public void afterConnectionEstablished(WebSocketSession session) throws Exception {
 		webSocketSet.add(session);
-		onlineCount.incrementAndGet();
+		onlineCount.increment();
 	}
 	
 	@Override
@@ -131,7 +134,7 @@ public class CustomSystemLogWebSocketHandler implements WebSocketHandler {
 	}
 	
 	public static Integer getOnlineCount() {
-		return onlineCount.get();
+		return onlineCount.intValue();
 	}
 
 }
