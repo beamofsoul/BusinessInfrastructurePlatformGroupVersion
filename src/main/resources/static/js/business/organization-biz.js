@@ -33,9 +33,14 @@ parseValuesOnTableEachRow = function (obj) {
 setFormDataObject({id:null,name: '',descirption: '',sort: 1,parent_id: nullAsNumber,available: true});
 ////综合查询 form
 //hasQueryFrom = false;
-queryFormItemName = ['此节点ID下数据'];
-queryFormItemKey = ['selectedNodeId'];
-queryFormItemType = ['string'];
+//queryFormItemName = ['此节点ID下数据'];
+//queryFormItemKey = ['selectedNodeId'];
+//queryFormItemType = ['string'];
+[queryFormItemName, queryFormItemKey, queryFormItemType] = [
+	['ID','机构名称','机构描述','上级机构','可用状态'],
+	['id','name','descirption','parent','available'],
+	['string','string','string','string','select#availableDataSelect']
+];
 
 
 //form 验证信息 
@@ -50,9 +55,11 @@ vueContentBeforeCreate = function(){
 		treeData: [{id: null, expand: false, title: '<i class="ivu-icon ivu-icon-ios-circle-filled" style="font-size: 16px;">', children: vueContentObject.vueRecordTotal != 0 ? [{}] : null}],
 //		'organization/getAllAvailableOrganizations'
 //		(currentRequestMappingRootPath + '/getAllAvailableDepartments')
-		parentDataSelect: getDataList('organization/getAllAvailableOrganizations','请选择上级部门'),
-		statusDataSelect : [{value: '1',label: '启用'},{value: '0',label: '禁用'}]
+		parentDataSelect:getDataList('organization/getAllAvailableOrganizations','请选择上级部门'),
+		statusDataSelect:[{value: '1',label: '启用'},{value: '0',label: '禁用'}],
+		availableDataSelect:[{value: 'true', label: '启用'},{value: 'false', label: '弃用'}]
 	}
+	
 };
 //////////////////tree///////////////////
 //loadTreeRootUrl = 'organization/single';

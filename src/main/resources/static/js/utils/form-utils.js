@@ -433,21 +433,28 @@ function formatQueryFormData(vueBindFormQueryData) {
  * @param queryFormItemType - 综合查询表单数据列的类型，如果是select 需要写成特定格式[select#xxxx(xxxx为对应的数据对象名称)]
  */
 function createTableQueryForm(queryFormName, queryFormItemName, queryFormItemKey, queryFormItemType) {
-    var icolSpan = 24 / queryFromRowItemNum - 1;//24栅格
-    var totalRow = parseInt(queryFormItemKey.length / queryFromRowItemNum);
+    let icolSpan = 24 / queryFromRowItemNum - 1;//24栅格
+//    let totalRow = parseInt(queryFormItemKey.length / queryFromRowItemNum);
+    //此处要先去除隐藏的项
+//    let hideNum = 0 ;
+//    for(indexItemType in queryFormItemType){
+//    	if(queryFormItemType[indexItemType]=='hide')hideNum++;
+//    }
+    
+    let totalRow = parseInt(queryFormItemKey.length / queryFromRowItemNum);
 
 	if (queryFormItemKey.length % queryFromRowItemNum !== 0) totalRow++;
 //	console.log('24格 每个控件占几格 '+icolSpan)
 //	console.log('总共多少行 '+totalRow)
 //	console.log('总共多少个控件 '+queryFormItemKey.length)
-    var itemIndex = 0;
-    var queryForm = '<i-form ref="' + queryFormName + '" :model="' + queryFormName + '"  :show-message="false" label-position="left" :label-width="' + queryFormItemWidth + '" >';
+	let itemIndex = 0;
+	let queryForm = '<i-form ref="' + queryFormName + '" :model="' + queryFormName + '"  :show-message="false" label-position="left" :label-width="' + queryFormItemWidth + '" >';
     //行
-    for (var rowIndex = 0; rowIndex < totalRow; rowIndex++) {
+    for (let rowIndex = 0; rowIndex < totalRow; rowIndex++) {
 //		console.log('生成第几行 '+rowIndex)
         queryForm += '<Row type="flex" justify="space-between" >';
         //项
-        for (var rowItemIndex = 0; rowItemIndex < queryFromRowItemNum; rowItemIndex++) {
+        for (let rowItemIndex = 0; rowItemIndex < queryFromRowItemNum; rowItemIndex++) {
 //			console.log('生成这行第几个控件 '+rowItemIndex)
 //			console.log('---------生成总共控件的第几个 '+(itemIndex+1))
 //			console.log('queryFormItemKey.length '+queryFormItemKey.length);
@@ -461,10 +468,12 @@ function createTableQueryForm(queryFormName, queryFormItemName, queryFormItemKey
 
             queryForm += '<i-col span="' + icolSpan + '">';
 
-            var itemTypeArray = queryFormItemType[itemIndex].split('#');
-            var itemType = itemTypeArray[0];
+            let itemTypeArray = queryFormItemType[itemIndex].split('#');
+            let itemType = itemTypeArray[0];
 
             if (itemType === 'string') {
+//            	let vShowStr = itemTypeArray.length>1 && itemTypeArray[1]=='hide'  ? ' v-show="false" ':'';
+//            	queryForm += '<Form-item '+vShowStr+' label="' + queryFormItemName[itemIndex] + '：" prop="' + queryFormItemKey[itemIndex] + '">';
                 queryForm += '<Form-item label="' + queryFormItemName[itemIndex] + '：" prop="' + queryFormItemKey[itemIndex] + '">';
                 queryForm += '<i-input v-model="' + queryFormName + '.' + queryFormItemKey[itemIndex] + '" ></i-input>';
                 queryForm += '</Form-item>';
@@ -472,11 +481,11 @@ function createTableQueryForm(queryFormName, queryFormItemName, queryFormItemKey
                 queryForm += '<Form-item label="' + queryFormItemName[itemIndex] + '：" prop="' + queryFormItemKey[itemIndex] + '">';
                 var rangeStr = '';
                 if (itemType.indexOf('<number') >= 0) {
-                    var minIndex = itemType.indexOf('<number');
+                	let minIndex = itemType.indexOf('<number');
                     rangeStr += ' :min="' + itemType.substring(0, minIndex) + '"';
                 }
                 if (itemType.indexOf('number<') >= 0) {
-                    var maxIndex = itemType.lastIndexOf('<');
+                	let maxIndex = itemType.lastIndexOf('<');
                     rangeStr += ' :max="' + itemType.substring(maxIndex + 1) + '"';
                 }
                 queryForm += '<Input-number ' + rangeStr + ' v-model="' + queryFormName + '.' + queryFormItemKey[itemIndex] + '"></Input-number>';
