@@ -2,4 +2,4 @@
 
 <h2>License</h2>
 BusinessInfrastructurePlatformGroupVersion is Open Source software released under the <a href="https://opensource.org/licenses/Apache-2.0">Apache 2.0 license</a>
-<p>Copyright (c) 2017-present beamofsoul</p>
+<p>Copyright (c) 2017-present Mingshu Jian</p>
