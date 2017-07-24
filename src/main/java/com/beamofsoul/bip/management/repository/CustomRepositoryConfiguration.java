@@ -10,8 +10,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 
 /**
- * @ClassName BaseMultielementRepositoryFactoryConfiguration
- * @Description 设置BaseMultielementRepositoryFactory的一些参数，如使用哪个实现类
+ * @ClassName CustomRepositoryConfiguration
+ * @Description 设置BaseMultielementRepositoryProvider的一些参数，如使用哪个实现类
  * @author MingshuJian
  * @Date 2017年1月24日 上午11:14:37
  * @version 1.0.0
@@ -20,66 +20,61 @@ import org.springframework.context.annotation.Primary;
 public class CustomRepositoryConfiguration {
 
 	/**
-	 * BaseMultielementRepositoryFactory的默认全路径
-	 * 注意：此处需要重构，应将该值持久化到特定数据库表中，以便动态更改
+	 * BaseMultielementRepositoryProvider实现类的默认全路径
 	 */
-	private static final String DEFAULT_FACTORY_PATH 
-		= "com.beamofsoul.bip.management.repository.BaseMultielementRepositoryFactory";
+	private static final String DEFAULT_PROVIDER_INSTANCE_PATH 
+		= "com.beamofsoul.bip.management.repository.DefaultBaseMultielementRepositoryProvider";
 	
 	/**
-	 * application.yml配置文件中配置的BaseMultielementRepositoryFactory的全路径
+	 * application.yml配置文件中配置的BaseMultielementRepositoryProvider的全路径
 	 */
-	//@Value("${project.base.repository.factory}") 
-	//@Value不能标识在static field上
-    private static String factoryPath;
+    private static String providerInstancePath;
 	
 	/**
-	 * 暴露出来的factory对象实例
-	 * 当有其他类需要在该配置类注册(向Spring容器)factory之前获取factory实例
-	 * 该实例句柄将会指向Spring容器中factory对象实例
+	 * 暴露出来的provider对象实例
+	 * 当有其他类需要在该配置类注册(向Spring容器)provider之前获取provider实例
+	 * 该实例句柄将会指向Spring容器中provider对象实例
 	 */
-	public static BaseMultielementRepositoryFactory factoryInstance;
+	public static BaseMultielementRepositoryProvider provider;
 	
 	/**
-	 * @Title: baseMultielementRepositoryFactory  
-	 * @Description: 向Spring容器中注入Bean: BaseMultielementRepositoryFactory  
-	 * @return BaseMultielementRepositoryFactory 返回类型  
+	 * @Title: baseMultielementRepositoryProvider  
+	 * @Description: 向Spring容器中注入Bean: BaseMultielementRepositoryProvider  
+	 * @return BaseMultielementRepositoryProvider 返回类型  
 	 */
 	@Bean
 	@Primary
-	public BaseMultielementRepositoryFactory baseMultielementRepositoryFactory() {
-		return factoryInstance == null ? getFactory() : factoryInstance;
+	public BaseMultielementRepositoryProvider baseMultielementRepositoryProvider() {
+		return provider == null ? getProvider() : provider;
 	}
 	
 	/**
-	 * @Title: getFactory  
-	 * @Description: 根据配置文件中的参数或默认的factory全路径实例化特定factory  
-	 * @return BaseMultielementRepositoryFactory 返回类型  
+	 * @Title: getProvider  
+	 * @Description: 根据配置文件中的参数或默认的provider instance全路径实例化特定provider实例  
+	 * @return BaseMultielementRepositoryProvider 返回类型  
 	 */
 	@SuppressWarnings("static-access")
-	public static BaseMultielementRepositoryFactory getFactory() {
+	public static BaseMultielementRepositoryProvider getProvider() {
 		/**
-		 * 获取BaseMultielementRepositoryFactory实现类全路径
+		 * 为了保持单例，如果已经存在provider实例，则不再进行重新创建实例
 		 */
-		factoryPath = asString(getValue(PROJECT_BASE_REPOSITORY_FACTORY));
+		if (provider != null) return provider;
 		/**
-		 * 为了保持单例，如果已经存在factory，则不再进行重新创建实例
+		 * 获取BaseMultielementRepositoryProvider实现类全路径
 		 */
-		if (factoryInstance != null) {
-			return factoryInstance;
-		}
+		providerInstancePath = asString(getValue(PROJECT_BASE_REPOSITORY_PROVIDER));
 		/**
-		 * 实例化factory，如未配置则取默认全路径进行实例化
+		 * 实例化provider，如未配置则取默认全路径进行实例化
 		 */
 		try {
 			Class<?> clazz = CustomRepositoryConfiguration.class
-					.forName(StringUtils.isBlank(factoryPath) ? DEFAULT_FACTORY_PATH : factoryPath);
+					.forName(StringUtils.isBlank(providerInstancePath) ? DEFAULT_PROVIDER_INSTANCE_PATH : providerInstancePath);
 			Constructor<?> noArgsConstructor = clazz.getDeclaredConstructor(new Class[]{});
 			noArgsConstructor.setAccessible(true);
-			factoryInstance = (BaseMultielementRepositoryFactory) noArgsConstructor.newInstance();
+			provider = (BaseMultielementRepositoryProvider) noArgsConstructor.newInstance();
 		} catch (Exception e) {
-			throw new RuntimeException("Unrecognized factory settings", e);
+			throw new RuntimeException("Unrecognized base multielement repository provider settings", e);
 		}
-		return factoryInstance;
+		return provider;
 	}
 }

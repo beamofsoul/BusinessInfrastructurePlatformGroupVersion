@@ -77,7 +77,7 @@ project:
     filter:
       sensitive: false
     repository:
-      factory: com.beamofsoul.bip.management.repository.BaseMultielementRepositoryFactory
+      provider: com.beamofsoul.bip.management.repository.BaseMultielementRepositoryFactory
       batch:
         size: 30
     security:

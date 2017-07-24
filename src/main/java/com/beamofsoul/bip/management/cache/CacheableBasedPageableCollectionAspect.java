@@ -19,7 +19,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import com.beamofsoul.bip.management.repository.BaseMultielementRepository;
-import com.beamofsoul.bip.management.repository.BaseMultielementRepositoryFactory;
+import com.beamofsoul.bip.management.repository.BaseMultielementRepositoryProvider;
 import com.beamofsoul.bip.management.util.CacheUtils;
 import com.beamofsoul.bip.management.util.CollectionUtils;
 import com.beamofsoul.bip.management.util.Constants;
@@ -46,7 +46,7 @@ public class CacheableBasedPageableCollectionAspect {
 	private Cache cache;
 	
 	@Autowired
-	private BaseMultielementRepositoryFactory baseMultielementRepositoryFactory;
+	private BaseMultielementRepositoryProvider repositoryProvider;
 	
 	@Pointcut(value="@annotation(cacheableBasedPageableCollection)")
 	public void locateAnnotation(CacheableBasedPageableCollection cacheableBasedPageableCollection) {}
@@ -92,8 +92,8 @@ public class CacheableBasedPageableCollectionAspect {
 		try {
 			//根据具体业务实体类类型和分页对象获取分页后的业务实体类对象主键id列表
 			BaseMultielementRepository<?, Long> reps =
-					(BaseMultielementRepository<?, Long>) baseMultielementRepositoryFactory
-					.init(entityClass, entityManager).doInstance();
+					(BaseMultielementRepository<?, Long>) repositoryProvider
+					.initialize(entityClass, entityManager).provide();
 			QueryResults<Long> queryResults = 
 					reps.findPageableIds((Pageable) pageableParam, 
 					predicateParam == null ? null : (Predicate) predicateParam);
