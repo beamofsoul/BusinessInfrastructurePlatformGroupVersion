@@ -1,5 +1,7 @@
 package com.beamofsoul.bip.management.cache;
 
+import static com.beamofsoul.bip.management.util.AnnotationRepositoryNameMapping.repositoryMap;
+
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -8,6 +10,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -24,6 +27,7 @@ import com.beamofsoul.bip.management.util.CacheUtils;
 import com.beamofsoul.bip.management.util.CollectionUtils;
 import com.beamofsoul.bip.management.util.Constants;
 import com.beamofsoul.bip.management.util.PageImpl;
+import com.beamofsoul.bip.management.util.SpringUtils;
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.Predicate;
 
@@ -90,10 +94,14 @@ public class CacheableBasedPageableCollectionAspect {
 		}
 		
 		try {
+			//在Spring容器中直接获取注解参数entityClass所对应的Repository实例，如果不存在，则通过工厂创建一个
+			String entityName = StringUtils.uncapitalize(entityClass.getSimpleName());
+			BaseMultielementRepository<?, Long> reps = repositoryMap.containsKey(entityName) ?
+					SpringUtils.getBean(repositoryMap.get(entityName), BaseMultielementRepository.class) :
+					(BaseMultielementRepository<?, Long>) repositoryProvider.initialize(entityClass, entityManager).provide();
+			
+			
 			//根据具体业务实体类类型和分页对象获取分页后的业务实体类对象主键id列表
-			BaseMultielementRepository<?, Long> reps =
-					(BaseMultielementRepository<?, Long>) repositoryProvider
-					.initialize(entityClass, entityManager).provide();
 			QueryResults<Long> queryResults = 
 					reps.findPageableIds((Pageable) pageableParam, 
 					predicateParam == null ? null : (Predicate) predicateParam);
